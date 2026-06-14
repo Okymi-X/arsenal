@@ -66,6 +66,9 @@ func (f *Fetcher) Fetch(ctx context.Context, asset registry.Asset, sel Selection
 	if err := os.MkdirAll(sel.DestDir, 0o755); err != nil {
 		return Result{}, fmt.Errorf("create dest %s: %w", sel.DestDir, err)
 	}
+	// Take the base name only: the file name comes from upstream, so this keeps
+	// a crafted name from escaping the destination directory.
+	name = filepath.Base(name)
 	dest := filepath.Join(sel.DestDir, name)
 	size, err := f.download(ctx, url, dest)
 	if err != nil {

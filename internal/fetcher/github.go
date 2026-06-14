@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -46,13 +47,24 @@ func (f *Fetcher) repoDir(ctx context.Context, repo, branch, dir string) ([]cont
 	if err != nil {
 		return nil, err
 	}
-	url := apiBase + "/repos/" + or + "/contents/" + dir
-	if branch != "" {
-		url += "?ref=" + branch
-	}
 	var entries []contentEntry
-	err = f.getJSON(ctx, url, &entries)
+	err = f.getJSON(ctx, contentsURL(or, dir, branch), &entries)
 	return entries, err
+}
+
+// contentsURL builds the GitHub contents API URL for a directory. It uses
+// url.URL so directory segments with spaces (such as the PayloadsAllTheThings
+// category folders) are percent-encoded.
+func contentsURL(ownerRepo, dir, branch string) string {
+	u := &url.URL{
+		Scheme: "https",
+		Host:   "api.github.com",
+		Path:   "/repos/" + ownerRepo + "/contents/" + dir,
+	}
+	if branch != "" {
+		u.RawQuery = url.Values{"ref": {branch}}.Encode()
+	}
+	return u.String()
 }
 
 func (f *Fetcher) getJSON(ctx context.Context, url string, v any) error {

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/Okymi-X/arsenal/internal/registry"
@@ -59,11 +60,16 @@ func (c *checker) checkReleaseAsset(owner, repo, pattern string) error {
 }
 
 func (c *checker) checkRawDir(owner, repo, branch, dir string) error {
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/contents/%s?ref=%s", owner, repo, dir, branch)
+	u := &url.URL{
+		Scheme:   "https",
+		Host:     "api.github.com",
+		Path:     fmt.Sprintf("/repos/%s/%s/contents/%s", owner, repo, dir),
+		RawQuery: url.Values{"ref": {branch}}.Encode(),
+	}
 	var entries []struct {
 		Name string `json:"name"`
 	}
-	if err := c.githubJSON(url, &entries); err != nil {
+	if err := c.githubJSON(u.String(), &entries); err != nil {
 		return err
 	}
 	if len(entries) == 0 {

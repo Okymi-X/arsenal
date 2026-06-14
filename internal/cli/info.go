@@ -36,9 +36,10 @@ func (a *App) printAssetInfo(as registry.Asset) {
 	if len(as.Aliases) > 0 {
 		a.log.Printf("aliases:        %v", as.Aliases)
 	}
-	if as.Collection() {
-		a.log.Printf("default build:  %s", as.Dir)
-	} else if as.Pattern != "" {
+	if as.Dir != "" {
+		a.log.Printf("directory:      %s", as.Dir)
+	}
+	if as.Pattern != "" {
 		a.log.Printf("default file:   %s", as.Pattern)
 	}
 	if as.Notes != "" {
@@ -51,7 +52,9 @@ func (a *App) printToolHeader(t registry.Tool) {
 	a.log.Printf("%s - %s", t.Name, t.Description)
 	a.log.Printf("category:       %s", t.Category)
 	a.log.Printf("install method: %s", t.InstallMethod)
-	a.log.Printf("python:         %s", t.PythonVersion)
+	if t.PythonVersion != "" {
+		a.log.Printf("python:         %s", t.PythonVersion)
+	}
 	a.log.Printf("repo:           %s", t.Repo)
 	if len(t.Aliases) > 0 {
 		a.log.Printf("aliases:        %v", t.Aliases)

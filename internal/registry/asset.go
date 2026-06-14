@@ -57,12 +57,6 @@ type Asset struct {
 	Notes string `toml:"notes"`
 }
 
-// Collection reports whether the asset is a github-raw directory of many
-// selectable binaries (such as SharpCollection) rather than a single file.
-func (a Asset) Collection() bool {
-	return a.Source == AssetGitHubRaw && a.Dir != ""
-}
-
 // FindAsset returns the asset matching name or one of its aliases.
 //
 // Matching is case-insensitive. The returned bool is false when no asset
