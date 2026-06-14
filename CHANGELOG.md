@@ -12,12 +12,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions CI (format, vet, race tests with coverage, golangci-lint, and a
   cross-platform build matrix) and a tag-triggered release workflow that
   cross-compiles static binaries and publishes them with checksums.
+- Registry verification bot: `tools/regcheck` and a `registry-check` workflow
+  (on registry changes and weekly) that confirm every catalogued version exists
+  at its official source - PyPI for pip tools, the upstream Git repository for
+  gitpip/gobin/cargo/binary tools - so a non-existent version can never ship.
+  Also available locally via `make verify-registry`.
 - Dependabot for Go modules and GitHub Actions.
 - CONTRIBUTING, SECURITY policy, editorconfig, issue templates, and a PR template.
 
 ### Changed
 
 - Registry search now also matches a tool's category.
+- All registry versions corrected against their official sources.
+
+### Fixed
+
+- NetExec is installed via `gitpip` from its pinned Git tag; it is not published
+  on PyPI, so the previous `pip` entry could never install.
+- `run`, `switch`, and `remove` now resolve a tool alias (for example `nxc`) to
+  its canonical name before consulting the manifest.
 
 ## [0.1.0] - 2026-06-14
 

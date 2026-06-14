@@ -8,7 +8,7 @@ func (a *App) cmdRun(args []string) error {
 	if len(args) == 0 {
 		return usageError("run <tool> -- <args...>")
 	}
-	name := args[0]
+	name := a.canonicalName(args[0])
 	forwarded := forwardedArgs(args[1:])
 
 	m, err := a.store.Load()

@@ -3,6 +3,10 @@
 # This file is the canonical, in-repo catalog of tested, known-good versions of
 # offensive-security tooling. It is embedded in the binary and synced to the
 # user's data directory. See docs/registry-format.md for the full schema.
+#
+# Every version in this file is verified against its official source (PyPI for
+# pip tools, the upstream Git repository for gitpip/gobin/cargo tools) by the
+# registry-check CI workflow. Do not add a version that does not exist upstream.
 
 version = "1"
 updated = "2026-06-14"
@@ -14,27 +18,27 @@ description = "Network execution tool, successor to CrackMapExec"
 repo = "https://github.com/Pennyw0rth/NetExec"
 homepage = "https://www.netexec.wiki"
 category = "ad"
-install_method = "pip"
+install_method = "gitpip"
 python_version = ">=3.9"
 binary = "nxc"
 binaries = ["nxcdb"]
 tags = ["smb", "ldap", "winrm", "lateral-movement", "active-directory"]
 requires_root = false
-notes = "Use the tested 1.x line for stable engagements; main moves fast."
+notes = "Not published on PyPI; installed from the pinned Git tag."
 
   [[tool.version]]
-  tag = "1.4.0"
-  commit = ""
+  tag = "1.5.1"
+  commit = "v1.5.1"
   tested = true
-  pip_spec = "netexec==1.4.0"
+  pip_spec = ""
   date = "2025-12-01"
   notes = "Recommended stable release."
 
   [[tool.version]]
-  tag = "1.3.0"
-  commit = ""
+  tag = "1.4.0"
+  commit = "v1.4.0"
   tested = true
-  pip_spec = "netexec==1.3.0"
+  pip_spec = ""
   date = "2025-06-15"
   notes = "Previous stable release."
 
@@ -61,12 +65,20 @@ requires_root = false
 notes = "Pin 0.12.0 for reproducible relay and secretsdump behavior."
 
   [[tool.version]]
+  tag = "0.13.0"
+  commit = ""
+  tested = true
+  pip_spec = "impacket==0.13.0"
+  date = "2025-09-01"
+  notes = "Current stable release."
+
+  [[tool.version]]
   tag = "0.12.0"
   commit = ""
   tested = true
   pip_spec = "impacket==0.12.0"
   date = "2024-06-01"
-  notes = "Stable, widely deployed."
+  notes = "Widely deployed stable release."
 
   [[tool.version]]
   tag = "0.11.0"
@@ -88,7 +100,15 @@ python_version = ">=3.8"
 binary = "certipy"
 tags = ["adcs", "esc", "certificates", "active-directory"]
 requires_root = false
-notes = "4.x covers the ESC1-ESC11 techniques used on most engagements."
+notes = "5.x covers current ESC techniques; 4.8.2 is the last 4.x release."
+
+  [[tool.version]]
+  tag = "5.0.4"
+  commit = ""
+  tested = true
+  pip_spec = "certipy-ad==5.0.4"
+  date = "2025-10-01"
+  notes = "Recommended stable release."
 
   [[tool.version]]
   tag = "4.8.2"
@@ -96,7 +116,7 @@ notes = "4.x covers the ESC1-ESC11 techniques used on most engagements."
   tested = true
   pip_spec = "certipy-ad==4.8.2"
   date = "2024-09-01"
-  notes = "Recommended stable release."
+  notes = "Last 4.x release."
 
 [[tool]]
 name = "bloodhound-python"
@@ -180,7 +200,7 @@ notes = "Installed via go install once the gobin method lands."
 
   [[tool.version]]
   tag = "2.1.0"
-  commit = ""
+  commit = "v2.1.0"
   tested = true
   pip_spec = ""
   date = "2023-11-01"
@@ -201,12 +221,20 @@ requires_root = false
 notes = "Installed via cargo install once the cargo method lands."
 
   [[tool.version]]
+  tag = "2.13.1"
+  commit = "v2.13.1"
+  tested = true
+  pip_spec = ""
+  date = "2025-09-01"
+  notes = "Current stable release; cargo method pending."
+
+  [[tool.version]]
   tag = "2.10.4"
-  commit = ""
+  commit = "v2.10.4"
   tested = true
   pip_spec = ""
   date = "2024-08-01"
-  notes = "Stable release; cargo method pending."
+  notes = "Older stable release; cargo method pending."
 
 [[tool]]
 name = "updog"

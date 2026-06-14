@@ -95,3 +95,17 @@ used.
 
 The loader rejects a registry where a tool has no `name`, no `install_method`,
 or no versions, or where two tools share a `name`.
+
+## Upstream verification
+
+Every version is verified against its official source by the `registry-check` CI
+workflow (and locally via `make verify-registry`):
+
+- `pip` tools: the version from `pip_spec` (or `name==tag`) must be published on
+  PyPI.
+- `gitpip`, `gobin`, `cargo`, `binary` tools: the `commit` or `tag` must resolve
+  as a ref in the GitHub repository (the checker also tries a leading `v`).
+
+A pull request that adds a version which does not exist upstream fails CI, so a
+non-existent version cannot be merged. The workflow also runs weekly to catch
+versions that were later yanked or moved.

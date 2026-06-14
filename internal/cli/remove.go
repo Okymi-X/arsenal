@@ -10,7 +10,7 @@ func (a *App) cmdRemove(args []string) error {
 	if len(args) != 1 {
 		return usageError("remove <tool>")
 	}
-	name := args[0]
+	name := a.canonicalName(args[0])
 	m, err := a.store.Load()
 	if err != nil {
 		return err

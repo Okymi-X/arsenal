@@ -11,7 +11,7 @@ func (a *App) cmdSwitch(args []string) error {
 	if len(args) != 2 {
 		return usageError("switch <tool> <version>")
 	}
-	name, version := args[0], args[1]
+	name, version := a.canonicalName(args[0]), args[1]
 	m, err := a.store.Load()
 	if err != nil {
 		return err

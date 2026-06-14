@@ -9,7 +9,7 @@ PREFIX      ?= /usr/local
 VERSION     := $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 LDFLAGS     := -s -w -X main.version=$(VERSION)
 
-.PHONY: all build test lint fmt install clean release tidy
+.PHONY: all build test lint fmt install clean release tidy verify-registry
 
 all: build
 
@@ -34,6 +34,10 @@ fmt:
 tidy:
 	go mod tidy
 	go mod verify
+
+## verify-registry: check every registry version exists at its official source
+verify-registry:
+	go run ./tools/regcheck -registry registry/registry.toml
 
 ## install: install the binary into PREFIX/bin
 install: build

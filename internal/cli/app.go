@@ -94,6 +94,20 @@ func (a *App) seedRegistry() error {
 	return nil
 }
 
+// canonicalName resolves a tool name or alias to its canonical registry name.
+// If the registry cannot be loaded or the tool is unknown, the input is
+// returned unchanged so commands still work against the manifest directly.
+func (a *App) canonicalName(name string) string {
+	reg, err := a.loadRegistry()
+	if err != nil {
+		return name
+	}
+	if tool, ok := reg.FindTool(name); ok {
+		return tool.Name
+	}
+	return name
+}
+
 // newBackend constructs the isolation backend selected by configuration.
 func (a *App) newBackend() isolation.Backend {
 	if a.cfg.DefaultBackend == "container" {
