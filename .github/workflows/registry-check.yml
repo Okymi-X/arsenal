@@ -4,13 +4,15 @@ on:
   push:
     branches: [main]
     paths:
-      - "registry/registry.toml"
+      - "registry/**"
       - "tools/regcheck/**"
+      - "tools/regbuild/**"
       - ".github/workflows/registry-check.yml"
   pull_request:
     paths:
-      - "registry/registry.toml"
+      - "registry/**"
       - "tools/regcheck/**"
+      - "tools/regbuild/**"
   schedule:
     # Weekly bot run: catch upstream versions that were yanked or moved.
     - cron: "17 6 * * 1"
@@ -29,6 +31,8 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
+      - name: Verify registry.toml is assembled from its segments
+        run: go run ./tools/regbuild -verify
       - name: Verify against PyPI and GitHub
         env:
           GITHUB_TOKEN: ${{ github.token }}

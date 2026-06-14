@@ -1,0 +1,476 @@
+# arsenal registry segment: Active Directory
+#
+# Authored here; assembled into registry/registry.toml by tools/regbuild.
+# Contains only [[tool]] blocks - no top-level keys.
+
+[[tool]]
+name = "netexec"
+aliases = ["nxc", "cme"]
+description = "Network execution tool, successor to CrackMapExec"
+repo = "https://github.com/Pennyw0rth/NetExec"
+homepage = "https://www.netexec.wiki"
+category = "ad"
+install_method = "gitpip"
+python_version = ">=3.9"
+binary = "nxc"
+binaries = ["nxcdb"]
+tags = ["smb", "ldap", "winrm", "lateral-movement", "active-directory"]
+requires_root = false
+notes = "Not published on PyPI; installed from the pinned Git tag."
+
+  [[tool.version]]
+  tag = "badsuccessor"
+  commit = "feat/refactor-badsuccessor"
+  repo = "https://github.com/azoxlpf/NetExec"
+  tested = false
+  pip_spec = ""
+  date = "2026-03-19"
+  notes = "Fork branch with the BadSuccessor refactor; tracks a moving branch, not reproducible."
+
+  [[tool.version]]
+  tag = "1.5.1"
+  commit = "v1.5.1"
+  tested = true
+  pip_spec = ""
+  date = "2025-12-01"
+  notes = "Recommended stable release."
+
+  [[tool.version]]
+  tag = "1.4.0"
+  commit = "v1.4.0"
+  tested = true
+  pip_spec = ""
+  date = "2025-06-15"
+  notes = "Previous stable release."
+
+[[tool]]
+name = "impacket"
+aliases = ["impkt"]
+description = "Collection of Python classes for working with network protocols"
+repo = "https://github.com/fortra/impacket"
+homepage = "https://www.coresecurity.com/core-labs/open-source-tools/impacket"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.8"
+binary = "secretsdump.py"
+binaries = [
+  "GetUserSPNs.py",
+  "GetNPUsers.py",
+  "getTGT.py",
+  "getST.py",
+  "psexec.py",
+  "wmiexec.py",
+  "smbexec.py",
+  "smbclient.py",
+  "ntlmrelayx.py",
+]
+tags = ["smb", "kerberos", "relay", "secretsdump", "active-directory"]
+requires_root = false
+notes = "Pin 0.12.0 for reproducible relay and secretsdump behavior."
+
+  [[tool.version]]
+  tag = "0.13.0"
+  commit = ""
+  tested = true
+  pip_spec = "impacket==0.13.0"
+  date = "2025-09-01"
+  notes = "Current stable release."
+
+  [[tool.version]]
+  tag = "0.12.0"
+  commit = ""
+  tested = true
+  pip_spec = "impacket==0.12.0"
+  date = "2024-06-01"
+  notes = "Widely deployed stable release."
+
+  [[tool.version]]
+  tag = "0.11.0"
+  commit = ""
+  tested = true
+  pip_spec = "impacket==0.11.0"
+  date = "2023-08-01"
+  notes = "Older stable release."
+
+[[tool]]
+name = "certipy"
+aliases = ["certipy-ad"]
+description = "AD CS enumeration and abuse"
+repo = "https://github.com/ly4k/Certipy"
+homepage = "https://github.com/ly4k/Certipy"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.8"
+binary = "certipy"
+tags = ["adcs", "esc", "certificates", "active-directory"]
+requires_root = false
+notes = "5.x covers current ESC techniques; 4.8.2 is the last 4.x release."
+
+  [[tool.version]]
+  tag = "5.0.4"
+  commit = ""
+  tested = true
+  pip_spec = "certipy-ad==5.0.4"
+  date = "2025-10-01"
+  notes = "Recommended stable release."
+
+  [[tool.version]]
+  tag = "4.8.2"
+  commit = ""
+  tested = true
+  pip_spec = "certipy-ad==4.8.2"
+  date = "2024-09-01"
+  notes = "Last 4.x release."
+
+[[tool]]
+name = "bloodhound-python"
+aliases = ["bloodhound-ce", "bhpy"]
+description = "Python BloodHound ingestor for Active Directory"
+repo = "https://github.com/dirkjanm/BloodHound.py"
+homepage = "https://github.com/dirkjanm/BloodHound.py"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.8"
+binary = "bloodhound-python"
+tags = ["bloodhound", "ingestor", "active-directory", "recon"]
+requires_root = false
+notes = "Match the collector version to your BloodHound server schema."
+
+  [[tool.version]]
+  tag = "1.7.2"
+  commit = ""
+  tested = true
+  pip_spec = "bloodhound==1.7.2"
+  date = "2024-05-01"
+  notes = "Stable legacy schema collector."
+
+[[tool]]
+name = "mitm6"
+aliases = []
+description = "IPv6 DNS takeover for Windows networks"
+repo = "https://github.com/dirkjanm/mitm6"
+homepage = "https://github.com/dirkjanm/mitm6"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.8"
+binary = "mitm6"
+tags = ["ipv6", "relay", "dns", "active-directory"]
+requires_root = true
+notes = "Requires raw socket access; run with appropriate privileges."
+
+  [[tool.version]]
+  tag = "0.3.0"
+  commit = ""
+  tested = true
+  pip_spec = "mitm6==0.3.0"
+  date = "2022-01-01"
+  notes = "Stable release."
+
+[[tool]]
+name = "coercer"
+aliases = []
+description = "Coerce Windows authentication via multiple RPC methods"
+repo = "https://github.com/p0dalirius/Coercer"
+homepage = "https://github.com/p0dalirius/Coercer"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.8"
+binary = "coercer"
+tags = ["coerce", "rpc", "relay", "active-directory"]
+requires_root = false
+notes = "Pair with ntlmrelayx for authentication relay chains."
+
+  [[tool.version]]
+  tag = "2.4.3"
+  commit = ""
+  tested = true
+  pip_spec = "coercer==2.4.3"
+  date = "2023-10-01"
+  notes = "Stable release."
+
+[[tool]]
+name = "bloodyad"
+aliases = ["bloodyAD"]
+description = "Active Directory privilege escalation swiss army knife"
+repo = "https://github.com/CravateRouge/bloodyAD"
+homepage = "https://github.com/CravateRouge/bloodyAD"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.8"
+binary = "bloodyAD"
+tags = ["ldap", "privesc", "dacl", "active-directory"]
+requires_root = false
+notes = "Reads and writes AD objects (DACLs, shadow credentials, passwords) over LDAP; a 0xdf staple for AD privesc chains."
+
+  [[tool.version]]
+  tag = "2.5.4"
+  commit = ""
+  tested = true
+  pip_spec = "bloodyad==2.5.4"
+  date = "2026-01-31"
+  notes = "Current stable release."
+
+[[tool]]
+name = "pywhisker"
+aliases = ["whisker"]
+description = "Shadow Credentials attack via msDS-KeyCredentialLink"
+repo = "https://github.com/ShutdownRepo/pywhisker"
+homepage = "https://github.com/ShutdownRepo/pywhisker"
+category = "ad"
+install_method = "gitpip"
+python_version = ">=3.8"
+binary = "pywhisker"
+tags = ["shadow-credentials", "kerberos", "adcs", "active-directory"]
+requires_root = false
+notes = "Not published on PyPI by upstream; installed from the pinned Git tag. Pair with Certipy/Rubeus to abuse the added key credential."
+
+  [[tool.version]]
+  tag = "1.0.0"
+  commit = "1.0.0"
+  tested = true
+  pip_spec = ""
+  date = "2026-02-01"
+  notes = "Tagged release."
+
+[[tool]]
+name = "ldapdomaindump"
+aliases = ["ldd"]
+description = "Active Directory information dumper via LDAP"
+repo = "https://github.com/dirkjanm/ldapdomaindump"
+homepage = "https://github.com/dirkjanm/ldapdomaindump"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "ldapdomaindump"
+binaries = ["ldd2bloodhound", "ldd2pretty"]
+tags = ["ldap", "recon", "enumeration", "active-directory"]
+requires_root = false
+notes = "Dumps domain users, groups, and computers to HTML/JSON/greppable output from a single authenticated LDAP bind."
+
+  [[tool.version]]
+  tag = "0.10.0"
+  commit = ""
+  tested = true
+  pip_spec = "ldapdomaindump==0.10.0"
+  date = "2025-04-04"
+  notes = "Current stable release."
+
+[[tool]]
+name = "kerbrute"
+aliases = []
+description = "Kerberos pre-auth username enumeration and password spraying"
+repo = "https://github.com/ropnop/kerbrute"
+homepage = "https://github.com/ropnop/kerbrute"
+category = "ad"
+install_method = "gobin"
+python_version = ""
+binary = "kerbrute"
+tags = ["kerberos", "user-enumeration", "password-spray", "active-directory"]
+requires_root = false
+notes = "go install github.com/ropnop/kerbrute@v1.0.3; gobin method pending."
+
+  [[tool.version]]
+  tag = "1.0.3"
+  commit = "v1.0.3"
+  tested = true
+  pip_spec = ""
+  date = "2019-12-15"
+  notes = "Current stable release; gobin method pending."
+
+[[tool]]
+name = "pretender"
+aliases = []
+description = "mDNS, LLMNR, and DHCPv6 spoofing to coerce and relay Windows auth"
+repo = "https://github.com/RedTeamPentesting/pretender"
+homepage = "https://github.com/RedTeamPentesting/pretender"
+category = "ad"
+install_method = "gobin"
+python_version = ""
+binary = "pretender"
+tags = ["llmnr", "mdns", "dhcpv6", "relay", "active-directory"]
+requires_root = true
+notes = "Needs raw socket access. go install github.com/RedTeamPentesting/pretender@v1.3.2; gobin method pending."
+
+  [[tool.version]]
+  tag = "1.3.2"
+  commit = "v1.3.2"
+  tested = true
+  pip_spec = ""
+  date = "2025-02-18"
+  notes = "Current stable release; gobin method pending."
+
+[[tool]]
+name = "smbmap"
+aliases = []
+description = "SMB share enumeration and exploitation"
+repo = "https://github.com/ShawnDEvans/smbmap"
+homepage = "https://github.com/ShawnDEvans/smbmap"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "smbmap"
+tags = ["smb", "shares", "enumeration", "active-directory"]
+requires_root = false
+notes = "Enumerates shares and permissions and can read, write, or execute over SMB; a HackTricks enumeration staple."
+
+  [[tool.version]]
+  tag = "1.10.8"
+  commit = ""
+  tested = true
+  pip_spec = "smbmap==1.10.8"
+  date = "2026-01-14"
+  notes = "Current stable release."
+
+[[tool]]
+name = "lsassy"
+aliases = []
+description = "Extract credentials from lsass remotely"
+repo = "https://github.com/Hackndo/lsassy"
+homepage = "https://github.com/Hackndo/lsassy"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "lsassy"
+tags = ["lsass", "credentials", "dump", "active-directory"]
+requires_root = false
+notes = "Remotely dumps and parses lsass to recover credentials; integrates with NetExec modules."
+
+  [[tool.version]]
+  tag = "3.1.16"
+  commit = ""
+  tested = true
+  pip_spec = "lsassy==3.1.16"
+  date = "2026-03-23"
+  notes = "Current stable release."
+
+[[tool]]
+name = "adidnsdump"
+aliases = []
+description = "Dump Active Directory-Integrated DNS over LDAP"
+repo = "https://github.com/dirkjanm/adidnsdump"
+homepage = "https://github.com/dirkjanm/adidnsdump"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "adidnsdump"
+tags = ["dns", "adidns", "recon", "active-directory"]
+requires_root = false
+notes = "Resolves ADIDNS records hidden from anonymous queries for any authenticated user."
+
+  [[tool.version]]
+  tag = "1.4.0"
+  commit = ""
+  tested = true
+  pip_spec = "adidnsdump==1.4.0"
+  date = "2025-04-04"
+  notes = "Current stable release."
+
+[[tool]]
+name = "donpapi"
+aliases = ["dpp"]
+description = "Mass-dump DPAPI-protected secrets across a domain"
+repo = "https://github.com/login-securite/DonPAPI"
+homepage = "https://github.com/login-securite/DonPAPI"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.9"
+binary = "donpapi"
+tags = ["dpapi", "credentials", "secrets", "active-directory"]
+requires_root = false
+notes = "Harvests browser credentials, vaults, and certificates protected by DPAPI across many hosts."
+
+  [[tool.version]]
+  tag = "2.0.1"
+  commit = ""
+  tested = true
+  pip_spec = "donpapi==2.0.1"
+  date = "2024-07-11"
+  notes = "Current stable release."
+
+[[tool]]
+name = "masky"
+aliases = []
+description = "Remote ADCS PKINIT credential extraction"
+repo = "https://github.com/Z4kSec/masky"
+homepage = "https://github.com/Z4kSec/masky"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "masky"
+tags = ["adcs", "pkinit", "credentials", "active-directory"]
+requires_root = false
+notes = "Uses an ADCS template to silently dump user certificates and hashes from remote hosts."
+
+  [[tool.version]]
+  tag = "0.2.1"
+  commit = ""
+  tested = true
+  pip_spec = "masky==0.2.1"
+  date = "2025-08-15"
+  notes = "Current stable release."
+
+[[tool]]
+name = "pywerview"
+aliases = []
+description = "Python port of PowerView for AD recon over LDAP"
+repo = "https://github.com/the-useless-one/pywerview"
+homepage = "https://github.com/the-useless-one/pywerview"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "pywerview"
+tags = ["ldap", "recon", "enumeration", "active-directory"]
+requires_root = false
+notes = "Enumerates users, groups, ACLs, sessions, and trusts from a non-domain-joined host."
+
+  [[tool.version]]
+  tag = "0.7.6"
+  commit = ""
+  tested = true
+  pip_spec = "pywerview==0.7.6"
+  date = "2026-03-05"
+  notes = "Current stable release."
+
+[[tool]]
+name = "dploot"
+aliases = []
+description = "Remote DPAPI looting (credentials, vaults, certificates)"
+repo = "https://github.com/zblurx/dploot"
+homepage = "https://github.com/zblurx/dploot"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.7"
+binary = "dploot"
+tags = ["dpapi", "credentials", "secrets", "active-directory"]
+requires_root = false
+notes = "Python rewrite of SharpDPAPI for remote DPAPI secret extraction."
+
+  [[tool.version]]
+  tag = "3.2.2"
+  commit = ""
+  tested = true
+  pip_spec = "dploot==3.2.2"
+  date = "2026-03-13"
+  notes = "Current stable release."
+
+[[tool]]
+name = "certsync"
+aliases = []
+description = "Dump NTDS hashes remotely via ADCS, without DRSUAPI"
+repo = "https://github.com/zblurx/certsync"
+homepage = "https://github.com/zblurx/certsync"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.7"
+binary = "certsync"
+tags = ["adcs", "ntds", "dcsync", "active-directory"]
+requires_root = false
+notes = "Recovers user hashes by issuing certificates and PKINIT-authenticating, bypassing DCSync detections."
+
+  [[tool.version]]
+  tag = "0.1.6"
+  commit = ""
+  tested = true
+  pip_spec = "certsync==0.1.6"
+  date = "2024-03-20"
+  notes = "Current stable release."

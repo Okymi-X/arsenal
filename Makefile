@@ -9,14 +9,22 @@ PREFIX      ?= /usr/local
 VERSION     := $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 LDFLAGS     := -s -w -X main.version=$(VERSION)
 
-.PHONY: all build test lint fmt install clean release tidy verify-registry
+.PHONY: all build test lint fmt install clean release tidy registry registry-check verify-registry
 
 all: build
 
 ## build: compile a static binary into bin/
-build:
+build: registry-check
 	mkdir -p $(BIN_DIR)
 	CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -o $(BIN_DIR)/$(BINARY) $(PKG)
+
+## registry: reassemble registry/registry.toml from registry/segments/*.toml
+registry:
+	go run ./tools/regbuild
+
+## registry-check: fail if registry.toml is out of date with its segments
+registry-check:
+	go run ./tools/regbuild -verify
 
 ## test: run the unit and integration tests
 test:

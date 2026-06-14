@@ -36,9 +36,13 @@ real filesystem where avoidable.
 
 ## Adding tools to the registry
 
-Edit `registry/registry.toml` and follow `docs/registry-format.md`. Only set
-`tested = true` on a version you have actually verified. Include the pinned
-`commit` for `gitpip` tools and a `pip_spec` for `pip` tools.
+Edit the per-category segment file under `registry/segments/` (not the generated
+`registry/registry.toml`), then run `make registry` to reassemble it and `make
+verify-registry` to confirm the entry resolves upstream. Follow
+`docs/registry-format.md`. Only set `tested = true` on a version you have
+actually verified. Include the pinned `commit` for `gitpip` tools and a
+`pip_spec` for `pip` tools. Precompiled upload-binaries go in
+`registry/segments/assets.toml` as `[[asset]]` blocks.
 
 ## Commits and versioning
 

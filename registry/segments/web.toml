@@ -1,0 +1,321 @@
+# arsenal registry segment: Web
+#
+# Authored here; assembled into registry/registry.toml by tools/regbuild.
+# Contains only [[tool]] blocks - no top-level keys.
+
+[[tool]]
+name = "ffuf"
+aliases = []
+description = "Fast web fuzzer written in Go"
+repo = "https://github.com/ffuf/ffuf"
+homepage = "https://github.com/ffuf/ffuf"
+category = "web"
+install_method = "gobin"
+python_version = ""
+binary = "ffuf"
+tags = ["fuzzing", "web", "content-discovery"]
+requires_root = false
+notes = "Installed via go install once the gobin method lands."
+
+  [[tool.version]]
+  tag = "2.1.0"
+  commit = "v2.1.0"
+  tested = true
+  pip_spec = ""
+  date = "2023-11-01"
+  notes = "Stable release; gobin method pending."
+
+[[tool]]
+name = "feroxbuster"
+aliases = ["ferox"]
+description = "Fast content discovery tool written in Rust"
+repo = "https://github.com/epi052/feroxbuster"
+homepage = "https://github.com/epi052/feroxbuster"
+category = "web"
+install_method = "cargo"
+python_version = ""
+binary = "feroxbuster"
+tags = ["fuzzing", "web", "content-discovery", "recursive"]
+requires_root = false
+notes = "Installed via cargo install once the cargo method lands."
+
+  [[tool.version]]
+  tag = "2.13.1"
+  commit = "v2.13.1"
+  tested = true
+  pip_spec = ""
+  date = "2025-09-01"
+  notes = "Current stable release; cargo method pending."
+
+  [[tool.version]]
+  tag = "2.10.4"
+  commit = "v2.10.4"
+  tested = true
+  pip_spec = ""
+  date = "2024-08-01"
+  notes = "Older stable release; cargo method pending."
+
+[[tool]]
+name = "gobuster"
+aliases = []
+description = "Directory, DNS, vhost, and S3 bucket brute-forcing in Go"
+repo = "https://github.com/OJ/gobuster"
+homepage = "https://github.com/OJ/gobuster"
+category = "web"
+install_method = "gobin"
+python_version = ""
+binary = "gobuster"
+tags = ["fuzzing", "content-discovery", "dns", "vhost", "web"]
+requires_root = false
+notes = "go install github.com/OJ/gobuster/v3@v3.8.2; gobin method pending."
+
+  [[tool.version]]
+  tag = "3.8.2"
+  commit = "v3.8.2"
+  tested = true
+  pip_spec = ""
+  date = "2025-09-04"
+  notes = "Current stable release; gobin method pending."
+
+[[tool]]
+name = "nuclei"
+aliases = []
+description = "Template-based vulnerability and misconfiguration scanner"
+repo = "https://github.com/projectdiscovery/nuclei"
+homepage = "https://nuclei.projectdiscovery.io"
+category = "web"
+install_method = "gobin"
+python_version = ""
+binary = "nuclei"
+tags = ["scanner", "cve", "templates", "web"]
+requires_root = false
+notes = "go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@v3.9.0; gobin method pending."
+
+  [[tool.version]]
+  tag = "3.9.0"
+  commit = "v3.9.0"
+  tested = true
+  pip_spec = ""
+  date = "2026-06-10"
+  notes = "Current stable release; gobin method pending."
+
+[[tool]]
+name = "sqlmap"
+aliases = []
+description = "Automatic SQL injection and database takeover"
+repo = "https://github.com/sqlmapproject/sqlmap"
+homepage = "https://sqlmap.org"
+category = "web"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "sqlmap"
+tags = ["sqli", "injection", "database", "web"]
+requires_root = false
+notes = "The standard SQL injection exploitation tool. The PyPI package is published by the upstream authors."
+
+  [[tool.version]]
+  tag = "1.10.6"
+  commit = ""
+  tested = true
+  pip_spec = "sqlmap==1.10.6"
+  date = "2026-06-02"
+  notes = "Current stable release."
+
+[[tool]]
+name = "dirsearch"
+aliases = []
+description = "Advanced web path brute-forcer"
+repo = "https://github.com/maurosoria/dirsearch"
+homepage = "https://github.com/maurosoria/dirsearch"
+category = "web"
+install_method = "pip"
+python_version = ">=3.7"
+binary = "dirsearch"
+tags = ["content-discovery", "fuzzing", "web"]
+requires_root = false
+notes = "Recursive web content discovery with rich extension and status filtering."
+
+  [[tool.version]]
+  tag = "0.4.3.post1"
+  commit = ""
+  tested = true
+  pip_spec = "dirsearch==0.4.3.post1"
+  date = "2022-10-03"
+  notes = "Current stable release."
+
+[[tool]]
+name = "flask-unsign"
+aliases = []
+description = "Crack and forge Flask session cookies"
+repo = "https://github.com/Paradoxis/Flask-Unsign"
+homepage = "https://github.com/Paradoxis/Flask-Unsign"
+category = "web"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "flask-unsign"
+tags = ["flask", "session", "cookie", "web"]
+requires_root = false
+notes = "Recovers a Flask secret key from a signed session against a wordlist, then forges arbitrary cookies. Install flask-unsign[wordlist] for the bundled list."
+
+  [[tool.version]]
+  tag = "1.2.1"
+  commit = ""
+  tested = true
+  pip_spec = "flask-unsign==1.2.1"
+  date = "2024-12-03"
+  notes = "Current stable release."
+
+[[tool]]
+name = "git-dumper"
+aliases = []
+description = "Dump a git repository exposed on a web server"
+repo = "https://github.com/arthaud/git-dumper"
+homepage = "https://github.com/arthaud/git-dumper"
+category = "web"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "git-dumper"
+tags = ["git", "source-disclosure", "recon", "web"]
+requires_root = false
+notes = "Reconstructs a source tree from an exposed .git directory, even without directory listing."
+
+  [[tool.version]]
+  tag = "1.0.9"
+  commit = ""
+  tested = true
+  pip_spec = "git-dumper==1.0.9"
+  date = "2026-02-28"
+  notes = "Current stable release."
+
+[[tool]]
+name = "wfuzz"
+aliases = []
+description = "Web application fuzzer"
+repo = "https://github.com/xmendez/wfuzz"
+homepage = "https://github.com/xmendez/wfuzz"
+category = "web"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "wfuzz"
+binaries = ["wfencode", "wfpayload"]
+tags = ["fuzzing", "web", "content-discovery", "brute-force"]
+requires_root = false
+notes = "Fuzzes any part of an HTTP request with rich payload and filter options."
+
+  [[tool.version]]
+  tag = "3.1.0"
+  commit = ""
+  tested = true
+  pip_spec = "wfuzz==3.1.0"
+  date = "2020-11-06"
+  notes = "Stable release."
+
+[[tool]]
+name = "arjun"
+aliases = []
+description = "HTTP parameter discovery"
+repo = "https://github.com/s0md3v/Arjun"
+homepage = "https://github.com/s0md3v/Arjun"
+category = "web"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "arjun"
+tags = ["parameters", "web", "content-discovery"]
+requires_root = false
+notes = "Finds hidden query, body, and JSON parameters by analysing response differences."
+
+  [[tool.version]]
+  tag = "2.2.7"
+  commit = ""
+  tested = true
+  pip_spec = "arjun==2.2.7"
+  date = "2024-11-03"
+  notes = "Current stable release."
+
+[[tool]]
+name = "wafw00f"
+aliases = []
+description = "Web application firewall fingerprinting"
+repo = "https://github.com/EnableSecurity/wafw00f"
+homepage = "https://github.com/EnableSecurity/wafw00f"
+category = "web"
+install_method = "pip"
+python_version = ">=3.10"
+binary = "wafw00f"
+tags = ["waf", "fingerprint", "web", "recon"]
+requires_root = false
+notes = "Identifies the WAF in front of a target before you tune payloads."
+
+  [[tool.version]]
+  tag = "2.4.2"
+  commit = ""
+  tested = true
+  pip_spec = "wafw00f==2.4.2"
+  date = "2026-01-26"
+  notes = "Current stable release."
+
+[[tool]]
+name = "sslyze"
+aliases = []
+description = "TLS/SSL configuration scanner"
+repo = "https://github.com/nabla-c0d3/sslyze"
+homepage = "https://github.com/nabla-c0d3/sslyze"
+category = "web"
+install_method = "pip"
+python_version = ">=3.10"
+binary = "sslyze"
+tags = ["tls", "ssl", "scanner", "web"]
+requires_root = false
+notes = "Fast, scriptable analysis of a server's TLS configuration and certificate."
+
+  [[tool.version]]
+  tag = "6.3.1"
+  commit = ""
+  tested = true
+  pip_spec = "sslyze==6.3.1"
+  date = "2026-03-29"
+  notes = "Current stable release."
+
+[[tool]]
+name = "httpx"
+aliases = ["httpx-pd"]
+description = "Fast and multi-purpose HTTP probing toolkit"
+repo = "https://github.com/projectdiscovery/httpx"
+homepage = "https://github.com/projectdiscovery/httpx"
+category = "web"
+install_method = "gobin"
+python_version = ""
+binary = "httpx"
+tags = ["http", "probing", "recon", "web"]
+requires_root = false
+notes = "ProjectDiscovery httpx (not the Python HTTP library). go install github.com/projectdiscovery/httpx/cmd/httpx@v1.9.0; gobin method pending."
+
+  [[tool.version]]
+  tag = "1.9.0"
+  commit = "v1.9.0"
+  tested = true
+  pip_spec = ""
+  date = "2026-03-09"
+  notes = "Current stable release; gobin method pending."
+
+[[tool]]
+name = "katana"
+aliases = []
+description = "Next-generation crawling and spidering framework"
+repo = "https://github.com/projectdiscovery/katana"
+homepage = "https://github.com/projectdiscovery/katana"
+category = "web"
+install_method = "gobin"
+python_version = ""
+binary = "katana"
+tags = ["crawler", "spider", "recon", "web"]
+requires_root = false
+notes = "go install github.com/projectdiscovery/katana/cmd/katana@v1.6.1; gobin method pending."
+
+  [[tool.version]]
+  tag = "1.6.1"
+  commit = "v1.6.1"
+  tested = true
+  pip_spec = ""
+  date = "2026-05-05"
+  notes = "Current stable release; gobin method pending."

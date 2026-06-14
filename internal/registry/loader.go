@@ -46,5 +46,23 @@ func validate(reg *Registry) error {
 			return fmt.Errorf("tool %q has no versions", t.Name)
 		}
 	}
+	return validateAssets(reg)
+}
+
+func validateAssets(reg *Registry) error {
+	seen := make(map[string]struct{}, len(reg.Assets))
+	for i := range reg.Assets {
+		a := &reg.Assets[i]
+		if a.Name == "" {
+			return fmt.Errorf("asset at index %d has no name", i)
+		}
+		if _, dup := seen[a.Name]; dup {
+			return fmt.Errorf("duplicate asset name %q", a.Name)
+		}
+		seen[a.Name] = struct{}{}
+		if a.Source != AssetGitHubRelease && a.Source != AssetGitHubRaw {
+			return fmt.Errorf("asset %q has invalid source %q", a.Name, a.Source)
+		}
+	}
 	return nil
 }

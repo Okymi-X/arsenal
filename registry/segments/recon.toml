@@ -1,0 +1,180 @@
+# arsenal registry segment: Recon
+#
+# Authored here; assembled into registry/registry.toml by tools/regbuild.
+# Contains only [[tool]] blocks - no top-level keys.
+
+[[tool]]
+name = "rustscan"
+aliases = []
+description = "Fast port scanner that pipes open ports into nmap"
+repo = "https://github.com/RustScan/RustScan"
+homepage = "https://github.com/RustScan/RustScan"
+category = "recon"
+install_method = "cargo"
+python_version = ""
+binary = "rustscan"
+tags = ["port-scan", "recon", "nmap"]
+requires_root = false
+notes = "cargo install rustscan; cargo method pending."
+
+  [[tool.version]]
+  tag = "2.4.1"
+  commit = "2.4.1"
+  tested = true
+  pip_spec = ""
+  date = "2025-02-23"
+  notes = "Current stable release; cargo method pending."
+
+[[tool]]
+name = "autorecon"
+aliases = []
+description = "Multi-threaded network reconnaissance orchestrator"
+repo = "https://github.com/Tib3rius/AutoRecon"
+homepage = "https://github.com/Tib3rius/AutoRecon"
+category = "recon"
+install_method = "pip"
+python_version = ">=3.12"
+binary = "autorecon"
+tags = ["recon", "enumeration", "nmap", "scanning"]
+requires_root = false
+notes = "Drives nmap and service-specific tools to enumerate a host end to end; an OSCP staple."
+
+  [[tool.version]]
+  tag = "0.1.3"
+  commit = ""
+  tested = true
+  pip_spec = "autorecon==0.1.3"
+  date = "2026-04-06"
+  notes = "Current stable release."
+
+[[tool]]
+name = "dnsrecon"
+aliases = []
+description = "DNS enumeration and zone-transfer tool"
+repo = "https://github.com/darkoperator/dnsrecon"
+homepage = "https://github.com/darkoperator/dnsrecon"
+category = "recon"
+install_method = "pip"
+python_version = ">=3.7"
+binary = "dnsrecon"
+tags = ["dns", "recon", "enumeration", "zone-transfer"]
+requires_root = false
+notes = "Enumerates records, attempts zone transfers, and brute-forces subdomains."
+
+  [[tool.version]]
+  tag = "0.10.1"
+  commit = ""
+  tested = true
+  pip_spec = "dnsrecon==0.10.1"
+  date = "2021-06-07"
+  notes = "Current stable release."
+
+[[tool]]
+name = "sublist3r"
+aliases = []
+description = "Subdomain enumeration via search engines and OSINT"
+repo = "https://github.com/aboul3la/Sublist3r"
+homepage = "https://github.com/aboul3la/Sublist3r"
+category = "recon"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "sublist3r"
+tags = ["subdomain", "osint", "recon", "web"]
+requires_root = false
+notes = "Aggregates subdomains from public sources; pair with active resolution."
+
+  [[tool.version]]
+  tag = "1.0"
+  commit = ""
+  tested = true
+  pip_spec = "sublist3r==1.0"
+  date = "2020-10-21"
+  notes = "Stable release."
+
+[[tool]]
+name = "subfinder"
+aliases = []
+description = "Passive subdomain discovery"
+repo = "https://github.com/projectdiscovery/subfinder"
+homepage = "https://github.com/projectdiscovery/subfinder"
+category = "recon"
+install_method = "gobin"
+python_version = ""
+binary = "subfinder"
+tags = ["subdomain", "recon", "osint", "web"]
+requires_root = false
+notes = "go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@v2.14.0; gobin method pending."
+
+  [[tool.version]]
+  tag = "2.14.0"
+  commit = "v2.14.0"
+  tested = true
+  pip_spec = ""
+  date = "2026-04-27"
+  notes = "Current stable release; gobin method pending."
+
+[[tool]]
+name = "naabu"
+aliases = []
+description = "Fast SYN/CONNECT port scanner"
+repo = "https://github.com/projectdiscovery/naabu"
+homepage = "https://github.com/projectdiscovery/naabu"
+category = "recon"
+install_method = "gobin"
+python_version = ""
+binary = "naabu"
+tags = ["port-scan", "recon", "scanning"]
+requires_root = false
+notes = "Needs libpcap for SYN scans. go install github.com/projectdiscovery/naabu/v2/cmd/naabu@v2.6.1; gobin method pending."
+
+  [[tool.version]]
+  tag = "2.6.1"
+  commit = "v2.6.1"
+  tested = true
+  pip_spec = ""
+  date = "2026-05-05"
+  notes = "Current stable release; gobin method pending."
+
+[[tool]]
+name = "waybackurls"
+aliases = []
+description = "Fetch known URLs for a domain from the Wayback Machine"
+repo = "https://github.com/tomnomnom/waybackurls"
+homepage = "https://github.com/tomnomnom/waybackurls"
+category = "recon"
+install_method = "gobin"
+python_version = ""
+binary = "waybackurls"
+tags = ["osint", "urls", "recon", "web"]
+requires_root = false
+notes = "go install github.com/tomnomnom/waybackurls@v0.1.0; gobin method pending."
+
+  [[tool.version]]
+  tag = "0.1.0"
+  commit = "v0.1.0"
+  tested = true
+  pip_spec = ""
+  date = "2022-04-05"
+  notes = "Stable release; gobin method pending."
+
+[[tool]]
+name = "gau"
+aliases = ["getallurls"]
+description = "Fetch known URLs from AlienVault, Wayback, and Common Crawl"
+repo = "https://github.com/lc/gau"
+homepage = "https://github.com/lc/gau"
+category = "recon"
+install_method = "gobin"
+python_version = ""
+binary = "gau"
+tags = ["osint", "urls", "recon", "web"]
+requires_root = false
+notes = "go install github.com/lc/gau/v2/cmd/gau@v2.2.4; gobin method pending."
+
+  [[tool.version]]
+  tag = "2.2.4"
+  commit = "v2.2.4"
+  tested = true
+  pip_spec = ""
+  date = "2024-10-28"
+  notes = "Current stable release; gobin method pending."

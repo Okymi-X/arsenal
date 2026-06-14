@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Modular registry authoring. The catalog is now split into per-category segment
+  files under `registry/segments/` (`ad`, `web`, `recon`, `password`, `misc`,
+  `assets`, plus `_meta`). `tools/regbuild` assembles them into the canonical
+  `registry/registry.toml` (`make registry`); CI fails if that file is out of
+  date with its segments. The single assembled file is still what gets embedded,
+  synced, and verified.
+- A large, upstream-verified batch of catalog entries:
+  - AD and credentials (pip): `smbmap`, `lsassy`, `pypykatz`, `adidnsdump`,
+    `donpapi`, `masky`, `pywerview`, `dploot`, `certsync`.
+  - Web (pip): `sqlmap`, `dirsearch`, `wfuzz`, `arjun`, `wafw00f`, `sslyze`.
+  - Recon (pip): `autorecon`, `dnsrecon`, `sublist3r`.
+  - Password (pip): `hashid`. Post-exploitation (pip): `pwncat-cs`.
+  - Go tools (gobin, behind the pending method): `httpx`, `subfinder`, `naabu`,
+    `katana`, `waybackurls`, `gau`.
+  - Upload assets (`fetch`): `mimikatz`, `sharphound`, `nanodump`,
+    `printspoofer`, `godpotato`, `juicypotatong`, `lse`.
+- Asset validation in the registry loader (name and source are checked).
+
+### Changed
+
+- `fetch` asset matching skips checksum and signature siblings (`.sha256`,
+  `.asc`, ...) and prefers the shortest match, so a plain release file wins over
+  a longer `+debug` variant. Single-file `github-raw` assets (such as `lse`) now
+  fetch without naming a binary, via the asset's default pattern.
+
 ## [0.2.0] - 2026-06-14
 
 ### Added

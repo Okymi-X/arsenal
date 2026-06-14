@@ -1,0 +1,5 @@
+# Registry metadata assembled into registry.toml by tools/regbuild.
+# Bump `updated` when you change the catalog.
+
+version = "1"
+updated = "2026-06-14"

@@ -1,0 +1,115 @@
+# arsenal registry segment: Misc / pivoting
+#
+# Authored here; assembled into registry/registry.toml by tools/regbuild.
+# Contains only [[tool]] blocks - no top-level keys.
+
+[[tool]]
+name = "updog"
+aliases = []
+description = "Simple HTTP/HTTPS file server for transfers"
+repo = "https://github.com/sc0tfree/updog"
+homepage = "https://github.com/sc0tfree/updog"
+category = "misc"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "updog"
+tags = ["file-transfer", "http", "exfil"]
+requires_root = false
+notes = "Handy for quick file transfers during post-exploitation."
+
+  [[tool.version]]
+  tag = "1.4"
+  commit = ""
+  tested = true
+  pip_spec = "updog==1.4"
+  date = "2020-03-01"
+  notes = "Stable release."
+
+[[tool]]
+name = "sshuttle"
+aliases = []
+description = "Transparent proxy VPN over SSH for pivoting"
+repo = "https://github.com/sshuttle/sshuttle"
+homepage = "https://sshuttle.readthedocs.io"
+category = "misc"
+install_method = "pip"
+python_version = ">=3.9"
+binary = "sshuttle"
+tags = ["pivot", "tunnel", "vpn", "ssh"]
+requires_root = false
+notes = "Routes target subnets through an SSH session without admin on the remote; a quick pivot into internal networks."
+
+  [[tool.version]]
+  tag = "1.3.2"
+  commit = ""
+  tested = true
+  pip_spec = "sshuttle==1.3.2"
+  date = "2025-08-10"
+  notes = "Current stable release."
+
+[[tool]]
+name = "chisel"
+aliases = []
+description = "Fast TCP/UDP tunnel over HTTP for pivoting"
+repo = "https://github.com/jpillora/chisel"
+homepage = "https://github.com/jpillora/chisel"
+category = "misc"
+install_method = "gobin"
+python_version = ""
+binary = "chisel"
+tags = ["pivot", "tunnel", "socks", "port-forward"]
+requires_root = false
+notes = "One binary acts as both server and client. go install github.com/jpillora/chisel@v1.11.5; gobin method pending."
+
+  [[tool.version]]
+  tag = "1.11.5"
+  commit = "v1.11.5"
+  tested = true
+  pip_spec = ""
+  date = "2026-03-09"
+  notes = "Current stable release; gobin method pending."
+
+[[tool]]
+name = "ligolo-ng"
+aliases = ["ligolo"]
+description = "Tunneling and pivoting through a TUN interface"
+repo = "https://github.com/nicocha30/ligolo-ng"
+homepage = "https://github.com/nicocha30/ligolo-ng"
+category = "misc"
+install_method = "gobin"
+python_version = ""
+binary = "ligolo-proxy"
+binaries = ["ligolo-agent"]
+tags = ["pivot", "tunnel", "tun", "socks"]
+requires_root = true
+notes = "Upstream ships separate proxy and agent binaries (go install github.com/nicocha30/ligolo-ng/cmd/proxy@v0.8.3 and .../cmd/agent@v0.8.3); the proxy needs a TUN interface. gobin method pending."
+
+  [[tool.version]]
+  tag = "0.8.3"
+  commit = "v0.8.3"
+  tested = true
+  pip_spec = ""
+  date = "2026-02-15"
+  notes = "Current stable release; gobin method pending."
+
+[[tool]]
+name = "pwncat-cs"
+aliases = ["pwncat"]
+description = "Post-exploitation reverse and bind shell platform"
+repo = "https://github.com/calebstewart/pwncat"
+homepage = "https://github.com/calebstewart/pwncat"
+category = "misc"
+install_method = "pip"
+python_version = ">=3.9"
+binary = "pwncat-cs"
+tags = ["shell", "post-exploitation", "persistence", "privesc"]
+requires_root = false
+notes = "Upgrades a raw shell into a managed session with privesc enumeration and file transfer."
+
+  [[tool.version]]
+  tag = "0.5.4"
+  commit = ""
+  tested = true
+  pip_spec = "pwncat-cs==0.5.4"
+  date = "2022-01-28"
+  notes = "Current stable release."

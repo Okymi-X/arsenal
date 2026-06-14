@@ -1,0 +1,134 @@
+# arsenal registry segment: Fetchable assets
+#
+# Authored here; assembled into registry/registry.toml by tools/regbuild.
+# Contains only [[asset]] blocks - no top-level keys.
+
+[[asset]]
+name = "sharpcollection"
+aliases = ["sharp"]
+description = "Precompiled .NET offensive binaries (Rubeus, Certify, Seatbelt, ...)"
+repo = "https://github.com/Flangvik/SharpCollection"
+category = "ad"
+source = "github-raw"
+branch = "master"
+dir = "NetFramework_4.7_x64"
+builds = [
+  "NetFramework_4.0_Any", "NetFramework_4.0_x64", "NetFramework_4.0_x86",
+  "NetFramework_4.5_Any", "NetFramework_4.5_x64", "NetFramework_4.5_x86",
+  "NetFramework_4.7_Any", "NetFramework_4.7_x64", "NetFramework_4.7_x86",
+]
+tags = ["dotnet", "csharp", "rubeus", "certify", "upload"]
+notes = "Pulls the latest compiled binary from master. 'arsenal fetch sharpcollection --list' shows binaries; --build picks a .NET target (default NetFramework_4.7_x64)."
+
+[[asset]]
+name = "winpeas"
+aliases = []
+description = "Windows local privilege escalation enumeration binary"
+repo = "https://github.com/peass-ng/PEASS-ng"
+category = "recon"
+source = "github-release"
+pattern = "winPEASx64.exe"
+tags = ["windows", "privesc", "enumeration", "upload"]
+notes = "Defaults to winPEASx64.exe; pass another asset as the binary argument, e.g. 'arsenal fetch winpeas winPEASany.exe'."
+
+[[asset]]
+name = "linpeas"
+aliases = []
+description = "Linux local privilege escalation enumeration script"
+repo = "https://github.com/peass-ng/PEASS-ng"
+category = "recon"
+source = "github-release"
+pattern = "linpeas.sh"
+tags = ["linux", "privesc", "enumeration", "upload"]
+notes = "Single self-contained script; drop on the target and run."
+
+[[asset]]
+name = "pspy"
+aliases = []
+description = "Snoop on Linux processes and cron without root"
+repo = "https://github.com/DominicBreuker/pspy"
+category = "recon"
+source = "github-release"
+pattern = "pspy64"
+tags = ["linux", "privesc", "process-monitor", "upload"]
+notes = "Defaults to pspy64; pass pspy32, pspy64s, or pspy32s as the binary argument for other variants."
+
+[[asset]]
+name = "mimikatz"
+aliases = ["mimi"]
+description = "Windows credential extraction toolkit"
+repo = "https://github.com/gentilkiwi/mimikatz"
+category = "ad"
+source = "github-release"
+pattern = "mimikatz_trunk.zip"
+tags = ["credentials", "lsass", "dpapi", "kerberos", "upload"]
+notes = "Fetches the release archive (mimikatz_trunk.zip); unzip on the target. Expect AV detection."
+
+[[asset]]
+name = "sharphound"
+aliases = ["sh"]
+description = "BloodHound CE Active Directory data collector"
+repo = "https://github.com/SpecterOps/SharpHound"
+category = "ad"
+source = "github-release"
+pattern = "windows_x86.zip"
+tags = ["bloodhound", "collector", "active-directory", "recon", "upload"]
+notes = "Fetches the latest collector zip (matches the BloodHound CE schema); the loose match skips the +debug and .sha256 variants."
+
+[[asset]]
+name = "nanodump"
+aliases = []
+description = "Flexible lsass dumper that evades common detections"
+repo = "https://github.com/fortra/nanodump"
+category = "ad"
+source = "github-raw"
+branch = "main"
+dir = "dist"
+pattern = "nanodump.x64.exe"
+tags = ["lsass", "credentials", "dump", "upload"]
+notes = "Pulls prebuilt binaries from the repo dist/ folder. Defaults to nanodump.x64.exe; --list shows ppl and x86 variants."
+
+[[asset]]
+name = "printspoofer"
+aliases = []
+description = "SeImpersonate-to-SYSTEM exploit (PrinterBug/named pipe)"
+repo = "https://github.com/itm4n/PrintSpoofer"
+category = "exploit"
+source = "github-release"
+pattern = "PrintSpoofer64.exe"
+tags = ["privesc", "windows", "potato", "seimpersonate", "upload"]
+notes = "Defaults to PrintSpoofer64.exe; pass PrintSpoofer32.exe for 32-bit targets."
+
+[[asset]]
+name = "godpotato"
+aliases = []
+description = "SeImpersonate-to-SYSTEM exploit for modern Windows"
+repo = "https://github.com/BeichenDream/GodPotato"
+category = "exploit"
+source = "github-release"
+pattern = "GodPotato-NET4.exe"
+tags = ["privesc", "windows", "potato", "seimpersonate", "upload"]
+notes = "Defaults to the .NET 4 build; pass GodPotato-NET2.exe or GodPotato-NET35.exe to match the target runtime."
+
+[[asset]]
+name = "juicypotatong"
+aliases = ["jpng"]
+description = "Updated JuicyPotato SeImpersonate privesc"
+repo = "https://github.com/antonioCoco/JuicyPotatoNG"
+category = "exploit"
+source = "github-release"
+pattern = "JuicyPotatoNG.zip"
+tags = ["privesc", "windows", "potato", "seimpersonate", "upload"]
+notes = "Fetches the release archive; unzip on the target."
+
+[[asset]]
+name = "lse"
+aliases = ["linux-smart-enumeration"]
+description = "Linux privilege escalation enumeration script with levels"
+repo = "https://github.com/diego-treitos/linux-smart-enumeration"
+category = "recon"
+source = "github-raw"
+branch = "master"
+pattern = "lse.sh"
+tags = ["linux", "privesc", "enumeration", "upload"]
+notes = "Single script; tunable verbosity via -l. Quieter and more targeted than the PEAS scripts."

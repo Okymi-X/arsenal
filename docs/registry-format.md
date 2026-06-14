@@ -1,9 +1,34 @@
 # Registry format
 
-The registry is a single TOML file. It is the canonical, in-repo catalog of
-tested, known-good tool versions. It is embedded in the binary (so arsenal works
-offline) and written to the user's data directory on first run. `arsenal sync`
-refreshes it from the configured upstream URL.
+The registry is the canonical, in-repo catalog of tested, known-good tool
+versions. It is embedded in the binary (so arsenal works offline) and written to
+the user's data directory on first run. `arsenal sync` refreshes it from the
+configured upstream URL.
+
+## Authoring: segments
+
+To keep it maintainable, the catalog is authored as small per-category segment
+files under `registry/segments/` (`ad.toml`, `web.toml`, `recon.toml`,
+`password.toml`, `misc.toml`, `assets.toml`), plus `_meta.toml` holding the
+`version` and `updated` keys. Each segment contains only `[[tool]]` (or
+`[[asset]]`) blocks - no top-level keys.
+
+`tools/regbuild` assembles them, in a fixed category order, into the single
+canonical `registry/registry.toml`, which is what gets embedded, synced, and
+verified. That file is generated - do not edit it by hand.
+
+To change the catalog:
+
+```
+# 1. edit the relevant registry/segments/*.toml (and bump _meta.toml: updated)
+# 2. regenerate the canonical file
+make registry
+# 3. verify every entry still resolves upstream
+make verify-registry
+```
+
+CI fails if `registry.toml` is out of date with its segments (`make
+registry-check`, which runs `regbuild -verify`).
 
 ## Top level
 

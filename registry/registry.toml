@@ -1,15 +1,16 @@
-# arsenal curated registry
+# arsenal curated registry - GENERATED FILE, DO NOT EDIT.
 #
-# This file is the canonical, in-repo catalog of tested, known-good versions of
-# offensive-security tooling. It is embedded in the binary and synced to the
-# user's data directory. See docs/registry-format.md for the full schema.
-#
-# Every version in this file is verified against its official source (PyPI for
-# pip tools, the upstream Git repository for gitpip/gobin/cargo tools) by the
-# registry-check CI workflow. Do not add a version that does not exist upstream.
+# Assembled from registry/segments/*.toml by tools/regbuild (run `make registry`).
+# Edit the segment files, not this file. Every version and asset here is
+# verified against its official source by the registry-check CI workflow.
 
 version = "1"
 updated = "2026-06-14"
+
+# arsenal registry segment: Active Directory
+#
+# Authored here; assembled into registry/registry.toml by tools/regbuild.
+# Contains only [[tool]] blocks - no top-level keys.
 
 [[tool]]
 name = "netexec"
@@ -308,6 +309,187 @@ notes = "Needs raw socket access. go install github.com/RedTeamPentesting/preten
   notes = "Current stable release; gobin method pending."
 
 [[tool]]
+name = "smbmap"
+aliases = []
+description = "SMB share enumeration and exploitation"
+repo = "https://github.com/ShawnDEvans/smbmap"
+homepage = "https://github.com/ShawnDEvans/smbmap"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "smbmap"
+tags = ["smb", "shares", "enumeration", "active-directory"]
+requires_root = false
+notes = "Enumerates shares and permissions and can read, write, or execute over SMB; a HackTricks enumeration staple."
+
+  [[tool.version]]
+  tag = "1.10.8"
+  commit = ""
+  tested = true
+  pip_spec = "smbmap==1.10.8"
+  date = "2026-01-14"
+  notes = "Current stable release."
+
+[[tool]]
+name = "lsassy"
+aliases = []
+description = "Extract credentials from lsass remotely"
+repo = "https://github.com/Hackndo/lsassy"
+homepage = "https://github.com/Hackndo/lsassy"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "lsassy"
+tags = ["lsass", "credentials", "dump", "active-directory"]
+requires_root = false
+notes = "Remotely dumps and parses lsass to recover credentials; integrates with NetExec modules."
+
+  [[tool.version]]
+  tag = "3.1.16"
+  commit = ""
+  tested = true
+  pip_spec = "lsassy==3.1.16"
+  date = "2026-03-23"
+  notes = "Current stable release."
+
+[[tool]]
+name = "adidnsdump"
+aliases = []
+description = "Dump Active Directory-Integrated DNS over LDAP"
+repo = "https://github.com/dirkjanm/adidnsdump"
+homepage = "https://github.com/dirkjanm/adidnsdump"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "adidnsdump"
+tags = ["dns", "adidns", "recon", "active-directory"]
+requires_root = false
+notes = "Resolves ADIDNS records hidden from anonymous queries for any authenticated user."
+
+  [[tool.version]]
+  tag = "1.4.0"
+  commit = ""
+  tested = true
+  pip_spec = "adidnsdump==1.4.0"
+  date = "2025-04-04"
+  notes = "Current stable release."
+
+[[tool]]
+name = "donpapi"
+aliases = ["dpp"]
+description = "Mass-dump DPAPI-protected secrets across a domain"
+repo = "https://github.com/login-securite/DonPAPI"
+homepage = "https://github.com/login-securite/DonPAPI"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.9"
+binary = "donpapi"
+tags = ["dpapi", "credentials", "secrets", "active-directory"]
+requires_root = false
+notes = "Harvests browser credentials, vaults, and certificates protected by DPAPI across many hosts."
+
+  [[tool.version]]
+  tag = "2.0.1"
+  commit = ""
+  tested = true
+  pip_spec = "donpapi==2.0.1"
+  date = "2024-07-11"
+  notes = "Current stable release."
+
+[[tool]]
+name = "masky"
+aliases = []
+description = "Remote ADCS PKINIT credential extraction"
+repo = "https://github.com/Z4kSec/masky"
+homepage = "https://github.com/Z4kSec/masky"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "masky"
+tags = ["adcs", "pkinit", "credentials", "active-directory"]
+requires_root = false
+notes = "Uses an ADCS template to silently dump user certificates and hashes from remote hosts."
+
+  [[tool.version]]
+  tag = "0.2.1"
+  commit = ""
+  tested = true
+  pip_spec = "masky==0.2.1"
+  date = "2025-08-15"
+  notes = "Current stable release."
+
+[[tool]]
+name = "pywerview"
+aliases = []
+description = "Python port of PowerView for AD recon over LDAP"
+repo = "https://github.com/the-useless-one/pywerview"
+homepage = "https://github.com/the-useless-one/pywerview"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "pywerview"
+tags = ["ldap", "recon", "enumeration", "active-directory"]
+requires_root = false
+notes = "Enumerates users, groups, ACLs, sessions, and trusts from a non-domain-joined host."
+
+  [[tool.version]]
+  tag = "0.7.6"
+  commit = ""
+  tested = true
+  pip_spec = "pywerview==0.7.6"
+  date = "2026-03-05"
+  notes = "Current stable release."
+
+[[tool]]
+name = "dploot"
+aliases = []
+description = "Remote DPAPI looting (credentials, vaults, certificates)"
+repo = "https://github.com/zblurx/dploot"
+homepage = "https://github.com/zblurx/dploot"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.7"
+binary = "dploot"
+tags = ["dpapi", "credentials", "secrets", "active-directory"]
+requires_root = false
+notes = "Python rewrite of SharpDPAPI for remote DPAPI secret extraction."
+
+  [[tool.version]]
+  tag = "3.2.2"
+  commit = ""
+  tested = true
+  pip_spec = "dploot==3.2.2"
+  date = "2026-03-13"
+  notes = "Current stable release."
+
+[[tool]]
+name = "certsync"
+aliases = []
+description = "Dump NTDS hashes remotely via ADCS, without DRSUAPI"
+repo = "https://github.com/zblurx/certsync"
+homepage = "https://github.com/zblurx/certsync"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.7"
+binary = "certsync"
+tags = ["adcs", "ntds", "dcsync", "active-directory"]
+requires_root = false
+notes = "Recovers user hashes by issuing certificates and PKINIT-authenticating, bypassing DCSync detections."
+
+  [[tool.version]]
+  tag = "0.1.6"
+  commit = ""
+  tested = true
+  pip_spec = "certsync==0.1.6"
+  date = "2024-03-20"
+  notes = "Current stable release."
+
+# arsenal registry segment: Web
+#
+# Authored here; assembled into registry/registry.toml by tools/regbuild.
+# Contains only [[tool]] blocks - no top-level keys.
+
+[[tool]]
 name = "ffuf"
 aliases = []
 description = "Fast web fuzzer written in Go"
@@ -404,6 +586,50 @@ notes = "go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@v3.9.0; gob
   notes = "Current stable release; gobin method pending."
 
 [[tool]]
+name = "sqlmap"
+aliases = []
+description = "Automatic SQL injection and database takeover"
+repo = "https://github.com/sqlmapproject/sqlmap"
+homepage = "https://sqlmap.org"
+category = "web"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "sqlmap"
+tags = ["sqli", "injection", "database", "web"]
+requires_root = false
+notes = "The standard SQL injection exploitation tool. The PyPI package is published by the upstream authors."
+
+  [[tool.version]]
+  tag = "1.10.6"
+  commit = ""
+  tested = true
+  pip_spec = "sqlmap==1.10.6"
+  date = "2026-06-02"
+  notes = "Current stable release."
+
+[[tool]]
+name = "dirsearch"
+aliases = []
+description = "Advanced web path brute-forcer"
+repo = "https://github.com/maurosoria/dirsearch"
+homepage = "https://github.com/maurosoria/dirsearch"
+category = "web"
+install_method = "pip"
+python_version = ">=3.7"
+binary = "dirsearch"
+tags = ["content-discovery", "fuzzing", "web"]
+requires_root = false
+notes = "Recursive web content discovery with rich extension and status filtering."
+
+  [[tool.version]]
+  tag = "0.4.3.post1"
+  commit = ""
+  tested = true
+  pip_spec = "dirsearch==0.4.3.post1"
+  date = "2022-10-03"
+  notes = "Current stable release."
+
+[[tool]]
 name = "flask-unsign"
 aliases = []
 description = "Crack and forge Flask session cookies"
@@ -446,6 +672,374 @@ notes = "Reconstructs a source tree from an exposed .git directory, even without
   pip_spec = "git-dumper==1.0.9"
   date = "2026-02-28"
   notes = "Current stable release."
+
+[[tool]]
+name = "wfuzz"
+aliases = []
+description = "Web application fuzzer"
+repo = "https://github.com/xmendez/wfuzz"
+homepage = "https://github.com/xmendez/wfuzz"
+category = "web"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "wfuzz"
+binaries = ["wfencode", "wfpayload"]
+tags = ["fuzzing", "web", "content-discovery", "brute-force"]
+requires_root = false
+notes = "Fuzzes any part of an HTTP request with rich payload and filter options."
+
+  [[tool.version]]
+  tag = "3.1.0"
+  commit = ""
+  tested = true
+  pip_spec = "wfuzz==3.1.0"
+  date = "2020-11-06"
+  notes = "Stable release."
+
+[[tool]]
+name = "arjun"
+aliases = []
+description = "HTTP parameter discovery"
+repo = "https://github.com/s0md3v/Arjun"
+homepage = "https://github.com/s0md3v/Arjun"
+category = "web"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "arjun"
+tags = ["parameters", "web", "content-discovery"]
+requires_root = false
+notes = "Finds hidden query, body, and JSON parameters by analysing response differences."
+
+  [[tool.version]]
+  tag = "2.2.7"
+  commit = ""
+  tested = true
+  pip_spec = "arjun==2.2.7"
+  date = "2024-11-03"
+  notes = "Current stable release."
+
+[[tool]]
+name = "wafw00f"
+aliases = []
+description = "Web application firewall fingerprinting"
+repo = "https://github.com/EnableSecurity/wafw00f"
+homepage = "https://github.com/EnableSecurity/wafw00f"
+category = "web"
+install_method = "pip"
+python_version = ">=3.10"
+binary = "wafw00f"
+tags = ["waf", "fingerprint", "web", "recon"]
+requires_root = false
+notes = "Identifies the WAF in front of a target before you tune payloads."
+
+  [[tool.version]]
+  tag = "2.4.2"
+  commit = ""
+  tested = true
+  pip_spec = "wafw00f==2.4.2"
+  date = "2026-01-26"
+  notes = "Current stable release."
+
+[[tool]]
+name = "sslyze"
+aliases = []
+description = "TLS/SSL configuration scanner"
+repo = "https://github.com/nabla-c0d3/sslyze"
+homepage = "https://github.com/nabla-c0d3/sslyze"
+category = "web"
+install_method = "pip"
+python_version = ">=3.10"
+binary = "sslyze"
+tags = ["tls", "ssl", "scanner", "web"]
+requires_root = false
+notes = "Fast, scriptable analysis of a server's TLS configuration and certificate."
+
+  [[tool.version]]
+  tag = "6.3.1"
+  commit = ""
+  tested = true
+  pip_spec = "sslyze==6.3.1"
+  date = "2026-03-29"
+  notes = "Current stable release."
+
+[[tool]]
+name = "httpx"
+aliases = ["httpx-pd"]
+description = "Fast and multi-purpose HTTP probing toolkit"
+repo = "https://github.com/projectdiscovery/httpx"
+homepage = "https://github.com/projectdiscovery/httpx"
+category = "web"
+install_method = "gobin"
+python_version = ""
+binary = "httpx"
+tags = ["http", "probing", "recon", "web"]
+requires_root = false
+notes = "ProjectDiscovery httpx (not the Python HTTP library). go install github.com/projectdiscovery/httpx/cmd/httpx@v1.9.0; gobin method pending."
+
+  [[tool.version]]
+  tag = "1.9.0"
+  commit = "v1.9.0"
+  tested = true
+  pip_spec = ""
+  date = "2026-03-09"
+  notes = "Current stable release; gobin method pending."
+
+[[tool]]
+name = "katana"
+aliases = []
+description = "Next-generation crawling and spidering framework"
+repo = "https://github.com/projectdiscovery/katana"
+homepage = "https://github.com/projectdiscovery/katana"
+category = "web"
+install_method = "gobin"
+python_version = ""
+binary = "katana"
+tags = ["crawler", "spider", "recon", "web"]
+requires_root = false
+notes = "go install github.com/projectdiscovery/katana/cmd/katana@v1.6.1; gobin method pending."
+
+  [[tool.version]]
+  tag = "1.6.1"
+  commit = "v1.6.1"
+  tested = true
+  pip_spec = ""
+  date = "2026-05-05"
+  notes = "Current stable release; gobin method pending."
+
+# arsenal registry segment: Recon
+#
+# Authored here; assembled into registry/registry.toml by tools/regbuild.
+# Contains only [[tool]] blocks - no top-level keys.
+
+[[tool]]
+name = "rustscan"
+aliases = []
+description = "Fast port scanner that pipes open ports into nmap"
+repo = "https://github.com/RustScan/RustScan"
+homepage = "https://github.com/RustScan/RustScan"
+category = "recon"
+install_method = "cargo"
+python_version = ""
+binary = "rustscan"
+tags = ["port-scan", "recon", "nmap"]
+requires_root = false
+notes = "cargo install rustscan; cargo method pending."
+
+  [[tool.version]]
+  tag = "2.4.1"
+  commit = "2.4.1"
+  tested = true
+  pip_spec = ""
+  date = "2025-02-23"
+  notes = "Current stable release; cargo method pending."
+
+[[tool]]
+name = "autorecon"
+aliases = []
+description = "Multi-threaded network reconnaissance orchestrator"
+repo = "https://github.com/Tib3rius/AutoRecon"
+homepage = "https://github.com/Tib3rius/AutoRecon"
+category = "recon"
+install_method = "pip"
+python_version = ">=3.12"
+binary = "autorecon"
+tags = ["recon", "enumeration", "nmap", "scanning"]
+requires_root = false
+notes = "Drives nmap and service-specific tools to enumerate a host end to end; an OSCP staple."
+
+  [[tool.version]]
+  tag = "0.1.3"
+  commit = ""
+  tested = true
+  pip_spec = "autorecon==0.1.3"
+  date = "2026-04-06"
+  notes = "Current stable release."
+
+[[tool]]
+name = "dnsrecon"
+aliases = []
+description = "DNS enumeration and zone-transfer tool"
+repo = "https://github.com/darkoperator/dnsrecon"
+homepage = "https://github.com/darkoperator/dnsrecon"
+category = "recon"
+install_method = "pip"
+python_version = ">=3.7"
+binary = "dnsrecon"
+tags = ["dns", "recon", "enumeration", "zone-transfer"]
+requires_root = false
+notes = "Enumerates records, attempts zone transfers, and brute-forces subdomains."
+
+  [[tool.version]]
+  tag = "0.10.1"
+  commit = ""
+  tested = true
+  pip_spec = "dnsrecon==0.10.1"
+  date = "2021-06-07"
+  notes = "Current stable release."
+
+[[tool]]
+name = "sublist3r"
+aliases = []
+description = "Subdomain enumeration via search engines and OSINT"
+repo = "https://github.com/aboul3la/Sublist3r"
+homepage = "https://github.com/aboul3la/Sublist3r"
+category = "recon"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "sublist3r"
+tags = ["subdomain", "osint", "recon", "web"]
+requires_root = false
+notes = "Aggregates subdomains from public sources; pair with active resolution."
+
+  [[tool.version]]
+  tag = "1.0"
+  commit = ""
+  tested = true
+  pip_spec = "sublist3r==1.0"
+  date = "2020-10-21"
+  notes = "Stable release."
+
+[[tool]]
+name = "subfinder"
+aliases = []
+description = "Passive subdomain discovery"
+repo = "https://github.com/projectdiscovery/subfinder"
+homepage = "https://github.com/projectdiscovery/subfinder"
+category = "recon"
+install_method = "gobin"
+python_version = ""
+binary = "subfinder"
+tags = ["subdomain", "recon", "osint", "web"]
+requires_root = false
+notes = "go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@v2.14.0; gobin method pending."
+
+  [[tool.version]]
+  tag = "2.14.0"
+  commit = "v2.14.0"
+  tested = true
+  pip_spec = ""
+  date = "2026-04-27"
+  notes = "Current stable release; gobin method pending."
+
+[[tool]]
+name = "naabu"
+aliases = []
+description = "Fast SYN/CONNECT port scanner"
+repo = "https://github.com/projectdiscovery/naabu"
+homepage = "https://github.com/projectdiscovery/naabu"
+category = "recon"
+install_method = "gobin"
+python_version = ""
+binary = "naabu"
+tags = ["port-scan", "recon", "scanning"]
+requires_root = false
+notes = "Needs libpcap for SYN scans. go install github.com/projectdiscovery/naabu/v2/cmd/naabu@v2.6.1; gobin method pending."
+
+  [[tool.version]]
+  tag = "2.6.1"
+  commit = "v2.6.1"
+  tested = true
+  pip_spec = ""
+  date = "2026-05-05"
+  notes = "Current stable release; gobin method pending."
+
+[[tool]]
+name = "waybackurls"
+aliases = []
+description = "Fetch known URLs for a domain from the Wayback Machine"
+repo = "https://github.com/tomnomnom/waybackurls"
+homepage = "https://github.com/tomnomnom/waybackurls"
+category = "recon"
+install_method = "gobin"
+python_version = ""
+binary = "waybackurls"
+tags = ["osint", "urls", "recon", "web"]
+requires_root = false
+notes = "go install github.com/tomnomnom/waybackurls@v0.1.0; gobin method pending."
+
+  [[tool.version]]
+  tag = "0.1.0"
+  commit = "v0.1.0"
+  tested = true
+  pip_spec = ""
+  date = "2022-04-05"
+  notes = "Stable release; gobin method pending."
+
+[[tool]]
+name = "gau"
+aliases = ["getallurls"]
+description = "Fetch known URLs from AlienVault, Wayback, and Common Crawl"
+repo = "https://github.com/lc/gau"
+homepage = "https://github.com/lc/gau"
+category = "recon"
+install_method = "gobin"
+python_version = ""
+binary = "gau"
+tags = ["osint", "urls", "recon", "web"]
+requires_root = false
+notes = "go install github.com/lc/gau/v2/cmd/gau@v2.2.4; gobin method pending."
+
+  [[tool.version]]
+  tag = "2.2.4"
+  commit = "v2.2.4"
+  tested = true
+  pip_spec = ""
+  date = "2024-10-28"
+  notes = "Current stable release; gobin method pending."
+
+# arsenal registry segment: Password / hashes
+#
+# Authored here; assembled into registry/registry.toml by tools/regbuild.
+# Contains only [[tool]] blocks - no top-level keys.
+
+[[tool]]
+name = "pypykatz"
+aliases = []
+description = "Pure-Python implementation of Mimikatz"
+repo = "https://github.com/skelsec/pypykatz"
+homepage = "https://github.com/skelsec/pypykatz"
+category = "password"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "pypykatz"
+tags = ["lsass", "mimikatz", "credentials", "dpapi"]
+requires_root = false
+notes = "Parses lsass dumps, registry hives, and DPAPI blobs offline to recover secrets."
+
+  [[tool.version]]
+  tag = "0.6.13"
+  commit = ""
+  tested = true
+  pip_spec = "pypykatz==0.6.13"
+  date = "2026-01-02"
+  notes = "Current stable release."
+
+[[tool]]
+name = "hashid"
+aliases = []
+description = "Identify the type of a given hash"
+repo = "https://github.com/psypanda/hashID"
+homepage = "https://github.com/psypanda/hashID"
+category = "password"
+install_method = "pip"
+python_version = ">=3.6"
+binary = "hashid"
+tags = ["hash", "identify", "password", "cracking"]
+requires_root = false
+notes = "Detects hash formats so you pick the right hashcat or john mode."
+
+  [[tool.version]]
+  tag = "3.1.4"
+  commit = ""
+  tested = true
+  pip_spec = "hashid==3.1.4"
+  date = "2015-03-09"
+  notes = "Stable release."
+
+# arsenal registry segment: Misc / pivoting
+#
+# Authored here; assembled into registry/registry.toml by tools/regbuild.
+# Contains only [[tool]] blocks - no top-level keys.
 
 [[tool]]
 name = "updog"
@@ -537,31 +1131,31 @@ notes = "Upstream ships separate proxy and agent binaries (go install github.com
   notes = "Current stable release; gobin method pending."
 
 [[tool]]
-name = "rustscan"
-aliases = []
-description = "Fast port scanner that pipes open ports into nmap"
-repo = "https://github.com/RustScan/RustScan"
-homepage = "https://github.com/RustScan/RustScan"
-category = "recon"
-install_method = "cargo"
-python_version = ""
-binary = "rustscan"
-tags = ["port-scan", "recon", "nmap"]
+name = "pwncat-cs"
+aliases = ["pwncat"]
+description = "Post-exploitation reverse and bind shell platform"
+repo = "https://github.com/calebstewart/pwncat"
+homepage = "https://github.com/calebstewart/pwncat"
+category = "misc"
+install_method = "pip"
+python_version = ">=3.9"
+binary = "pwncat-cs"
+tags = ["shell", "post-exploitation", "persistence", "privesc"]
 requires_root = false
-notes = "cargo install rustscan; cargo method pending."
+notes = "Upgrades a raw shell into a managed session with privesc enumeration and file transfer."
 
   [[tool.version]]
-  tag = "2.4.1"
-  commit = "2.4.1"
+  tag = "0.5.4"
+  commit = ""
   tested = true
-  pip_spec = ""
-  date = "2025-02-23"
-  notes = "Current stable release; cargo method pending."
+  pip_spec = "pwncat-cs==0.5.4"
+  date = "2022-01-28"
+  notes = "Current stable release."
 
-# Assets are precompiled binaries fetched to a destination directory for staging
-# onto a target ("arsenal fetch <asset> [binary] --dest <dir>"). They are not
-# installed into an isolated backend and get no shim; arsenal always pulls the
-# latest version from upstream.
+# arsenal registry segment: Fetchable assets
+#
+# Authored here; assembled into registry/registry.toml by tools/regbuild.
+# Contains only [[asset]] blocks - no top-level keys.
 
 [[asset]]
 name = "sharpcollection"
@@ -612,3 +1206,83 @@ source = "github-release"
 pattern = "pspy64"
 tags = ["linux", "privesc", "process-monitor", "upload"]
 notes = "Defaults to pspy64; pass pspy32, pspy64s, or pspy32s as the binary argument for other variants."
+
+[[asset]]
+name = "mimikatz"
+aliases = ["mimi"]
+description = "Windows credential extraction toolkit"
+repo = "https://github.com/gentilkiwi/mimikatz"
+category = "ad"
+source = "github-release"
+pattern = "mimikatz_trunk.zip"
+tags = ["credentials", "lsass", "dpapi", "kerberos", "upload"]
+notes = "Fetches the release archive (mimikatz_trunk.zip); unzip on the target. Expect AV detection."
+
+[[asset]]
+name = "sharphound"
+aliases = ["sh"]
+description = "BloodHound CE Active Directory data collector"
+repo = "https://github.com/SpecterOps/SharpHound"
+category = "ad"
+source = "github-release"
+pattern = "windows_x86.zip"
+tags = ["bloodhound", "collector", "active-directory", "recon", "upload"]
+notes = "Fetches the latest collector zip (matches the BloodHound CE schema); the loose match skips the +debug and .sha256 variants."
+
+[[asset]]
+name = "nanodump"
+aliases = []
+description = "Flexible lsass dumper that evades common detections"
+repo = "https://github.com/fortra/nanodump"
+category = "ad"
+source = "github-raw"
+branch = "main"
+dir = "dist"
+pattern = "nanodump.x64.exe"
+tags = ["lsass", "credentials", "dump", "upload"]
+notes = "Pulls prebuilt binaries from the repo dist/ folder. Defaults to nanodump.x64.exe; --list shows ppl and x86 variants."
+
+[[asset]]
+name = "printspoofer"
+aliases = []
+description = "SeImpersonate-to-SYSTEM exploit (PrinterBug/named pipe)"
+repo = "https://github.com/itm4n/PrintSpoofer"
+category = "exploit"
+source = "github-release"
+pattern = "PrintSpoofer64.exe"
+tags = ["privesc", "windows", "potato", "seimpersonate", "upload"]
+notes = "Defaults to PrintSpoofer64.exe; pass PrintSpoofer32.exe for 32-bit targets."
+
+[[asset]]
+name = "godpotato"
+aliases = []
+description = "SeImpersonate-to-SYSTEM exploit for modern Windows"
+repo = "https://github.com/BeichenDream/GodPotato"
+category = "exploit"
+source = "github-release"
+pattern = "GodPotato-NET4.exe"
+tags = ["privesc", "windows", "potato", "seimpersonate", "upload"]
+notes = "Defaults to the .NET 4 build; pass GodPotato-NET2.exe or GodPotato-NET35.exe to match the target runtime."
+
+[[asset]]
+name = "juicypotatong"
+aliases = ["jpng"]
+description = "Updated JuicyPotato SeImpersonate privesc"
+repo = "https://github.com/antonioCoco/JuicyPotatoNG"
+category = "exploit"
+source = "github-release"
+pattern = "JuicyPotatoNG.zip"
+tags = ["privesc", "windows", "potato", "seimpersonate", "upload"]
+notes = "Fetches the release archive; unzip on the target."
+
+[[asset]]
+name = "lse"
+aliases = ["linux-smart-enumeration"]
+description = "Linux privilege escalation enumeration script with levels"
+repo = "https://github.com/diego-treitos/linux-smart-enumeration"
+category = "recon"
+source = "github-raw"
+branch = "master"
+pattern = "lse.sh"
+tags = ["linux", "privesc", "enumeration", "upload"]
+notes = "Single script; tunable verbosity via -l. Quieter and more targeted than the PEAS scripts."
