@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Per-version `repo` override in the registry so a single version can pin a fork
+  or a branch without changing the tool's canonical repo. Used to add a NetExec
+  `badsuccessor` version installed from the `azoxlpf/NetExec`
+  `feat/refactor-badsuccessor` branch (`arsenal install nxc@badsuccessor`).
+
 ## [0.1.1] - 2026-06-14
 
 ### Added

@@ -38,7 +38,7 @@ func (c *checker) checkPyPI(pkg, version string) error {
 // checkGitRef verifies that at least one candidate ref resolves in the tool's
 // GitHub repository.
 func (c *checker) checkGitRef(tool registry.Tool, v registry.Version) error {
-	owner, repo, err := parseGitHubRepo(tool.Repo)
+	owner, repo, err := parseGitHubRepo(tool.RepoFor(v))
 	if err != nil {
 		return err
 	}

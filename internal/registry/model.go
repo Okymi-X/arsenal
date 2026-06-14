@@ -68,8 +68,11 @@ type Tool struct {
 type Version struct {
 	// Tag is the human-facing version label, e.g. "1.1.0".
 	Tag string `toml:"tag"`
-	// Commit pins the exact source revision.
+	// Commit pins the exact source revision (commit SHA, tag, or branch).
 	Commit string `toml:"commit"`
+	// Repo optionally overrides the tool's repo for this version, e.g. to pin
+	// a fork or a branch. Empty means use the tool's repo.
+	Repo string `toml:"repo"`
 	// Tested marks a version the maintainers verified as known-good.
 	Tested bool `toml:"tested"`
 	// PipSpec is the pip requirement string, e.g. "netexec==1.1.0".
@@ -78,6 +81,15 @@ type Version struct {
 	Date string `toml:"date"`
 	// Notes holds version-specific guidance.
 	Notes string `toml:"notes"`
+}
+
+// RepoFor returns the effective source repository for a version: the version's
+// repo override when set, otherwise the tool's repo.
+func (t Tool) RepoFor(v Version) string {
+	if v.Repo != "" {
+		return v.Repo
+	}
+	return t.Repo
 }
 
 // AllBinaries returns the primary binary plus any additional binaries.

@@ -75,14 +75,30 @@ used.
   notes = "Recommended stable release."
 ```
 
-| Field      | Type   | Required | Description                                        |
-|------------|--------|----------|----------------------------------------------------|
-| `tag`      | string | yes      | Human-facing version label, e.g. `1.4.0`.          |
-| `commit`   | string | no       | Exact source revision (used by `gitpip`).          |
-| `tested`   | bool   | no       | Marks a version the maintainers verified.          |
-| `pip_spec` | string | no       | pip requirement string, e.g. `netexec==1.4.0`.     |
-| `date`     | string | no       | ISO-8601 release date.                             |
-| `notes`    | string | no       | Version-specific guidance.                         |
+| Field      | Type   | Required | Description                                              |
+|------------|--------|----------|----------------------------------------------------------|
+| `tag`      | string | yes      | Human-facing version label, e.g. `1.4.0`.                |
+| `commit`   | string | no       | Source revision for `gitpip`: commit SHA, tag, or branch.|
+| `repo`     | string | no       | Overrides the tool's repo for this version (fork/branch).|
+| `tested`   | bool   | no       | Marks a version the maintainers verified.                |
+| `pip_spec` | string | no       | pip requirement string, e.g. `impacket==0.12.0`.         |
+| `date`     | string | no       | ISO-8601 release date.                                   |
+| `notes`    | string | no       | Version-specific guidance.                               |
+
+A version may pin a fork or a branch by combining `repo` and `commit`. For
+example, to install NetExec from a fork's feature branch:
+
+```toml
+  [[tool.version]]
+  tag = "badsuccessor"
+  commit = "feat/refactor-badsuccessor"
+  repo = "https://github.com/azoxlpf/NetExec"
+  tested = false
+  notes = "Fork branch; tracks a moving branch, not reproducible."
+```
+
+Install it with `arsenal install nxc@badsuccessor`. Branch refs move over time,
+so leave such versions `tested = false`.
 
 ## Install method semantics
 

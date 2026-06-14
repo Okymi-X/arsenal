@@ -27,6 +27,15 @@ requires_root = false
 notes = "Not published on PyPI; installed from the pinned Git tag."
 
   [[tool.version]]
+  tag = "badsuccessor"
+  commit = "feat/refactor-badsuccessor"
+  repo = "https://github.com/azoxlpf/NetExec"
+  tested = false
+  pip_spec = ""
+  date = "2026-03-19"
+  notes = "Fork branch with the BadSuccessor refactor; tracks a moving branch, not reproducible."
+
+  [[tool.version]]
   tag = "1.5.1"
   commit = "v1.5.1"
   tested = true
