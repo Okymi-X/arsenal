@@ -1286,3 +1286,103 @@ branch = "master"
 pattern = "lse.sh"
 tags = ["linux", "privesc", "enumeration", "upload"]
 notes = "Single script; tunable verbosity via -l. Quieter and more targeted than the PEAS scripts."
+
+# PayloadsAllTheThings payload lists. Each is a github-raw collection of a
+# category's Intruder/Files folder; name a file (or --list) and feed it to a
+# fuzzer such as ffuf or wfuzz.
+
+[[asset]]
+name = "payloads-sqli"
+aliases = ["patt-sqli"]
+description = "SQL injection payload lists from PayloadsAllTheThings"
+repo = "https://github.com/swisskyrepo/PayloadsAllTheThings"
+category = "web"
+source = "github-raw"
+branch = "master"
+dir = "SQL Injection/Intruder"
+tags = ["payloads", "wordlist", "sqli", "fuzzing", "web"]
+notes = "Auth bypass and DBMS-specific payloads. Use --list, then name a file."
+
+[[asset]]
+name = "payloads-xss"
+aliases = ["patt-xss"]
+description = "XSS payload lists from PayloadsAllTheThings"
+repo = "https://github.com/swisskyrepo/PayloadsAllTheThings"
+category = "web"
+source = "github-raw"
+branch = "master"
+dir = "XSS Injection/Intruders"
+tags = ["payloads", "wordlist", "xss", "fuzzing", "web"]
+notes = "Polyglots and context-specific XSS vectors. Use --list, then name a file."
+
+[[asset]]
+name = "payloads-lfi"
+aliases = ["patt-lfi"]
+description = "Local file inclusion payload lists from PayloadsAllTheThings"
+repo = "https://github.com/swisskyrepo/PayloadsAllTheThings"
+category = "web"
+source = "github-raw"
+branch = "master"
+dir = "File Inclusion/Intruders"
+tags = ["payloads", "wordlist", "lfi", "fuzzing", "web"]
+notes = "LFI/RFI wordlists (JHADDIX_LFI.txt and others). Use --list, then name a file."
+
+[[asset]]
+name = "payloads-traversal"
+aliases = ["patt-traversal"]
+description = "Directory traversal payload lists from PayloadsAllTheThings"
+repo = "https://github.com/swisskyrepo/PayloadsAllTheThings"
+category = "web"
+source = "github-raw"
+branch = "master"
+dir = "Directory Traversal/Intruder"
+tags = ["payloads", "wordlist", "traversal", "fuzzing", "web"]
+notes = "Path traversal lists with deep and exotic encodings. Use --list, then name a file."
+
+[[asset]]
+name = "payloads-ssrf"
+aliases = ["patt-ssrf"]
+description = "SSRF payload lists from PayloadsAllTheThings"
+repo = "https://github.com/swisskyrepo/PayloadsAllTheThings"
+category = "web"
+source = "github-raw"
+branch = "master"
+dir = "Server Side Request Forgery/Files"
+tags = ["payloads", "wordlist", "ssrf", "fuzzing", "web"]
+notes = "Cloud-metadata and bypass payloads. Use --list, then name a file."
+
+[[asset]]
+name = "payloads-xxe"
+aliases = ["patt-xxe"]
+description = "XXE payload lists from PayloadsAllTheThings"
+repo = "https://github.com/swisskyrepo/PayloadsAllTheThings"
+category = "web"
+source = "github-raw"
+branch = "master"
+dir = "XXE Injection/Files"
+tags = ["payloads", "wordlist", "xxe", "fuzzing", "web"]
+notes = "XML external entity payload files. Use --list, then name a file."
+
+[[asset]]
+name = "payloads-cmdi"
+aliases = ["patt-cmdi"]
+description = "Command injection payload lists from PayloadsAllTheThings"
+repo = "https://github.com/swisskyrepo/PayloadsAllTheThings"
+category = "web"
+source = "github-raw"
+branch = "master"
+dir = "Command Injection/Intruder"
+tags = ["payloads", "wordlist", "command-injection", "fuzzing", "web"]
+notes = "OS command injection payloads. Use --list, then name a file."
+
+[[asset]]
+name = "payloads-nosqli"
+aliases = ["patt-nosqli"]
+description = "NoSQL injection payload lists from PayloadsAllTheThings"
+repo = "https://github.com/swisskyrepo/PayloadsAllTheThings"
+category = "web"
+source = "github-raw"
+branch = "master"
+dir = "NoSQL Injection/Intruder"
+tags = ["payloads", "wordlist", "nosqli", "fuzzing", "web"]
+notes = "NoSQL auth-bypass and injection payloads. Use --list, then name a file."

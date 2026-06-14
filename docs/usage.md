@@ -124,6 +124,15 @@ arsenal fetch sharpcollection Rubeus --dest ./www
 arsenal fetch sharpcollection Certify --build NetFramework_4.5_x64
 ```
 
+The same model serves payload lists from PayloadsAllTheThings; fetch a list and
+feed it to a fuzzer:
+
+```
+arsenal fetch payloads-lfi --list
+arsenal fetch payloads-lfi JHADDIX_LFI.txt --dest ./wl
+ffuf -u 'http://target/?page=FUZZ' -w ./wl/JHADDIX_LFI.txt
+```
+
 The binary selector is matched loosely, ignoring case and a `.exe`/`.sh`
 suffix, so `rubeus` resolves `Rubeus.exe`. A `GITHUB_TOKEN` or `GH_TOKEN` in the
 environment raises GitHub API rate limits for `--list` and release lookups.

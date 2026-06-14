@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Eight payload-list assets from PayloadsAllTheThings, fetchable into a
+  directory and fed to a fuzzer (ffuf, wfuzz, ...): `payloads-sqli`,
+  `payloads-xss`, `payloads-lfi`, `payloads-traversal`, `payloads-ssrf`,
+  `payloads-xxe`, `payloads-cmdi`, and `payloads-nosqli`. Each is a `github-raw`
+  collection of a category's payload folder; use `--list`, then name a file.
+
+### Fixed
+
+- `fetch` and the registry-check bot now percent-encode `github-raw` directory
+  paths, so asset folders containing spaces (such as the PayloadsAllTheThings
+  category folders) resolve correctly.
+- `fetch` writes the downloaded file under its base name only, so a crafted
+  upstream file name cannot escape the destination directory.
+- `info` shows accurate `directory:`/`default file:` lines for assets and omits
+  the empty `python:` line for tools without a Python requirement.
+
 ## [0.3.0] - 2026-06-14
 
 ### Added
