@@ -13,6 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   or a branch without changing the tool's canonical repo. Used to add a NetExec
   `badsuccessor` version installed from the `azoxlpf/NetExec`
   `feat/refactor-badsuccessor` branch (`arsenal install nxc@badsuccessor`).
+- `arsenal completion bash|zsh|fish` prints a shell completion script that
+  completes subcommands and, dynamically, registry and installed tool names.
+- `arsenal run <tool> <binary>` selects a specific binary of a multi-binary
+  tool (for example `arsenal run impacket getTGT`). The selector is matched
+  loosely, ignoring case, a `.py` suffix, and a `<tool>-` prefix.
+
+### Fixed
+
+- Impacket binary names corrected to the actual installed script names
+  (`secretsdump.py`, `getTGT.py`, ...); the previous `impacket-*` names did not
+  exist, so `run impacket` and its shims were broken.
+- `arsenal run` now rejects a flag-like first argument instead of treating it as
+  a tool name.
 
 ## [0.1.1] - 2026-06-14
 

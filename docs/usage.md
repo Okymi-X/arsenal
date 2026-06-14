@@ -70,10 +70,37 @@ Prints the registry details for a tool, including each catalogued version.
 
 ```
 arsenal run <tool> -- <args...>
+arsenal run <tool> <binary> -- <args...>
 ```
 
 Runs the active version of the tool inside its isolated environment, forwarding
-everything after `--`.
+everything after `--`. With no binary selector, the tool's primary binary runs.
+
+For multi-binary tools (such as Impacket) name the binary as the first argument.
+The selector is matched loosely, ignoring case, a `.py` suffix, and a `<tool>-`
+prefix, so these are equivalent:
+
+```
+arsenal run impacket getTGT -- -dc-ip 10.0.0.1 domain/user
+arsenal run impacket getTGT.py -- -dc-ip 10.0.0.1 domain/user
+arsenal run impacket impacket-getTGT -- -dc-ip 10.0.0.1 domain/user
+```
+
+Alternatively, add the shim directory to your PATH (see `doctor`) and call the
+binaries directly: `getTGT.py`, `secretsdump.py`, `nxc`, and so on.
+
+### completion
+
+```
+arsenal completion bash > /etc/bash_completion.d/arsenal
+arsenal completion zsh  > "${fpath[1]}/_arsenal"
+arsenal completion fish > ~/.config/fish/completions/arsenal.fish
+```
+
+Prints a shell completion script for bash, zsh, or fish. Completion covers the
+subcommands and, dynamically, registry tool names (for `install`/`info`) and
+installed tool names (for `run`/`remove`/`switch`). arsenal must be on PATH for
+the dynamic tool-name completion to work.
 
 ### op
 

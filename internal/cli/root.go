@@ -30,6 +30,7 @@ func (a *App) commands() []command {
 		{"sync", "Sync the registry from upstream", (*App).cmdSync},
 		{"doctor", "Diagnose and repair installs", (*App).cmdDoctor},
 		{"bundle", "Export an offline bundle", (*App).cmdBundle},
+		{"completion", "Print a shell completion script", (*App).cmdCompletion},
 		{"version", "Print the build version", (*App).cmdVersion},
 	}
 }
@@ -67,7 +68,7 @@ func (a *App) printUsage() {
 	cmds := a.commands()
 	sort.Slice(cmds, func(i, j int) bool { return cmds[i].name < cmds[j].name })
 	for _, c := range cmds {
-		a.log.Printf("  %-9s %s", c.name, c.summary)
+		a.log.Printf("  %-10s %s", c.name, c.summary)
 	}
 }
 

@@ -60,14 +60,17 @@ homepage = "https://www.coresecurity.com/core-labs/open-source-tools/impacket"
 category = "ad"
 install_method = "pip"
 python_version = ">=3.8"
-binary = "impacket-secretsdump"
+binary = "secretsdump.py"
 binaries = [
-  "impacket-GetUserSPNs",
-  "impacket-GetNPUsers",
-  "impacket-psexec",
-  "impacket-wmiexec",
-  "impacket-smbclient",
-  "impacket-ntlmrelayx",
+  "GetUserSPNs.py",
+  "GetNPUsers.py",
+  "getTGT.py",
+  "getST.py",
+  "psexec.py",
+  "wmiexec.py",
+  "smbexec.py",
+  "smbclient.py",
+  "ntlmrelayx.py",
 ]
 tags = ["smb", "kerberos", "relay", "secretsdump", "active-directory"]
 requires_root = false

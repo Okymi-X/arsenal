@@ -27,6 +27,7 @@ reimplement them or bundle a Python interpreter.
   and make an environment reproducible and shareable across a team.
 - PATH shims so multiple versions coexist and the active one is switchable.
 - A `doctor` command that reports and repairs broken installs.
+- Shell completion for bash, zsh, and fish (`arsenal completion <shell>`).
 - Works offline out of the box: the curated registry is embedded in the binary.
 
 ## Install
