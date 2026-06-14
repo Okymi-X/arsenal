@@ -28,6 +28,9 @@ type Registry struct {
 	Updated string `toml:"updated"`
 	// Tools is the curated list of catalog entries.
 	Tools []Tool `toml:"tool"`
+	// Assets are precompiled binaries fetched to a destination directory for
+	// staging onto a target, rather than installed into an isolated backend.
+	Assets []Asset `toml:"asset"`
 }
 
 // Tool is a single catalog entry describing an installable program.

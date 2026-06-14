@@ -30,15 +30,15 @@ func main() {
 	c := newChecker(20*time.Second, os.Getenv("GITHUB_TOKEN"))
 	failures := run(c, reg)
 
-	fmt.Printf("\nchecked %d tools\n", len(reg.Tools))
+	fmt.Printf("\nchecked %d tools, %d assets\n", len(reg.Tools), len(reg.Assets))
 	if failures > 0 {
-		fmt.Printf("[fail] %d version(s) did not resolve upstream\n", failures)
+		fmt.Printf("[fail] %d entr(ies) did not resolve upstream\n", failures)
 		os.Exit(1)
 	}
-	fmt.Println("[ok] every registry version resolved upstream")
+	fmt.Println("[ok] every registry entry resolved upstream")
 }
 
-// run verifies every version of every tool, printing one line per version and
+// run verifies every tool version and every asset, printing one line each and
 // returning the number of failures.
 func run(c *checker, reg *registry.Registry) int {
 	failures := 0
@@ -51,6 +51,14 @@ func run(c *checker, reg *registry.Registry) int {
 			}
 			fmt.Printf("[ok]   %s@%s (%s)\n", tool.Name, v.Tag, tool.InstallMethod)
 		}
+	}
+	for _, a := range reg.Assets {
+		if err := c.verifyAsset(a); err != nil {
+			failures++
+			fmt.Printf("[fail] %s (asset/%s): %v\n", a.Name, a.Source, err)
+			continue
+		}
+		fmt.Printf("[ok]   %s (asset/%s)\n", a.Name, a.Source)
 	}
 	return failures
 }
