@@ -78,6 +78,9 @@ func toolMatches(t Tool, q string) bool {
 	if strings.Contains(strings.ToLower(t.Description), q) {
 		return true
 	}
+	if strings.EqualFold(string(t.Category), q) {
+		return true
+	}
 	for _, tag := range t.Tags {
 		if strings.Contains(strings.ToLower(tag), q) {
 			return true

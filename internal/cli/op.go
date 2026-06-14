@@ -75,7 +75,7 @@ func (a *App) opPin(args []string) error {
 	return nil
 }
 
-func (a *App) opList(args []string) error {
+func (a *App) opList(_ []string) error {
 	names, err := a.ops.List()
 	if err != nil {
 		return err

@@ -54,6 +54,7 @@ func TestSearch(t *testing.T) {
 		want  []string
 	}{
 		{"by tag", "smb", []string{"netexec"}},
+		{"by category", "ad", []string{"netexec"}},
 		{"by description", "fuzzer", []string{"ffuf"}},
 		{"empty returns all sorted", "", []string{"ffuf", "netexec"}},
 		{"no match", "zzz", nil},

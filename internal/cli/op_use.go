@@ -80,7 +80,7 @@ func (a *App) installLockfile(reg *registry.Registry, lf *op.Lockfile) error {
 		if err != nil {
 			return err
 		}
-		if err := a.installResolved(reg, res); err != nil {
+		if err := a.installResolved(res); err != nil {
 			return err
 		}
 	}

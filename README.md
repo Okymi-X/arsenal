@@ -1,5 +1,9 @@
 # arsenal
 
+[![CI](https://github.com/Okymi-X/arsenal/actions/workflows/ci.yml/badge.svg)](https://github.com/Okymi-X/arsenal/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/Okymi-X/arsenal?sort=semver)](https://github.com/Okymi-X/arsenal/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 A package and environment manager specialized for offensive-security tooling.
 It is a domain-aware alternative to `pipx`/`uv`.
 

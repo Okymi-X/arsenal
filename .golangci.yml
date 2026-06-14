@@ -22,6 +22,12 @@ linters:
     - nakedret
     - bodyclose
   settings:
+    errcheck:
+      # A logger cannot meaningfully handle a failure to write its own output.
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
     gocyclo:
       min-complexity: 15
     revive:

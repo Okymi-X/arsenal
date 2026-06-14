@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- GitHub Actions CI (format, vet, race tests with coverage, golangci-lint, and a
+  cross-platform build matrix) and a tag-triggered release workflow that
+  cross-compiles static binaries and publishes them with checksums.
+- Dependabot for Go modules and GitHub Actions.
+- CONTRIBUTING, SECURITY policy, editorconfig, issue templates, and a PR template.
+
+### Changed
+
+- Registry search now also matches a tool's category.
+
 ## [0.1.0] - 2026-06-14
 
 ### Added

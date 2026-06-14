@@ -36,11 +36,9 @@ func buildPipArgs(spec isolation.InstallSpec) []string {
 }
 
 func gitTarget(spec isolation.InstallSpec) []string {
-	ref := spec.GitURL
+	ref := "git+" + spec.GitURL
 	if spec.Commit != "" {
 		ref = fmt.Sprintf("git+%s@%s", spec.GitURL, spec.Commit)
-	} else {
-		ref = "git+" + spec.GitURL
 	}
 	if spec.Editable {
 		return []string{"-e", ref}

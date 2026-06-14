@@ -30,10 +30,10 @@ func (a *App) cmdInstall(args []string) error {
 	if !res.Version.Tested {
 		a.log.Warnf("%s@%s is not marked tested", res.Tool.Name, res.Version.Tag)
 	}
-	return a.installResolved(reg, res)
+	return a.installResolved(res)
 }
 
-func (a *App) installResolved(reg *registry.Registry, res resolver.Resolved) error {
+func (a *App) installResolved(res resolver.Resolved) error {
 	backend := a.newBackend()
 	orch := installer.NewOrchestrator(installer.DefaultMethods(backend))
 
