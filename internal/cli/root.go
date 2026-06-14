@@ -26,6 +26,7 @@ func (a *App) commands() []command {
 		{"search", "Search the registry", (*App).cmdSearch},
 		{"info", "Show registry details for a tool", (*App).cmdInfo},
 		{"run", "Run an installed tool", (*App).cmdRun},
+		{"fetch", "Fetch a precompiled binary to a directory", (*App).cmdFetch},
 		{"op", "Manage engagement profiles", (*App).cmdOp},
 		{"sync", "Sync the registry from upstream", (*App).cmdSync},
 		{"doctor", "Diagnose and repair installs", (*App).cmdDoctor},

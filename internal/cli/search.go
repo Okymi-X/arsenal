@@ -10,13 +10,17 @@ func (a *App) cmdSearch(args []string) error {
 	if err != nil {
 		return err
 	}
-	matches := reg.Search(query)
-	if len(matches) == 0 {
-		a.log.Printf("no tools match %q", query)
+	tools := reg.Search(query)
+	assets := reg.SearchAssets(query)
+	if len(tools) == 0 && len(assets) == 0 {
+		a.log.Printf("no tools or assets match %q", query)
 		return nil
 	}
-	for _, t := range matches {
+	for _, t := range tools {
 		a.log.Printf("%-16s [%s] %s", t.Name, t.Category, t.Description)
+	}
+	for _, as := range assets {
+		a.log.Printf("%-16s [%s] %s (asset)", as.Name, as.Category, as.Description)
 	}
 	return nil
 }

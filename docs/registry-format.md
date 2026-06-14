@@ -107,6 +107,53 @@ so leave such versions `tested = false`.
 - `binary`, `gobin`, `cargo` - reserved; implementations are stubbed and will
   fail loudly until completed (see docs/architecture.md).
 
+## Asset entry
+
+Assets are precompiled binaries that `arsenal fetch` downloads to a directory
+for staging onto a target. They are not installed, isolated, versioned in the
+manifest, or shimmed: arsenal always pulls the latest upstream version.
+
+```toml
+[[asset]]
+name = "sharpcollection"
+description = "Precompiled .NET offensive binaries"
+repo = "https://github.com/Flangvik/SharpCollection"
+category = "ad"
+source = "github-raw"          # or "github-release"
+branch = "master"              # github-raw: ref to read
+dir = "NetFramework_4.7_x64"   # github-raw: default build directory
+builds = ["NetFramework_4.7_x64", "NetFramework_4.5_x64"]  # allowed --build values
+tags = ["dotnet", "upload"]
+notes = "..."
+```
+
+| Field         | Type     | Required | Description                                                        |
+|---------------|----------|----------|--------------------------------------------------------------------|
+| `name`        | string   | yes      | Canonical identifier used on the command line.                     |
+| `aliases`     | array    | no       | Alternative names.                                                 |
+| `description` | string   | no       | One-line summary.                                                  |
+| `repo`        | string   | yes      | GitHub repository URL.                                             |
+| `category`    | string   | no       | Offensive-security domain.                                         |
+| `source`      | string   | yes      | `github-release` or `github-raw`.                                  |
+| `pattern`     | string   | no       | github-release: default asset filename to match.                  |
+| `branch`      | string   | no       | github-raw: ref to read (default `master`).                       |
+| `dir`         | string   | no       | github-raw: default in-repo directory of selectable binaries.     |
+| `builds`      | array    | no       | github-raw: allowed `--build` overrides for `dir`.                |
+| `tags`        | array    | no       | Search keywords.                                                   |
+| `notes`       | string   | no       | Operational guidance.                                              |
+
+A `github-release` asset fetches the file matching `pattern` (or a binary named
+on the command line) from the repository's latest release. A `github-raw` asset
+fetches a file from `dir` (overridable with `--build`) on `branch`; a binary
+name is required and `--list` enumerates the directory.
+
+## Install method semantics
+
+- `pip` - installs `pip_spec` (or `name==tag` if absent) into a venv.
+- `gitpip` - installs `git+<repo>@<commit>` into a venv.
+- `binary`, `gobin`, `cargo` - reserved; implementations are stubbed and will
+  fail loudly until completed (see docs/architecture.md).
+
 ## Validation rules
 
 The loader rejects a registry where a tool has no `name`, no `install_method`,
@@ -114,13 +161,16 @@ or no versions, or where two tools share a `name`.
 
 ## Upstream verification
 
-Every version is verified against its official source by the `registry-check` CI
-workflow (and locally via `make verify-registry`):
+Every version and asset is verified against its official source by the
+`registry-check` CI workflow (and locally via `make verify-registry`):
 
 - `pip` tools: the version from `pip_spec` (or `name==tag`) must be published on
   PyPI.
 - `gitpip`, `gobin`, `cargo`, `binary` tools: the `commit` or `tag` must resolve
   as a ref in the GitHub repository (the checker also tries a leading `v`).
+- `github-release` assets: the latest release must contain a file matching
+  `pattern`. `github-raw` assets: the `dir` directory must exist and be
+  non-empty.
 
 A pull request that adds a version which does not exist upstream fails CI, so a
 non-existent version cannot be merged. The workflow also runs weekly to catch

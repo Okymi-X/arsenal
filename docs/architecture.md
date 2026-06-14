@@ -16,6 +16,7 @@ internal/cli               parse args, dispatch to a command
 internal/registry          load/sync/query the curated catalog
 internal/resolver          turn "tool[@version]" into a concrete version
 internal/installer         select an install method and drive it
+internal/fetcher           download upload-binaries (assets) to a directory
 internal/isolation         isolate the environment (venv or container)
 internal/shim              write PATH shims to the active version
 internal/store             persist the installed-tools manifest
@@ -27,6 +28,13 @@ internal/doctor            health checks and repair
 them to `cli.New`. The CLI owns wiring of the registry source, the store, the
 shim manager, and the op manager, and constructs an isolation backend and
 installer orchestrator per command invocation.
+
+`internal/fetcher` is a separate path used by `arsenal fetch`. It bypasses the
+installer, isolation, shim, and store layers entirely: given a registry
+`Asset`, it resolves the latest upstream file (a GitHub release asset or a raw
+repository file) and downloads it to an operator-chosen directory for staging
+onto a target. Assets are never isolated, versioned in the manifest, or shimmed
+onto the operator's PATH.
 
 ## Key interfaces
 

@@ -7,6 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `arsenal fetch <asset> [binary]` pulls the latest version of a precompiled
+  upload-binary into a directory (`--dest`, default the current directory),
+  with no isolated environment and no shim - a distinct workflow from `install`
+  for binaries you stage onto a target. A new `[[asset]]` registry section backs
+  it, with two source kinds: `github-release` (latest release asset, matched by
+  pattern or an explicit binary argument) and `github-raw` (a file from a repo
+  branch, used for collections). Seeded assets: `sharpcollection` (with `--list`
+  and `--build` to choose a .NET build), `winpeas`, `linpeas`, and `pspy`
+  (moved here from the tool catalog). `arsenal search` now also lists matching
+  assets, tagged `(asset)`, and shell completion completes asset names for
+  `fetch`. The registry-check workflow verifies every asset resolves upstream.
+
+- Six tools from 0xdf's offensive-Python toolkit, each verified against its
+  official source by the registry-check workflow:
+  - `bloodyad` (AD privilege-escalation swiss army knife, PyPI `bloodyad`).
+  - `pywhisker` (Shadow Credentials attack, gitpip from `ShutdownRepo/pywhisker`).
+  - `ldapdomaindump` (LDAP domain dumper, with the `ldd2bloodhound` and
+    `ldd2pretty` helper binaries).
+  - `flask-unsign` (crack and forge Flask session cookies).
+  - `git-dumper` (reconstruct a source tree from an exposed `.git`).
+  - `sshuttle` (transparent SSH proxy VPN for pivoting).
+- Eight more 0xdf staples in Go and Rust, catalogued (with their pinned upstream
+  tags and exact `go install`/`cargo install` paths in the notes) behind the
+  still-pending gobin/cargo/binary install methods:
+  - `kerbrute` and `pretender` (gobin) - Kerberos user enumeration/spraying and
+    LLMNR/mDNS/DHCPv6 spoofing.
+  - `gobuster` and `nuclei` (gobin) - content/DNS brute-forcing and templated
+    vulnerability scanning.
+  - `chisel` and `ligolo-ng` (gobin) - HTTP and TUN-based pivoting.
+  - `rustscan` (cargo) - fast port scanner that hands off to nmap.
+  - `pspy` (binary) - rootless Linux process and cron snooping.
+
 ## [0.1.2] - 2026-06-14
 
 ### Added

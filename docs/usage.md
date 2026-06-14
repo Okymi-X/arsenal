@@ -89,6 +89,45 @@ arsenal run impacket impacket-getTGT -- -dc-ip 10.0.0.1 domain/user
 Alternatively, add the shim directory to your PATH (see `doctor`) and call the
 binaries directly: `getTGT.py`, `secretsdump.py`, `nxc`, and so on.
 
+### fetch
+
+```
+arsenal fetch <asset> [binary] [--dest <dir>] [--build <build>] [--list]
+```
+
+Pulls the latest version of a precompiled binary and writes it into a
+directory, for staging onto a target. Unlike `install`, `fetch` creates no
+isolated environment and no shim: it just downloads the file.
+
+`<asset>` is an entry from the registry's asset catalog (`SharpCollection`,
+`winpeas`, `linpeas`, `pspy`, ...); `arsenal search` lists assets with an
+`(asset)` marker. Without `--dest`, the file lands in the current directory.
+Downloaded files are made executable.
+
+For a single-binary asset the default file is used unless you name another as
+`[binary]`:
+
+```
+arsenal fetch linpeas --dest ./www          # -> ./www/linpeas.sh
+arsenal fetch winpeas --dest ./www          # -> ./www/winPEASx64.exe
+arsenal fetch winpeas winPEASany.exe        # pick a different release asset
+arsenal fetch pspy pspy32                    # pick a variant
+```
+
+For a collection such as SharpCollection, name the binary and optionally pick a
+build with `--build` (default `NetFramework_4.7_x64`); `--list` shows what is
+available:
+
+```
+arsenal fetch sharpcollection --list
+arsenal fetch sharpcollection Rubeus --dest ./www
+arsenal fetch sharpcollection Certify --build NetFramework_4.5_x64
+```
+
+The binary selector is matched loosely, ignoring case and a `.exe`/`.sh`
+suffix, so `rubeus` resolves `Rubeus.exe`. A `GITHUB_TOKEN` or `GH_TOKEN` in the
+environment raises GitHub API rate limits for `--list` and release lookups.
+
 ### completion
 
 ```

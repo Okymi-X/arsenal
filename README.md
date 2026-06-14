@@ -26,6 +26,9 @@ reimplement them or bundle a Python interpreter.
 - Engagement profiles ("ops"): pin a set of tool versions, produce a lockfile,
   and make an environment reproducible and shareable across a team.
 - PATH shims so multiple versions coexist and the active one is switchable.
+- A `fetch` command for precompiled upload-binaries (SharpCollection, winPEAS,
+  linPEAS, pspy): pulls the latest version straight into a directory you pick,
+  with no env and no shim.
 - A `doctor` command that reports and repairs broken installs.
 - Shell completion for bash, zsh, and fish (`arsenal completion <shell>`).
 - Works offline out of the box: the curated registry is embedded in the binary.
@@ -56,6 +59,9 @@ arsenal list                   # show installed tools; [*] marks active
 arsenal run nxc -- smb 10.0.0.1
 arsenal switch nxc 1.3.0       # repoint shims to another installed version
 arsenal remove nxc
+
+arsenal fetch linpeas --dest ./www          # stage an upload-binary, latest version
+arsenal fetch sharpcollection Rubeus --dest ./www
 ```
 
 Output is quiet by default. Add `-v`/`--verbose` for detail. There is no color

@@ -1,23 +1,50 @@
 package cli
 
-import "github.com/Okymi-X/arsenal/internal/registry"
+import (
+	"fmt"
 
-// cmdInfo prints the registry details for a tool, including its versions.
+	"github.com/Okymi-X/arsenal/internal/registry"
+)
+
+// cmdInfo prints the registry details for a tool (with its versions) or an
+// asset.
 func (a *App) cmdInfo(args []string) error {
 	if len(args) != 1 {
-		return usageError("info <tool>")
+		return usageError("info <tool|asset>")
 	}
 	reg, err := a.loadRegistry()
 	if err != nil {
 		return err
 	}
-	tool, err := reg.MustFindTool(args[0])
-	if err != nil {
-		return err
+	if tool, ok := reg.FindTool(args[0]); ok {
+		a.printToolHeader(tool)
+		a.printToolVersions(tool)
+		return nil
 	}
-	a.printToolHeader(tool)
-	a.printToolVersions(tool)
-	return nil
+	if asset, ok := reg.FindAsset(args[0]); ok {
+		a.printAssetInfo(asset)
+		return nil
+	}
+	return fmt.Errorf("%q not found in registry", args[0])
+}
+
+func (a *App) printAssetInfo(as registry.Asset) {
+	a.log.Printf("%s - %s (asset)", as.Name, as.Description)
+	a.log.Printf("category:       %s", as.Category)
+	a.log.Printf("source:         %s", as.Source)
+	a.log.Printf("repo:           %s", as.Repo)
+	if len(as.Aliases) > 0 {
+		a.log.Printf("aliases:        %v", as.Aliases)
+	}
+	if as.Collection() {
+		a.log.Printf("default build:  %s", as.Dir)
+	} else if as.Pattern != "" {
+		a.log.Printf("default file:   %s", as.Pattern)
+	}
+	if as.Notes != "" {
+		a.log.Printf("notes:          %s", as.Notes)
+	}
+	a.log.Printf("fetch:          arsenal fetch %s [binary] --dest <dir>", as.Name)
 }
 
 func (a *App) printToolHeader(t registry.Tool) {
