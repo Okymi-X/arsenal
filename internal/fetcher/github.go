@@ -89,12 +89,29 @@ func ownerRepo(repoURL string) (string, error) {
 	return s, nil
 }
 
+// checksumSuffixes are release-asset extensions that are never the binary
+// itself, so they are hidden from listing and matching.
+var checksumSuffixes = []string{".sha256", ".sha1", ".sha512", ".md5", ".asc", ".sig"}
+
 func assetNames(assets []releaseAsset) []string {
 	out := make([]string, 0, len(assets))
 	for _, a := range assets {
+		if isChecksum(a.Name) {
+			continue
+		}
 		out = append(out, a.Name)
 	}
 	return out
+}
+
+func isChecksum(name string) bool {
+	l := strings.ToLower(name)
+	for _, s := range checksumSuffixes {
+		if strings.HasSuffix(l, s) {
+			return true
+		}
+	}
+	return false
 }
 
 func fileNames(entries []contentEntry) []string {

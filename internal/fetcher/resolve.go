@@ -45,7 +45,11 @@ func (f *Fetcher) resolveRelease(ctx context.Context, asset registry.Asset, sel 
 }
 
 func (f *Fetcher) resolveRaw(ctx context.Context, asset registry.Asset, sel Selection) (string, string, string, error) {
-	if sel.Binary == "" {
+	want := sel.Binary
+	if want == "" {
+		want = asset.Pattern
+	}
+	if want == "" {
 		return "", "", "", fmt.Errorf("%s: a binary name is required (try --list)", asset.Name)
 	}
 	if !buildAllowed(asset, sel.Build) {
@@ -56,9 +60,9 @@ func (f *Fetcher) resolveRaw(ctx context.Context, asset registry.Asset, sel Sele
 	if err != nil {
 		return "", "", "", err
 	}
-	chosen, ok := matchName(sel.Binary, fileNames(entries))
+	chosen, ok := matchName(want, fileNames(entries))
 	if !ok {
-		return "", "", "", fmt.Errorf("%s: no binary matches %q in %s (try --list)", asset.Name, sel.Binary, dir)
+		return "", "", "", fmt.Errorf("%s: no binary matches %q in %s (try --list)", asset.Name, want, dir)
 	}
 	for _, e := range entries {
 		if e.Name == chosen {

@@ -30,6 +30,11 @@ func TestMatchName(t *testing.T) {
 		{"exact wins over substring", "pspy64", pspy, "pspy64", true},
 		{"substring fallback", "seat", sharp, "Seatbelt.exe", true},
 		{"no match", "mimikatz", sharp, "", false},
+		{
+			"shortest beats debug sibling", "windows_x86.zip",
+			[]string{"SharpHound_v2.13.0+debug_windows_x86.zip", "SharpHound_v2.13.0_windows_x86.zip"},
+			"SharpHound_v2.13.0_windows_x86.zip", true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

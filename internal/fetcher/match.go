@@ -13,7 +13,9 @@ func normalizeName(s string) string {
 }
 
 // matchName returns the candidate best matching want: an exact normalized match
-// first, then a substring match. The bool is false when none matches.
+// first, then the shortest substring match. Preferring the shortest substring
+// makes a plain name win over a longer decorated sibling (for example the
+// release zip over its "+debug" variant). The bool is false when none matches.
 func matchName(want string, candidates []string) (string, bool) {
 	w := normalizeName(want)
 	for _, c := range candidates {
@@ -21,10 +23,13 @@ func matchName(want string, candidates []string) (string, bool) {
 			return c, true
 		}
 	}
+	best := ""
 	for _, c := range candidates {
 		if strings.Contains(normalizeName(c), w) {
-			return c, true
+			if best == "" || len(c) < len(best) {
+				best = c
+			}
 		}
 	}
-	return "", false
+	return best, best != ""
 }
