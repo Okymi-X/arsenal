@@ -50,6 +50,9 @@ jobs:
         uses: golangci/golangci-lint-action@v8
         with:
           version: v2.1.0
+          # Compile golangci-lint with the runner's Go toolchain so its build
+          # version is not older than the go directive in go.mod.
+          install-mode: goinstall
 
   build:
     name: Build ${{ matrix.goos }}/${{ matrix.goarch }}
