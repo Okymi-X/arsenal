@@ -5,10 +5,15 @@ package registry
 type VersionRelation uint8
 
 const (
+	// VersionUntracked means the installed tag is absent from the registry.
 	VersionUntracked VersionRelation = iota
+	// VersionCurrent means the installed tag is the newest tested version.
 	VersionCurrent
+	// VersionOutdated means a newer tested version is available.
 	VersionOutdated
+	// VersionAhead means the installed tag precedes the tested recommendation.
 	VersionAhead
+	// VersionNoRecommendation means the tool has no tested registry version.
 	VersionNoRecommendation
 )
 

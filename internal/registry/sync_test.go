@@ -26,7 +26,7 @@ binary = "example"
   tested = true
   pip_spec = "example==1.0.0"
 `
-	manifest := testManifest("segments/tools.toml", []byte(segment))
+	manifest := testToolsManifest([]byte(segment))
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/registry.toml":
@@ -95,7 +95,7 @@ install_method = "pip"
 	if err := os.WriteFile(path, previous, 0o644); err != nil {
 		t.Fatalf("seed registry: %v", err)
 	}
-	manifest := testManifest("segments/tools.toml", []byte("expected"))
+	manifest := testToolsManifest([]byte("expected"))
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/registry.toml" {
 			_, _ = w.Write(manifest)

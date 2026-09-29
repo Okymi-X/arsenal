@@ -30,36 +30,55 @@ func (a *App) cmdUpgrade(args []string) error {
 	}
 	upgraded := 0
 	for _, candidate := range candidates {
-		switch candidate.relation {
-		case registry.VersionOutdated:
-			tool, _ := reg.FindTool(candidate.installed.Name)
-			resolved := resolver.Resolved{Tool: tool, Version: candidate.recommended}
-			currentManifest, err := a.store.Load()
-			if err != nil {
-				return err
-			}
-			if installed, ok := currentManifest.Find(tool.Name, candidate.recommended.Tag); ok && installationHealthy(installed) {
-				if err := a.activateInstalled(currentManifest, installed); err != nil {
-					return err
-				}
-				a.log.Printf("[ok] activated existing %s@%s", tool.Name, candidate.recommended.Tag)
-			} else if err := a.installResolved(resolved); err != nil {
-				return err
-			}
+		changed, err := a.upgradeCandidate(reg, candidate, all)
+		if err != nil {
+			return err
+		}
+		if changed {
 			upgraded++
-		case registry.VersionUntracked, registry.VersionNoRecommendation:
-			message := fmt.Sprintf("%s@%s has no safe upgrade recommendation", candidate.installed.Name, candidate.installed.Version)
-			if !all {
-				return fmt.Errorf("%s", message)
-			}
-			a.log.Warnf("%s; skipped", message)
-		case registry.VersionAhead:
-			a.log.Printf("%s@%s is ahead of the tested recommendation; unchanged", candidate.installed.Name, candidate.installed.Version)
-		case registry.VersionCurrent:
 		}
 	}
 	if upgraded == 0 {
 		a.log.Printf("no upgrades available")
 	}
 	return nil
+}
+
+func (a *App) upgradeCandidate(reg *registry.Registry, candidate updateCandidate, all bool) (bool, error) {
+	switch candidate.relation {
+	case registry.VersionOutdated:
+		return a.upgradeOutdated(reg, candidate)
+	case registry.VersionUntracked, registry.VersionNoRecommendation:
+		if !all {
+			return false, fmt.Errorf("%s@%s has no safe upgrade recommendation", candidate.installed.Name, candidate.installed.Version)
+		}
+		a.log.Warnf("%s@%s has no safe upgrade recommendation; skipped", candidate.installed.Name, candidate.installed.Version)
+	case registry.VersionAhead:
+		a.log.Printf("%s@%s is ahead of the tested recommendation; unchanged", candidate.installed.Name, candidate.installed.Version)
+	case registry.VersionCurrent:
+	}
+	return false, nil
+}
+
+func (a *App) upgradeOutdated(reg *registry.Registry, candidate updateCandidate) (bool, error) {
+	tool, err := reg.MustFindTool(candidate.installed.Name)
+	if err != nil {
+		return false, err
+	}
+	currentManifest, err := a.store.Load()
+	if err != nil {
+		return false, err
+	}
+	if installed, ok := currentManifest.Find(tool.Name, candidate.recommended.Tag); ok && installationHealthy(installed) {
+		if err := a.activateInstalled(currentManifest, installed); err != nil {
+			return false, err
+		}
+		a.log.Printf("[ok] activated existing %s@%s", tool.Name, candidate.recommended.Tag)
+		return true, nil
+	}
+	resolved := resolver.Resolved{Tool: tool, Version: candidate.recommended}
+	if err := a.installResolved(resolved); err != nil {
+		return false, err
+	}
+	return true, nil
 }

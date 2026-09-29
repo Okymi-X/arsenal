@@ -20,7 +20,7 @@ binary = "example"
   tested = true
   pip_spec = "example==1.0.0"
 `)
-	manifest := testManifest("segments/tools.toml", segment)
+	manifest := testToolsManifest(segment)
 
 	data, err := Expand(manifest, func(name string) ([]byte, error) {
 		if name != "segments/tools.toml" {
@@ -46,7 +46,7 @@ func TestExpandRejectsMissingOrMismatchedChecksum(t *testing.T) {
 	if _, err := Expand(missing, func(string) ([]byte, error) { return segment, nil }); err == nil {
 		t.Fatal("expected missing checksum to be rejected")
 	}
-	tampered := testManifest("segments/tools.toml", []byte("original"))
+	tampered := testToolsManifest([]byte("original"))
 	if _, err := Expand(tampered, func(string) ([]byte, error) { return segment, nil }); err == nil {
 		t.Fatal("expected mismatched checksum to be rejected")
 	}
@@ -84,7 +84,8 @@ func TestExpandRejectsOversizedRegistry(t *testing.T) {
 	}
 }
 
-func testManifest(name string, segment []byte) []byte {
+func testToolsManifest(segment []byte) []byte {
+	const name = "segments/tools.toml"
 	digest := sha256.Sum256(segment)
 	return fmt.Appendf(nil, "version = %q\nsegments = [%q]\n[segment_sha256]\n%q = %q\n",
 		"1", name, name, fmt.Sprintf("%x", digest))

@@ -28,30 +28,9 @@ func (a *App) cmdSync(args []string) error {
 	if options.listRefs {
 		return a.listGitHubRefs(repo)
 	}
-	source := a.source
-	sourceURL := a.cfg.RegistryURL
-	if options.reference != "" || options.repo != "" {
-		selected := options.reference
-		if selected == "" {
-			selected = "main"
-		}
-		client, err := registry.NewGitHubClient(repo, a.cfg.RegistryPath, githubToken())
-		if err != nil {
-			return err
-		}
-		a.log.Printf("-> resolving GitHub ref %s from %s", selected, repo)
-		commit, err := client.ResolveCommit(context.Background(), selected)
-		if err != nil {
-			return err
-		}
-		sourceURL, err = client.RegistryURL(commit)
-		if err != nil {
-			return err
-		}
-		source = registry.NewFileSource(a.paths.RegistryFile, sourceURL)
-		a.cfg.RegistryRepo = repo
-		a.cfg.RegistryRef = selected
-		a.cfg.RegistryCommit = commit
+	source, sourceURL, pinned, err := a.syncSource(options, repo)
+	if err != nil {
+		return err
 	}
 	if err := a.paths.EnsureDirs(); err != nil {
 		return err
@@ -64,7 +43,7 @@ func (a *App) cmdSync(args []string) error {
 	if err != nil {
 		return err
 	}
-	if options.reference != "" || options.repo != "" {
+	if pinned {
 		a.cfg.RegistryURL = sourceURL
 		if err := a.paths.SaveConfig(a.cfg); err != nil {
 			return err
@@ -73,6 +52,33 @@ func (a *App) cmdSync(args []string) error {
 	}
 	a.log.Printf("[ok] registry updated: %d tools (schema %s)", len(reg.Tools), reg.Version)
 	return nil
+}
+
+func (a *App) syncSource(options syncOptions, repo string) (registry.Source, string, bool, error) {
+	if options.reference == "" && options.repo == "" {
+		return a.source, a.cfg.RegistryURL, false, nil
+	}
+	selected := options.reference
+	if selected == "" {
+		selected = "main"
+	}
+	client, err := registry.NewGitHubClient(repo, a.cfg.RegistryPath, githubToken())
+	if err != nil {
+		return nil, "", false, err
+	}
+	a.log.Printf("-> resolving GitHub ref %s from %s", selected, repo)
+	commit, err := client.ResolveCommit(context.Background(), selected)
+	if err != nil {
+		return nil, "", false, err
+	}
+	sourceURL, err := client.RegistryURL(commit)
+	if err != nil {
+		return nil, "", false, err
+	}
+	a.cfg.RegistryRepo = repo
+	a.cfg.RegistryRef = selected
+	a.cfg.RegistryCommit = commit
+	return registry.NewFileSource(a.paths.RegistryFile, sourceURL), sourceURL, true, nil
 }
 
 func (a *App) listGitHubRefs(repo string) error {
