@@ -5,46 +5,56 @@ versions. It is embedded in the binary (so arsenal works offline) and written to
 the user's data directory on first run. `arsenal sync` refreshes it from the
 configured upstream URL.
 
-## Authoring: segments
+## Authoring: manifest and segments
 
-To keep it maintainable, the catalog is authored as small per-category segment
-files under `registry/segments/` (`ad.toml`, `web.toml`, `recon.toml`,
-`password.toml`, `misc.toml`, `assets.toml`), plus `_meta.toml` holding the
-`version` and `updated` keys. Each segment contains only `[[tool]]` (or
-`[[asset]]`) blocks - no top-level keys.
+`registry/registry.toml` is a small ordered manifest. Tool and asset entries
+live in topical files under `registry/segments/`; each segment contains only
+`[[tool]]` or `[[asset]]` blocks. New topics can be added without growing an
+existing category file.
 
-`tools/regbuild` assembles them, in a fixed category order, into the single
-canonical `registry/registry.toml`, which is what gets embedded, synced, and
-verified. That file is generated - do not edit it by hand.
+Builds embed the manifest and every segment. Local loads and remote sync verify
+each segment's SHA-256, expand the files in manifest order, validate the
+complete catalog, and expose one in-memory registry. Remote segments download
+concurrently with a fixed worker bound. Legacy monolithic registries remain
+readable for backward compatibility.
 
 To change the catalog:
 
 ```
-# 1. edit the relevant registry/segments/*.toml (and bump _meta.toml: updated)
-# 2. regenerate the canonical file
+# 1. edit the relevant registry/segments/*.toml
+# 2. bump `updated` in registry/registry.toml
+# 3. add the path to `segments` only when creating a new segment
 make registry
-# 3. verify every entry still resolves upstream
+# 4. verify every entry still resolves upstream
 make verify-registry
 ```
 
-CI fails if `registry.toml` is out of date with its segments (`make
-registry-check`, which runs `regbuild -verify`).
+`make registry` and CI reject missing, unlisted, duplicate, unsafe, or invalid
+segments.
 
 ## Top level
 
 ```toml
 version = "1"          # registry schema version
-updated = "2026-06-14" # ISO-8601 date of the last revision
+updated = "2026-09-29" # ISO-8601 date of the last revision
+segments = [
+  "segments/ad.toml",
+  "segments/ad-recon.toml",
+  "segments/web.toml",
+]
 
-[[tool]]
-# ... one block per tool
+[segment_sha256]
+"segments/ad.toml" = "<64 lowercase hexadecimal characters>"
+"segments/ad-recon.toml" = "<64 lowercase hexadecimal characters>"
+"segments/web.toml" = "<64 lowercase hexadecimal characters>"
 ```
 
-| Field     | Type   | Required | Description                          |
-|-----------|--------|----------|--------------------------------------|
-| `version` | string | yes      | Registry schema version.             |
-| `updated` | string | no       | ISO-8601 date the registry changed.  |
-| `tool`    | array  | yes      | Array of tool tables (`[[tool]]`).   |
+| Field      | Type     | Required | Description                         |
+|------------|----------|----------|-------------------------------------|
+| `version`  | string   | yes      | Registry schema version.            |
+| `updated`  | string   | no       | ISO-8601 date the registry changed. |
+| `segments` | [string] | yes      | Ordered relative segment paths.     |
+| `segment_sha256` | table | yes | Generated SHA-256 pin for each segment. |
 
 ## Tool entry
 
@@ -130,7 +140,7 @@ so leave such versions `tested = false`.
 - `pip` - installs `pip_spec` (or `name==tag` if absent) into a venv.
 - `gitpip` - installs `git+<repo>@<commit>` into a venv.
 - `binary`, `gobin`, `cargo` - reserved; implementations are stubbed and will
-  fail loudly until completed (see docs/architecture.md).
+  fail loudly until completed (see `ARCHITECTURE.md`).
 
 ## Asset entry
 
@@ -172,17 +182,14 @@ on the command line) from the repository's latest release. A `github-raw` asset
 fetches a file from `dir` (overridable with `--build`) on `branch`; a binary
 name is required and `--list` enumerates the directory.
 
-## Install method semantics
-
-- `pip` - installs `pip_spec` (or `name==tag` if absent) into a venv.
-- `gitpip` - installs `git+<repo>@<commit>` into a venv.
-- `binary`, `gobin`, `cargo` - reserved; implementations are stubbed and will
-  fail loudly until completed (see docs/architecture.md).
-
 ## Validation rules
 
-The loader rejects a registry where a tool has no `name`, no `install_method`,
-or no versions, or where two tools share a `name`.
+Manifest paths must be relative `.toml` paths with no traversal or duplicates.
+Every segment must have exactly one valid SHA-256 pin. Remote segments and
+redirects must remain on the manifest's origin, and each response plus the
+assembled catalog has a size bound. The loader also rejects a registry where a
+tool has no `name`, no `install_method`, or no versions, duplicate version tags,
+or duplicate tool names.
 
 ## Upstream verification
 

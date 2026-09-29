@@ -3,7 +3,7 @@
 //
 // TODO(arsenal#5): Implement bundle export/import. The export must capture the
 // resolved lockfile plus vendored wheels and source archives so a target host
-// can reconstruct environments with no network. Tracking: docs/architecture.md
+// can reconstruct environments with no network. Tracking: docs/ARCHITECTURE.md
 // "Offline bundling". The Exporter interface is defined now so the CLI can be
 // wired ahead of the implementation.
 package bundle
@@ -26,12 +26,12 @@ func NewStubExporter() *StubExporter { return &StubExporter{} }
 
 // Export is not implemented yet.
 func (e *StubExporter) Export(opName, destDir string) error {
-	return fmt.Errorf("offline bundle export not implemented yet (see docs/architecture.md)")
+	return fmt.Errorf("offline bundle export not implemented yet (see docs/ARCHITECTURE.md)")
 }
 
 // Import is not implemented yet.
 func (e *StubExporter) Import(srcPath string) error {
-	return fmt.Errorf("offline bundle import not implemented yet (see docs/architecture.md)")
+	return fmt.Errorf("offline bundle import not implemented yet (see docs/ARCHITECTURE.md)")
 }
 
 var _ Exporter = (*StubExporter)(nil)

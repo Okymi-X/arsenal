@@ -10,7 +10,7 @@ import (
 // CargoMethod installs a Rust tool via "cargo install" pinned to a version.
 //
 // TODO(arsenal#4): Implement cargo install into a per-tool root.
-// Tracking: docs/architecture.md "Cargo install method".
+// Tracking: docs/ARCHITECTURE.md "Cargo install method".
 type CargoMethod struct{}
 
 // NewCargoMethod returns a CargoMethod.

@@ -31,7 +31,7 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
-      - name: Verify registry.toml is assembled from its segments
+      - name: Validate registry manifest and segments
         run: go run ./tools/regbuild -verify
       - name: Verify against PyPI and GitHub
         env:

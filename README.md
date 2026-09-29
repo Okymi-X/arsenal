@@ -1,5 +1,9 @@
 # arsenal
 
+<p align="center">
+  <img src="assets/branding/arsenal-icon.png" width="192" alt="Arsenal toolbox icon">
+</p>
+
 [![CI](https://github.com/Okymi-X/arsenal/actions/workflows/ci.yml/badge.svg)](https://github.com/Okymi-X/arsenal/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/Okymi-X/arsenal?sort=semver)](https://github.com/Okymi-X/arsenal/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -53,8 +57,11 @@ export PATH="$HOME/.local/share/arsenal/bin:$PATH"
 ```
 arsenal search ad              # browse the registry by keyword
 arsenal info nxc               # see tested versions of NetExec
+arsenal versions nxc --github # inspect upstream GitHub tags
 arsenal install nxc            # install the newest tested version
 arsenal install impacket@0.12.0
+arsenal outdated               # show safe tested upgrades
+arsenal upgrade nxc            # keep the old version for rollback
 arsenal list                   # show installed tools; [*] marks active
 arsenal run nxc -- smb 10.0.0.1
 arsenal switch nxc 1.3.0       # repoint shims to another installed version
@@ -79,7 +86,13 @@ Refresh the registry from upstream at any time:
 
 ```
 arsenal sync
+arsenal sync --list-refs
+arsenal sync --ref v1.0.0
 ```
+
+The repository keeps a small ordered manifest at `registry/registry.toml` and
+the actual entries in topical files under `registry/segments/`, avoiding a
+second generated monolithic catalog.
 
 The full schema is documented in [docs/registry-format.md](docs/registry-format.md).
 
@@ -104,7 +117,14 @@ arsenal op import redteam-q3.lock.toml
 
 ## Documentation
 
-- [docs/architecture.md](docs/architecture.md) - package layout and interfaces
+- [docs/PRD.md](docs/PRD.md) - product scope and acceptance criteria
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) - package layout, interfaces,
+  and trust boundaries
+- [docs/RULES.md](docs/RULES.md) - mandatory engineering and security rules
+- [docs/DESIGN.md](docs/DESIGN.md) - CLI and implementation design decisions
+- [docs/TASKS.md](docs/TASKS.md) - verified repository-level work plan
+- [docs/MEMORY.md](docs/MEMORY.md) - durable project facts for maintainers and
+  agents
 - [docs/registry-format.md](docs/registry-format.md) - the registry schema
 - [docs/usage.md](docs/usage.md) - full command reference
 

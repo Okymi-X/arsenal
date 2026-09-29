@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	path := flag.String("registry", "registry/registry.toml", "path to registry.toml")
+	path := flag.String("registry", "registry/registry.toml", "path to registry manifest or legacy file")
 	flag.Parse()
 
 	reg, err := registry.Load(*path)

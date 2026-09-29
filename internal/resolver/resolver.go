@@ -77,13 +77,8 @@ func selectVersion(tool registry.Tool, tag string) (registry.Version, error) {
 // pickDefault chooses the newest tested version, else the newest version.
 // Versions are stored newest-first, so the first match wins.
 func pickDefault(tool registry.Tool) (registry.Version, error) {
-	for _, v := range tool.Versions {
-		if v.Tested {
-			return v, nil
-		}
-	}
-	if len(tool.Versions) > 0 {
-		return tool.Versions[0], nil
+	if version, ok := tool.DefaultVersion(); ok {
+		return version, nil
 	}
 	return registry.Version{}, fmt.Errorf("tool %q has no versions", tool.Name)
 }

@@ -1,5 +1,9 @@
 # Architecture
 
+This document defines the runtime structure, ownership boundaries, and trust
+boundaries of arsenal. Mandatory implementation constraints live in
+`RULES.md`.
+
 arsenal is structured around the Single Responsibility Principle: one concern
 per package, one primary responsibility per file, one job per function. Files
 are kept small (soft cap ~180 lines). Backends and install methods are defined
@@ -78,7 +82,12 @@ Load() (*Registry, error)
 Sync() error
 ```
 
-`FileSource` loads a local TOML file and refreshes it from a remote URL.
+`FileSource` loads either an assembled local TOML catalog or a segmented
+manifest. Remote sync fetches checksum-pinned same-origin segments with size,
+path, redirect, and concurrency bounds, validates the complete catalog, then
+atomically replaces the local assembled copy. `GitHubClient` lists tags and
+resolves user-selected refs to immutable commits before a pull or explicit
+GitHub tool install. Legacy single-file registry URLs remain supported.
 
 ### store.Store
 
@@ -124,3 +133,26 @@ not-implemented errors so misconfiguration fails loudly:
 - **Offline bundling** (`internal/bundle`, TODO arsenal#5): vendor wheels and
   source archives alongside a lockfile so an air-gapped host can reconstruct an
   environment with no network.
+
+## Trust boundaries
+
+arsenal crosses four important boundaries:
+
+1. CLI arguments, environment variables, configuration, manifests, and
+   lockfiles enter from the local operator environment.
+2. Registry sync, package managers, source repositories, and asset downloads
+   return remote, untrusted content.
+3. Installers start external runtimes and third-party tools with inherited host
+   access unless an isolation backend constrains them.
+4. Stores, shims, environments, assets, and lockfiles write to the local
+   filesystem.
+
+Validation belongs at the package that first crosses each boundary. Safe values
+then move inward as typed data. Path containment, subprocess argument handling,
+network limits, integrity checks, and atomic writes follow `RULES.md` and
+`DESIGN.md`.
+
+arsenal manages tools used for authorized testing, but it does not authorize or
+scope their execution. The operator selects targets and remains responsible for
+permission. The CLI must not infer targets or automatically execute a fetched
+tool.

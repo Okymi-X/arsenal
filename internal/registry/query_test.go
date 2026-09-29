@@ -81,3 +81,19 @@ func TestByCategory(t *testing.T) {
 		t.Fatalf("ByCategory(ad) = %+v", ad)
 	}
 }
+
+func TestParseRejectsDuplicateVersionTags(t *testing.T) {
+	data := []byte(`
+version = "1"
+[[tool]]
+name = "duplicate"
+install_method = "pip"
+  [[tool.version]]
+  tag = "1.0.0"
+  [[tool.version]]
+  tag = "1.0.0"
+`)
+	if _, err := Parse(data); err == nil {
+		t.Fatal("expected duplicate version tags to be rejected")
+	}
+}

@@ -10,7 +10,7 @@ import (
 // BinaryMethod installs a prebuilt release binary for a tool.
 //
 // TODO(arsenal#2): Implement release-asset download and checksum verification.
-// Tracking: docs/architecture.md "Binary install method".
+// Tracking: docs/ARCHITECTURE.md "Binary install method".
 type BinaryMethod struct{}
 
 // NewBinaryMethod returns a BinaryMethod.

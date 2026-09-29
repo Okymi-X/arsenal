@@ -2,7 +2,7 @@
 // heavy system dependencies, using podman or docker.
 //
 // TODO(arsenal#1): Implement the container backend. The interface is wired so
-// the orchestrator can select it once ready. Tracking: docs/architecture.md
+// the orchestrator can select it once ready. Tracking: docs/ARCHITECTURE.md
 // "Container backend". Until implemented, every method returns a clear
 // not-implemented error so misconfiguration fails loudly rather than silently.
 package container
@@ -25,7 +25,7 @@ type Backend struct {
 // New returns a container Backend using the given runtime binary.
 func New(runtime string) *Backend { return &Backend{Runtime: runtime} }
 
-var errNotImplemented = fmt.Errorf("container backend not implemented yet (see docs/architecture.md)")
+var errNotImplemented = fmt.Errorf("container backend not implemented yet (see docs/ARCHITECTURE.md)")
 
 // Create is not implemented.
 func (b *Backend) Create(tool, version string) error { return errNotImplemented }

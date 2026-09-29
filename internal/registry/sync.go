@@ -2,7 +2,6 @@ package registry
 
 import (
 	"fmt"
-	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -10,7 +9,8 @@ import (
 )
 
 // FileSource loads a registry from a local TOML file and refreshes it from a
-// remote URL. It is the default Source used by the CLI.
+// remote manifest or legacy monolithic URL. It is the default Source used by
+// the CLI.
 type FileSource struct {
 	path string
 	url  string
@@ -37,7 +37,7 @@ func (s *FileSource) Sync() error {
 	if s.url == "" {
 		return fmt.Errorf("no registry URL configured")
 	}
-	data, err := s.fetch()
+	data, err := s.fetchRegistry()
 	if err != nil {
 		return err
 	}
@@ -47,32 +47,41 @@ func (s *FileSource) Sync() error {
 	return s.writeAtomic(data)
 }
 
-func (s *FileSource) fetch() ([]byte, error) {
-	resp, err := s.http.Get(s.url)
-	if err != nil {
-		return nil, fmt.Errorf("fetch registry: %w", err)
-	}
-	defer func() { _ = resp.Body.Close() }()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("fetch registry: status %d", resp.StatusCode)
-	}
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("read registry response: %w", err)
-	}
-	return data, nil
-}
-
 func (s *FileSource) writeAtomic(data []byte) error {
-	if err := os.MkdirAll(filepath.Dir(s.path), 0o755); err != nil {
+	dir := filepath.Dir(s.path)
+	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return fmt.Errorf("create registry dir: %w", err)
 	}
-	tmp := s.path + ".tmp"
-	if err := os.WriteFile(tmp, data, 0o644); err != nil {
-		return fmt.Errorf("write registry: %w", err)
+	tmp, err := os.CreateTemp(dir, ".registry-*.tmp")
+	if err != nil {
+		return fmt.Errorf("create temporary registry: %w", err)
 	}
-	if err := os.Rename(tmp, s.path); err != nil {
+	tmpPath := tmp.Name()
+	defer func() { _ = os.Remove(tmpPath) }()
+	if err := writeRegistryTemp(tmp, data); err != nil {
+		return err
+	}
+	if err := os.Rename(tmpPath, s.path); err != nil {
 		return fmt.Errorf("replace registry: %w", err)
+	}
+	return nil
+}
+
+func writeRegistryTemp(file *os.File, data []byte) error {
+	if _, err := file.Write(data); err != nil {
+		_ = file.Close()
+		return fmt.Errorf("write temporary registry: %w", err)
+	}
+	if err := file.Sync(); err != nil {
+		_ = file.Close()
+		return fmt.Errorf("sync temporary registry: %w", err)
+	}
+	if err := file.Chmod(0o644); err != nil {
+		_ = file.Close()
+		return fmt.Errorf("set registry permissions: %w", err)
+	}
+	if err := file.Close(); err != nil {
+		return fmt.Errorf("close temporary registry: %w", err)
 	}
 	return nil
 }

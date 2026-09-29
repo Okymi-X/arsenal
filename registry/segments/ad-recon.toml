@@ -1,0 +1,45 @@
+# arsenal registry segment: Active Directory reconnaissance and graph tooling
+
+[[tool]]
+name = "ldeep"
+aliases = []
+description = "In-depth LDAP enumeration utility"
+repo = "https://github.com/franc-pentest/ldeep"
+homepage = "https://github.com/franc-pentest/ldeep"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.9,<3.15"
+binary = "ldeep"
+tags = ["ldap", "enumeration", "active-directory", "recon"]
+requires_root = false
+notes = "Supports LDAP, LDAPS, Kerberos, and NTLM authentication; some Kerberos workflows require host GSSAPI libraries."
+
+  [[tool.version]]
+  tag = "2.0.3"
+  commit = ""
+  tested = true
+  pip_spec = "ldeep==2.0.3"
+  date = "2026-05-23"
+  notes = "Clean install and CLI startup verified with Python 3.14."
+
+[[tool]]
+name = "bloodhound-import"
+aliases = ["bh-import"]
+description = "Import BloodHound JSON into a Neo4j database"
+repo = "https://github.com/fox-it/bloodhound-import"
+homepage = "https://github.com/fox-it/bloodhound-import"
+category = "ad"
+install_method = "pip"
+python_version = ">=3.7"
+binary = "bloodhound-import"
+tags = ["bloodhound", "neo4j", "graph", "active-directory"]
+requires_root = false
+notes = "Targets the legacy Neo4j-backed BloodHound schema. Review delete flags before use because they can remove existing graph data."
+
+  [[tool.version]]
+  tag = "0.0.9"
+  commit = ""
+  tested = true
+  pip_spec = "bloodhound-import==0.0.9"
+  date = "2021-11-23"
+  notes = "Clean install and CLI startup verified with Python 3.14."

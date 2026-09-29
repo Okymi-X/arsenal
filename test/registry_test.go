@@ -46,3 +46,37 @@ func TestEmbeddedRegistryResolves(t *testing.T) {
 		t.Fatalf("default version %q should be tested", res.Version.Tag)
 	}
 }
+
+// TestEmbeddedRegistryIncludesVerifiedExpansion guards the installable tools
+// added from the Exegol reference set and their expected shim names.
+func TestEmbeddedRegistryIncludesVerifiedExpansion(t *testing.T) {
+	reg, err := registry.Parse(builtin.Bytes())
+	if err != nil {
+		t.Fatalf("parse: %v", err)
+	}
+	want := map[string]string{
+		"bbot":              "bbot",
+		"bloodhound-import": "bloodhound-import",
+		"censys":            "censys",
+		"fierce":            "fierce",
+		"holehe":            "holehe",
+		"ldeep":             "ldeep",
+		"maigret":           "maigret",
+		"name-that-hash":    "nth",
+		"sherlock-project":  "sherlock",
+		"ssh-audit":         "ssh-audit",
+	}
+	for name, binary := range want {
+		tool, ok := reg.FindTool(name)
+		if !ok {
+			t.Errorf("expected tool %q in registry", name)
+			continue
+		}
+		if tool.InstallMethod != "pip" || tool.Binary != binary {
+			t.Errorf("%s: install=%q binary=%q", name, tool.InstallMethod, tool.Binary)
+		}
+		if len(tool.Versions) == 0 || !tool.Versions[0].Tested {
+			t.Errorf("%s: newest version is not tested", name)
+		}
+	}
+}

@@ -1,0 +1,67 @@
+# arsenal registry segment: Network reconnaissance and service auditing
+
+[[tool]]
+name = "bbot"
+aliases = []
+description = "Recursive OSINT and attack-surface reconnaissance framework"
+repo = "https://github.com/blacklanternsecurity/bbot"
+homepage = "https://www.blacklanternsecurity.com/bbot/"
+category = "recon"
+install_method = "pip"
+python_version = ">=3.10,<3.15"
+binary = "bbot"
+tags = ["osint", "subdomain", "attack-surface", "recon", "web"]
+requires_root = false
+notes = "Core installs in isolation; individual modules may need API keys, external executables, or explicit active-scan authorization."
+
+  [[tool.version]]
+  tag = "3.0.2"
+  commit = ""
+  tested = true
+  pip_spec = "bbot==3.0.2"
+  date = "2026-08-24"
+  notes = "Clean install and CLI startup verified with Python 3.14."
+
+[[tool]]
+name = "fierce"
+aliases = []
+description = "DNS reconnaissance for locating non-contiguous address space"
+repo = "https://github.com/mschwager/fierce"
+homepage = "https://github.com/mschwager/fierce"
+category = "recon"
+install_method = "pip"
+python_version = ">=3.8.1,<4"
+binary = "fierce"
+tags = ["dns", "subdomain", "network", "recon"]
+requires_root = false
+notes = "Performs active DNS queries; constrain discovery to authorized domains."
+
+  [[tool.version]]
+  tag = "1.6.0"
+  commit = ""
+  tested = true
+  pip_spec = "fierce==1.6.0"
+  date = "2024-08-28"
+  notes = "Clean install and CLI startup verified with Python 3.14."
+
+[[tool]]
+name = "ssh-audit"
+aliases = ["sshaudit"]
+description = "Audit SSH servers and clients for configuration weaknesses"
+repo = "https://github.com/jtesta/ssh-audit"
+homepage = "https://www.ssh-audit.com/"
+category = "recon"
+install_method = "pip"
+python_version = ">=3.10,<4"
+binary = "ssh-audit"
+tags = ["ssh", "audit", "crypto", "configuration", "recon"]
+requires_root = false
+notes = "Reports algorithms, key sizes, findings, and hardening recommendations without authenticating."
+
+  [[tool.version]]
+  tag = "3.9.0"
+  commit = ""
+  tested = true
+  pip_spec = "ssh-audit==3.9.0"
+  date = "2026-07-04"
+  notes = "Clean install and CLI startup verified with Python 3.14."

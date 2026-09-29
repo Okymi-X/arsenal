@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Official Arsenal toolbox icon under `assets/branding/` and README branding.
+- `versions <tool> --github` and explicit `install <tool> --github-ref <ref>`
+  workflows. GitHub refs are resolved to immutable commits before installation;
+  direct upstream installs are clearly marked untested.
+- `outdated` and `upgrade` commands that target the newest tested registry
+  version, retain prior environments for rollback, and refuse silent downgrades
+  or updates of untracked versions.
+- GitHub-aware registry synchronization with `sync --list-refs`, `--ref`, and
+  `--repo`, including persistence of the selected ref and resolved commit.
+
+- Ten independently install-verified Python tools selected from Exegol's
+  official image build set: `ldeep`, `bloodhound-import`, `bbot`, `fierce`,
+  `ssh-audit`, `holehe`, `sherlock-project`, `maigret`, `censys`, and
+  `name-that-hash`. Exact versions and CLI entrypoints were verified in clean
+  Python 3.14 virtual environments.
+- Topical `ad-recon`, `recon-audit`, and `osint` registry segments so future
+  additions do not grow already broad category files.
+
+### Changed
+
+- Replaced the 40 KB generated `registry/registry.toml` catalog with a small,
+  ordered manifest. Builds, local validation, upstream verification, and
+  `arsenal sync` now assemble the referenced segment files directly while
+  retaining support for legacy monolithic registry URLs.
+- Registry segments now download with bounded concurrency, and reinstalling an
+  already healthy version simply activates it instead of contacting upstream.
+
+### Security
+
+- Registry sync now rejects unsafe or duplicate segment paths, cross-origin
+  segment resolution, oversized responses, and oversized assembled catalogs.
+  Temporary files use unpredictable names and a failed sync preserves the
+  previous valid registry.
+- Every segmented registry file is SHA-256 pinned in the manifest. A mixed or
+  tampered remote snapshot fails before the active registry is replaced.
+
 ## [0.3.1] - 2026-06-14
 
 ### Added
@@ -164,7 +202,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Stubbed
 
 - Container isolation backend (podman/docker), wired behind the Backend
-  interface. See docs/architecture.md.
+  interface. See docs/ARCHITECTURE.md.
 - Offline bundle export/import, wired behind the Exporter interface.
 - binary, go install, and cargo install methods, wired behind the
   InstallMethod interface.

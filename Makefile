@@ -18,11 +18,11 @@ build: registry-check
 	mkdir -p $(BIN_DIR)
 	CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -o $(BIN_DIR)/$(BINARY) $(PKG)
 
-## registry: reassemble registry/registry.toml from registry/segments/*.toml
+## registry: regenerate checksums and validate the segmented registry
 registry:
-	go run ./tools/regbuild
+	go run ./tools/regbuild -write
 
-## registry-check: fail if registry.toml is out of date with its segments
+## registry-check: fail if the registry manifest or segments are invalid
 registry-check:
 	go run ./tools/regbuild -verify
 

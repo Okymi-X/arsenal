@@ -3,6 +3,7 @@ package registry
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/BurntSushi/toml"
 )
@@ -13,7 +14,13 @@ func Load(path string) (*Registry, error) {
 	if err != nil {
 		return nil, fmt.Errorf("read registry %s: %w", path, err)
 	}
-	return Parse(data)
+	expanded, err := Expand(data, func(name string) ([]byte, error) {
+		return os.ReadFile(filepath.Join(filepath.Dir(path), filepath.FromSlash(name)))
+	})
+	if err != nil {
+		return nil, err
+	}
+	return Parse(expanded)
 }
 
 // Parse decodes a registry from raw TOML bytes.
@@ -29,6 +36,9 @@ func Parse(data []byte) (*Registry, error) {
 }
 
 func validate(reg *Registry) error {
+	if len(reg.Tools) == 0 && len(reg.Assets) == 0 {
+		return fmt.Errorf("registry has no tools or assets")
+	}
 	seen := make(map[string]struct{}, len(reg.Tools))
 	for i := range reg.Tools {
 		t := &reg.Tools[i]
@@ -44,6 +54,16 @@ func validate(reg *Registry) error {
 		}
 		if len(t.Versions) == 0 {
 			return fmt.Errorf("tool %q has no versions", t.Name)
+		}
+		versions := make(map[string]struct{}, len(t.Versions))
+		for _, version := range t.Versions {
+			if version.Tag == "" {
+				return fmt.Errorf("tool %q has a version with no tag", t.Name)
+			}
+			if _, duplicate := versions[version.Tag]; duplicate {
+				return fmt.Errorf("tool %q has duplicate version %q", t.Name, version.Tag)
+			}
+			versions[version.Tag] = struct{}{}
 		}
 	}
 	return validateAssets(reg)

@@ -9,7 +9,8 @@ import "fmt"
 //	arsenal completion fish > ~/.config/fish/completions/arsenal.fish
 //
 // The scripts complete subcommands and, dynamically, registry tool names (for
-// install and info) and installed tool names (for run, remove, and switch).
+// install, info, and versions) and installed tool names (for run, remove, switch,
+// outdated, and upgrade).
 func (a *App) cmdCompletion(args []string) error {
 	if len(args) != 1 {
 		return usageError("completion <bash|zsh|fish>")

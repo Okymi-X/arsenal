@@ -1,7 +1,6 @@
 # arsenal registry segment: Recon
 #
-# Authored here; assembled into registry/registry.toml by tools/regbuild.
-# Contains only [[tool]] blocks - no top-level keys.
+# Referenced by registry/registry.toml; contains only [[tool]] blocks.
 
 [[tool]]
 name = "rustscan"

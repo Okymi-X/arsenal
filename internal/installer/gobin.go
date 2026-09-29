@@ -10,7 +10,7 @@ import (
 // GoBinMethod installs a tool via "go install" pinned to a version.
 //
 // TODO(arsenal#3): Implement go install into a per-tool GOBIN.
-// Tracking: docs/architecture.md "Go install method".
+// Tracking: docs/ARCHITECTURE.md "Go install method".
 type GoBinMethod struct{}
 
 // NewGoBinMethod returns a GoBinMethod.

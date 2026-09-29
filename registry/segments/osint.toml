@@ -1,0 +1,89 @@
+# arsenal registry segment: Open-source intelligence
+
+[[tool]]
+name = "holehe"
+aliases = []
+description = "Check whether an email is registered with public online services"
+repo = "https://github.com/megadose/holehe"
+homepage = "https://github.com/megadose/holehe"
+category = "recon"
+install_method = "pip"
+python_version = ""
+binary = "holehe"
+tags = ["email", "accounts", "osint", "recon"]
+requires_root = false
+notes = "Queries account-recovery flows. Use only for authorized investigations and respect provider rate limits and privacy."
+
+  [[tool.version]]
+  tag = "1.61"
+  commit = ""
+  tested = true
+  pip_spec = "holehe==1.61"
+  date = "2022-07-21"
+  notes = "Clean install and CLI startup verified with Python 3.14."
+
+[[tool]]
+name = "sherlock-project"
+aliases = ["sherlock"]
+description = "Find public social accounts associated with a username"
+repo = "https://github.com/sherlock-project/sherlock"
+homepage = "https://sherlockproject.xyz/"
+category = "recon"
+install_method = "pip"
+python_version = ">=3.9,<4"
+binary = "sherlock"
+tags = ["username", "social-media", "osint", "recon"]
+requires_root = false
+notes = "Queries public profile endpoints across many services; results can contain false positives and require validation."
+
+  [[tool.version]]
+  tag = "0.16.2"
+  commit = ""
+  tested = true
+  pip_spec = "sherlock-project==0.16.2"
+  date = "2026-09-10"
+  notes = "Clean install and CLI startup verified with Python 3.14."
+
+[[tool]]
+name = "maigret"
+aliases = []
+description = "Collect public username profiles across online services"
+repo = "https://github.com/soxoj/maigret"
+homepage = "https://github.com/soxoj/maigret"
+category = "recon"
+install_method = "pip"
+python_version = ">=3.10,<4"
+binary = "maigret"
+tags = ["username", "social-media", "osint", "reports", "recon"]
+requires_root = false
+notes = "Produces linked profile reports from public data; validate attribution before relying on matches."
+
+  [[tool.version]]
+  tag = "0.6.6"
+  commit = ""
+  tested = true
+  pip_spec = "maigret==0.6.6"
+  date = "2026-09-18"
+  notes = "Clean install and CLI startup verified with Python 3.14."
+
+[[tool]]
+name = "censys"
+aliases = ["censys-cli"]
+description = "Query Censys internet datasets from the command line"
+repo = "https://github.com/censys/censys-python"
+homepage = "https://search.censys.io/"
+category = "recon"
+install_method = "pip"
+python_version = ">=3.9"
+binary = "censys"
+tags = ["internet", "search", "certificates", "hosts", "osint", "recon"]
+requires_root = false
+notes = "Most searches require Censys API credentials; keep them in the tool's supported configuration and out of logs."
+
+  [[tool.version]]
+  tag = "2.3.0"
+  commit = ""
+  tested = true
+  pip_spec = "censys==2.3.0"
+  date = "2026-08-28"
+  notes = "Clean install and CLI startup verified with Python 3.14."

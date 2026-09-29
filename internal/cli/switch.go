@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"path/filepath"
 )
 
 // cmdSwitch makes a specific installed version the active one by repointing
@@ -20,16 +19,7 @@ func (a *App) cmdSwitch(args []string) error {
 	if !ok {
 		return fmt.Errorf("%s@%s is not installed", name, version)
 	}
-	for _, bin := range target.Binaries {
-		dest := filepath.Join(target.Path, "bin", bin)
-		if err := a.shims.Write(bin, dest); err != nil {
-			return err
-		}
-	}
-	if !m.SetActive(name, version) {
-		return fmt.Errorf("failed to activate %s@%s", name, version)
-	}
-	if err := a.store.Save(m); err != nil {
+	if err := a.activateInstalled(m, target); err != nil {
 		return err
 	}
 	a.log.Printf("[ok] switched %s to %s", name, version)

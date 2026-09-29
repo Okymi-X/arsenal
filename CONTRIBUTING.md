@@ -6,15 +6,11 @@ that spirit.
 
 ## Ground rules
 
-- Single Responsibility Principle: one concern per package, one primary
-  responsibility per file, one job per function.
-- Small files (soft cap ~180 lines) and small functions. Split by
-  responsibility rather than growing a file.
-- No emoji anywhere: code, comments, docs, commit messages, or CLI output. Use
-  ASCII markers: `[ok]`, `[fail]`, `[warn]`, `->`.
-- Program to interfaces; inject concrete implementations. No global mutable
-  state. Wrap errors with context (`fmt.Errorf("...: %w", err)`).
-- Every exported symbol and every package has a godoc comment.
+All changes must follow [docs/RULES.md](docs/RULES.md), the single source of
+truth for responsibility boundaries, file and function size, reuse, secure
+design, testing, and completion criteria. Read [docs/PRD.md](docs/PRD.md) and
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) before changing product behavior or
+package boundaries.
 
 ## Development
 
@@ -25,8 +21,8 @@ make lint      # golangci-lint (config in .golangci.yml)
 make fmt       # gofumpt -w .
 ```
 
-Before opening a pull request, ensure `go vet ./...`, `gofmt -l .` (empty),
-`make test`, and `make lint` all pass. CI runs the same checks.
+Before opening a pull request, run the completion checks in
+[docs/RULES.md](docs/RULES.md). CI repeats the applicable checks.
 
 ## Tests
 
@@ -36,13 +32,14 @@ real filesystem where avoidable.
 
 ## Adding tools to the registry
 
-Edit the per-category segment file under `registry/segments/` (not the generated
-`registry/registry.toml`), then run `make registry` to reassemble it and `make
-verify-registry` to confirm the entry resolves upstream. Follow
-`docs/registry-format.md`. Only set `tested = true` on a version you have
-actually verified. Include the pinned `commit` for `gitpip` tools and a
-`pip_spec` for `pip` tools. Precompiled upload-binaries go in
-`registry/segments/assets.toml` as `[[asset]]` blocks.
+Edit the appropriate topical file under `registry/segments/`, then run `make
+registry` to validate the manifest and `make verify-registry` to confirm every
+entry resolves upstream. Add a path to the small `registry/registry.toml`
+manifest only when creating a segment. Follow `docs/registry-format.md`. Only
+set `tested = true` on a version you have actually installed and invoked in a
+clean environment. Include the pinned `commit` for `gitpip` tools and a
+`pip_spec` for `pip` tools. Precompiled upload-binaries go in an asset segment
+as `[[asset]]` blocks.
 
 ## Commits and versioning
 

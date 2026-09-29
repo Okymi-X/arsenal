@@ -16,12 +16,29 @@ arsenal [-v|--verbose] <command> [args]
 
 ```
 arsenal install <tool>[@version]
+arsenal install <tool> --github-ref <tag|branch|sha>
 ```
 
 Resolves the tool against the registry, creates an isolated environment,
 installs the pinned version, writes shims, and marks it active. Without a
 version, the newest tested version is selected. A warning is printed if the
 selected version is not flagged tested.
+
+The explicit `--github-ref` form is available for Python tools hosted on
+GitHub. Arsenal resolves the supplied tag, branch, or SHA through GitHub to an
+immutable commit before installation and records it as `github-<commit>`. This
+bypasses the curated tested-version guarantee and always prints a warning. Set
+`GITHUB_TOKEN` to raise GitHub API rate limits; the token is never persisted.
+
+### versions
+
+```
+arsenal versions <tool>
+arsenal versions <tool> --github
+```
+
+Lists curated versions or queries the tool's GitHub repository for upstream
+tags and their commit prefixes.
 
 ### remove
 
@@ -39,6 +56,20 @@ arsenal switch <tool> <version>
 ```
 
 Repoints the tool's shims to an already-installed version and marks it active.
+
+### outdated and upgrade
+
+```
+arsenal outdated [tool]
+arsenal upgrade <tool>
+arsenal upgrade --all
+```
+
+`outdated` compares active installs with each tool's newest tested registry
+entry. `upgrade` installs and activates only a safe tested successor. It never
+downgrades an untested version that is newer in registry order and never
+changes an unknown custom version. The previous environment is retained, so
+`switch` provides rollback.
 
 ### list
 
@@ -170,10 +201,20 @@ lockfile.
 
 ```
 arsenal sync
+arsenal sync --list-refs [--repo owner/repo]
+arsenal sync --ref <tag|branch|sha> [--repo owner/repo]
 ```
 
-Downloads the registry from the configured upstream URL, validates it, and
-replaces the local copy atomically.
+Downloads the registry manifest and its same-origin segments from the
+configured upstream URL, verifies all declared segment checksums, validates the
+complete catalog, and atomically replaces the local copy. Segment transfers are
+bounded and concurrent. Legacy single-file registries are still accepted.
+
+`--list-refs` queries GitHub tags. `--ref` resolves a selected tag, branch, or
+SHA to an immutable commit, downloads the registry from that snapshot, and
+stores both the selection and resolved commit in configuration. `--repo`
+selects another `owner/repo`. A `GITHUB_TOKEN` may be supplied through the
+environment and is never written to configuration.
 
 ### doctor
 
@@ -191,7 +232,7 @@ directories, pruning manifest entries whose environments are gone).
 arsenal bundle --offline [op]
 ```
 
-Exports a self-contained offline bundle. Stubbed; see docs/architecture.md.
+Exports a self-contained offline bundle. Stubbed; see `ARCHITECTURE.md`.
 
 ### version
 
@@ -213,6 +254,10 @@ Prints the build version, injected at link time.
 ```json
 {
   "registry_url": "https://raw.githubusercontent.com/Okymi-X/arsenal/main/registry/registry.toml",
+  "registry_repo": "Okymi-X/arsenal",
+  "registry_path": "registry/registry.toml",
+  "registry_ref": "v1.0.0",
+  "registry_commit": "0123456789abcdef0123456789abcdef01234567",
   "default_backend": "venv",
   "python_bin": "python3"
 }

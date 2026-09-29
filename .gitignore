@@ -13,6 +13,5 @@ coverage.txt
 # Local arsenal state (never commit user environments)
 /.arsenal-home/
 
-# Claude Code instructions and local config (not committed)
-/CLAUDE.md
+# Claude Code local state (repository instructions live in /CLAUDE.md)
 /.claude/
