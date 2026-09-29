@@ -25,25 +25,25 @@ func (m *GitPipMethod) Supports(tool registry.Tool) bool {
 }
 
 // Install creates the environment and installs from the pinned Git revision.
-func (m *GitPipMethod) Install(ctx context.Context, tool registry.Tool, version registry.Version) error {
+func (m *GitPipMethod) Install(ctx context.Context, tool registry.Tool, version registry.Version) (Result, error) {
 	if err := ctx.Err(); err != nil {
-		return err
+		return Result{}, err
 	}
 	repo := tool.RepoFor(version)
 	if repo == "" {
-		return fmt.Errorf("tool %q has no repo for git+pip install", tool.Name)
+		return Result{}, fmt.Errorf("tool %q has no repo for git+pip install", tool.Name)
 	}
 	if err := m.backend.Create(tool.Name, version.Tag); err != nil {
-		return fmt.Errorf("provision environment: %w", err)
+		return Result{}, fmt.Errorf("provision environment: %w", err)
 	}
 	install := isolation.InstallSpec{
 		GitURL: repo,
 		Commit: version.Commit,
 	}
 	if err := m.backend.Install(install); err != nil {
-		return fmt.Errorf("install %s via git+pip: %w", tool.Name, err)
+		return Result{}, fmt.Errorf("install %s via git+pip: %w", tool.Name, err)
 	}
-	return nil
+	return Result{Path: m.backend.Path()}, nil
 }
 
 var _ InstallMethod = (*GitPipMethod)(nil)

@@ -26,7 +26,7 @@ func (f *fakeBackend) Exists() bool            { return true }
 
 func TestSelect(t *testing.T) {
 	backend := &fakeBackend{}
-	orch := NewOrchestrator(DefaultMethods(backend))
+	orch := NewOrchestrator(DefaultMethods(backend, t.TempDir()))
 	tests := []struct {
 		name   string
 		method string
@@ -53,7 +53,7 @@ func TestSelect(t *testing.T) {
 }
 
 func TestSelectUnknown(t *testing.T) {
-	orch := NewOrchestrator(DefaultMethods(&fakeBackend{}))
+	orch := NewOrchestrator(DefaultMethods(&fakeBackend{}, t.TempDir()))
 	if _, err := orch.Select(registry.Tool{Name: "t", InstallMethod: "nope"}); err == nil {
 		t.Fatal("expected error for unknown method")
 	}
@@ -61,11 +61,15 @@ func TestSelectUnknown(t *testing.T) {
 
 func TestPipInstallUsesBackend(t *testing.T) {
 	backend := &fakeBackend{}
-	orch := NewOrchestrator(DefaultMethods(backend))
+	orch := NewOrchestrator(DefaultMethods(backend, t.TempDir()))
 	tool := registry.Tool{Name: "netexec", InstallMethod: MethodPip}
 	ver := registry.Version{Tag: "1.4.0", PipSpec: "netexec==1.4.0"}
-	if err := orch.Install(context.Background(), tool, ver); err != nil {
+	result, err := orch.Install(context.Background(), tool, ver)
+	if err != nil {
 		t.Fatalf("Install: %v", err)
+	}
+	if result.Path != "/fake" {
+		t.Fatalf("Install path = %q, want /fake", result.Path)
 	}
 	if !backend.created {
 		t.Fatal("expected backend.Create to be called")

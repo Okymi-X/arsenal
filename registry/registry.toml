@@ -16,12 +16,12 @@ segments = [
 ]
 
 [segment_sha256]
-"segments/ad.toml" = "83d001da573e19141e276f25b379dc84a2084d86f4412bac446f65303bbe9da4"
+"segments/ad.toml" = "e2e0eff54a268ae18130e37815b6233cc9e4ab788efb269143d2f44ae55b9850"
 "segments/ad-recon.toml" = "019216869db0ba046de789526bb809a10a13f93fb27705c6ae33722bdba3349a"
-"segments/web.toml" = "18e3e539788c6f6b535955671ae889bf20b746d091c6a67923e124e1e95dda24"
-"segments/recon.toml" = "1c061614c75623e4d0983202f1a588e6e53d4335fd7a530a06217f1d7550a75e"
+"segments/web.toml" = "35e64fac71c05deeb5ecc9dd1dbd5cae809d6b70d5db04c764dca716c9327f00"
+"segments/recon.toml" = "415cf370d227521359dc5b517d11595a9e58f1bcf746d4e4e88f8ea0e39a68cc"
 "segments/recon-audit.toml" = "8c875deff4efaec8433791638baa59be06aaa6eea36f5d103fba11cebc947246"
 "segments/osint.toml" = "00e27671b02a83de8a5aaddf4ed40bec8942732cb9f2959feac8e1a6e8d1add1"
 "segments/password.toml" = "69c83cc9f2b7bf74051878e47746261b830bfbe542448282385fe3c7785ef318"
-"segments/misc.toml" = "db9b6a35cf14119e3d84035371bbb17251866f392de3d50b5f72c522d8bdd37d"
+"segments/misc.toml" = "dc7e3b8d981fbb6e9e2bf8b7517db5a5f80b529a76266b26a8f4781ca637751d"
 "segments/assets.toml" = "ff0ec38a63c921b333c4020c31ebcdab3f6cfd7bd49281b80e530ed985ef5ef0"

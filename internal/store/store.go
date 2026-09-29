@@ -12,7 +12,7 @@ type InstalledTool struct {
 	Name string `json:"name"`
 	// Version is the installed version tag.
 	Version string `json:"version"`
-	// Backend names the isolation backend used ("venv" or "container").
+	// Backend names the install runtime ("venv", "container", "gobin", or "cargo").
 	Backend string `json:"backend"`
 	// Path is the environment directory.
 	Path string `json:"path"`

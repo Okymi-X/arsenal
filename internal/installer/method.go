@@ -17,8 +17,14 @@ import (
 type InstallMethod interface {
 	// Supports reports whether this method handles the given tool.
 	Supports(tool registry.Tool) bool
-	// Install provisions the tool at the given version.
-	Install(ctx context.Context, tool registry.Tool, version registry.Version) error
+	// Install provisions the tool at the given version and reports its root.
+	Install(ctx context.Context, tool registry.Tool, version registry.Version) (Result, error)
+}
+
+// Result describes a completed installation without exposing installer internals.
+type Result struct {
+	Path    string
+	Backend string
 }
 
 // Method name constants matching the registry install_method field.

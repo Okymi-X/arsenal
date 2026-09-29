@@ -1,6 +1,9 @@
 package shim
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // script renders the shell shim that execs the target binary.
 //
@@ -10,6 +13,10 @@ func script(binary, targetBin string) string {
 	return fmt.Sprintf(`#!/bin/sh
 # arsenal shim for %s
 # This file is generated. Do not edit; run 'arsenal switch' instead.
-exec "%s" "$@"
-`, binary, targetBin)
+exec %s "$@"
+`, binary, shellQuote(targetBin))
+}
+
+func shellQuote(value string) string {
+	return "'" + strings.ReplaceAll(value, "'", `'"'"'`) + "'"
 }

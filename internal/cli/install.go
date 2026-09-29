@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/Okymi-X/arsenal/internal/installer"
-	"github.com/Okymi-X/arsenal/internal/isolation"
 	"github.com/Okymi-X/arsenal/internal/registry"
 	"github.com/Okymi-X/arsenal/internal/resolver"
 	"github.com/Okymi-X/arsenal/internal/store"
@@ -66,7 +65,9 @@ func parseInstallArgs(args []string) (string, string, error) {
 }
 
 func resolveGitHubInstall(tool registry.Tool, ref string) (resolver.Resolved, error) {
-	if tool.InstallMethod != installer.MethodPip && tool.InstallMethod != installer.MethodGitPip {
+	switch tool.InstallMethod {
+	case installer.MethodPip, installer.MethodGitPip, installer.MethodGoBin, installer.MethodCargo:
+	default:
 		return resolver.Resolved{}, fmt.Errorf("direct GitHub install is not supported for %s tools", tool.InstallMethod)
 	}
 	repo, err := registry.ParseGitHubRepo(tool.Repo)
@@ -81,31 +82,53 @@ func resolveGitHubInstall(tool registry.Tool, ref string) (resolver.Resolved, er
 	if err != nil {
 		return resolver.Resolved{}, err
 	}
-	tool.InstallMethod = installer.MethodGitPip
+	if tool.InstallMethod == installer.MethodPip || tool.InstallMethod == installer.MethodGitPip {
+		tool.InstallMethod = installer.MethodGitPip
+	}
+	targets := latestInstallTargets(tool)
 	return resolver.Resolved{
 		Tool: tool,
 		Version: registry.Version{
-			Tag:    "github-" + commit[:12],
-			Commit: commit,
-			Repo:   tool.Repo,
-			Tested: false,
-			Notes:  "Explicit GitHub ref " + ref,
+			Tag:            "github-" + commit[:12],
+			Commit:         commit,
+			Repo:           tool.Repo,
+			Tested:         false,
+			Notes:          "Explicit GitHub ref " + ref,
+			InstallTargets: targets,
 		},
 	}, nil
 }
 
+func latestInstallTargets(tool registry.Tool) map[string]string {
+	for _, version := range tool.Versions {
+		if len(version.InstallTargets) == 0 {
+			continue
+		}
+		result := make(map[string]string, len(version.InstallTargets))
+		for binary, target := range version.InstallTargets {
+			result[binary] = target
+		}
+		return result
+	}
+	return nil
+}
+
 func (a *App) installResolved(res resolver.Resolved) error {
 	backend := a.newBackend()
-	orch := installer.NewOrchestrator(installer.DefaultMethods(backend))
+	orch := installer.NewOrchestrator(installer.DefaultMethods(backend, a.paths.Tools))
 
 	a.log.Printf("-> installing %s@%s", res.Tool.Name, res.Version.Tag)
-	if err := orch.Install(context.Background(), res.Tool, res.Version); err != nil {
+	result, err := orch.Install(context.Background(), res.Tool, res.Version)
+	if err != nil {
 		return err
 	}
-	if err := a.linkShims(res.Tool, backend); err != nil {
+	if err := a.linkShims(res.Tool, result.Path); err != nil {
 		return err
 	}
-	if err := a.recordInstall(res, backend); err != nil {
+	if result.Backend == "" {
+		result.Backend = a.cfg.DefaultBackend
+	}
+	if err := a.recordInstall(res, result); err != nil {
 		return err
 	}
 	a.log.Printf("[ok] installed %s@%s", res.Tool.Name, res.Version.Tag)
@@ -114,9 +137,9 @@ func (a *App) installResolved(res resolver.Resolved) error {
 
 // linkShims writes a shim for each binary pointing into the environment and
 // makes this the active version.
-func (a *App) linkShims(tool registry.Tool, backend isolation.Backend) error {
+func (a *App) linkShims(tool registry.Tool, root string) error {
 	for _, bin := range tool.AllBinaries() {
-		target := filepath.Join(backend.Path(), "bin", bin)
+		target := filepath.Join(root, "bin", bin)
 		if err := a.shims.Write(bin, target); err != nil {
 			return err
 		}
@@ -124,7 +147,7 @@ func (a *App) linkShims(tool registry.Tool, backend isolation.Backend) error {
 	return nil
 }
 
-func (a *App) recordInstall(res resolver.Resolved, backend isolation.Backend) error {
+func (a *App) recordInstall(res resolver.Resolved, result installer.Result) error {
 	m, err := a.store.Load()
 	if err != nil {
 		return err
@@ -132,8 +155,8 @@ func (a *App) recordInstall(res resolver.Resolved, backend isolation.Backend) er
 	m.Upsert(store.InstalledTool{
 		Name:        res.Tool.Name,
 		Version:     res.Version.Tag,
-		Backend:     a.cfg.DefaultBackend,
-		Path:        backend.Path(),
+		Backend:     result.Backend,
+		Path:        result.Path,
 		Binaries:    res.Tool.AllBinaries(),
 		InstalledAt: time.Now().UTC().Format(time.RFC3339),
 	})

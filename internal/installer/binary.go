@@ -22,8 +22,8 @@ func (m *BinaryMethod) Supports(tool registry.Tool) bool {
 }
 
 // Install is not implemented yet.
-func (m *BinaryMethod) Install(ctx context.Context, tool registry.Tool, version registry.Version) error {
-	return fmt.Errorf("binary install method not implemented for %q yet", tool.Name)
+func (m *BinaryMethod) Install(ctx context.Context, tool registry.Tool, version registry.Version) (Result, error) {
+	return Result{}, fmt.Errorf("binary install method not implemented for %q yet", tool.Name)
 }
 
 var _ InstallMethod = (*BinaryMethod)(nil)

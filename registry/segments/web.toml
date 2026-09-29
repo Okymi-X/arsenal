@@ -14,15 +14,16 @@ python_version = ""
 binary = "ffuf"
 tags = ["fuzzing", "web", "content-discovery"]
 requires_root = false
-notes = "Installed via go install once the gobin method lands."
+notes = "Installed from the pinned Go module into an isolated per-version root."
 
   [[tool.version]]
   tag = "2.1.0"
   commit = "v2.1.0"
+  install_targets = { ffuf = "github.com/ffuf/ffuf/v2" }
   tested = true
   pip_spec = ""
   date = "2023-11-01"
-  notes = "Stable release; gobin method pending."
+  notes = "Stable release."
 
 [[tool]]
 name = "feroxbuster"
@@ -36,23 +37,25 @@ python_version = ""
 binary = "feroxbuster"
 tags = ["fuzzing", "web", "content-discovery", "recursive"]
 requires_root = false
-notes = "Installed via cargo install once the cargo method lands."
+notes = "Installed from crates.io into an isolated per-version Cargo root."
 
   [[tool.version]]
   tag = "2.13.1"
   commit = "v2.13.1"
+  install_targets = { feroxbuster = "feroxbuster" }
   tested = true
   pip_spec = ""
   date = "2025-09-01"
-  notes = "Current stable release; cargo method pending."
+  notes = "Current stable release."
 
   [[tool.version]]
   tag = "2.10.4"
   commit = "v2.10.4"
+  install_targets = { feroxbuster = "feroxbuster" }
   tested = true
   pip_spec = ""
   date = "2024-08-01"
-  notes = "Older stable release; cargo method pending."
+  notes = "Older stable release."
 
 [[tool]]
 name = "gobuster"
@@ -66,15 +69,16 @@ python_version = ""
 binary = "gobuster"
 tags = ["fuzzing", "content-discovery", "dns", "vhost", "web"]
 requires_root = false
-notes = "go install github.com/OJ/gobuster/v3@v3.8.2; gobin method pending."
+notes = "Installed from the pinned github.com/OJ/gobuster/v3 module."
 
   [[tool.version]]
   tag = "3.8.2"
   commit = "v3.8.2"
+  install_targets = { gobuster = "github.com/OJ/gobuster/v3" }
   tested = true
   pip_spec = ""
   date = "2025-09-04"
-  notes = "Current stable release; gobin method pending."
+  notes = "Current stable release."
 
 [[tool]]
 name = "nuclei"
@@ -88,15 +92,16 @@ python_version = ""
 binary = "nuclei"
 tags = ["scanner", "cve", "templates", "web"]
 requires_root = false
-notes = "go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@v3.9.0; gobin method pending."
+notes = "Installed from the pinned github.com/projectdiscovery/nuclei/v3/cmd/nuclei package."
 
   [[tool.version]]
   tag = "3.9.0"
   commit = "v3.9.0"
+  install_targets = { nuclei = "github.com/projectdiscovery/nuclei/v3/cmd/nuclei" }
   tested = true
   pip_spec = ""
   date = "2026-06-10"
-  notes = "Current stable release; gobin method pending."
+  notes = "Current stable release."
 
 [[tool]]
 name = "sqlmap"
@@ -287,15 +292,16 @@ python_version = ""
 binary = "httpx"
 tags = ["http", "probing", "recon", "web"]
 requires_root = false
-notes = "ProjectDiscovery httpx (not the Python HTTP library). go install github.com/projectdiscovery/httpx/cmd/httpx@v1.9.0; gobin method pending."
+notes = "ProjectDiscovery httpx (not the Python HTTP library), installed from its pinned Go package."
 
   [[tool.version]]
   tag = "1.9.0"
   commit = "v1.9.0"
+  install_targets = { httpx = "github.com/projectdiscovery/httpx/cmd/httpx" }
   tested = true
   pip_spec = ""
   date = "2026-03-09"
-  notes = "Current stable release; gobin method pending."
+  notes = "Current stable release."
 
 [[tool]]
 name = "katana"
@@ -309,12 +315,13 @@ python_version = ""
 binary = "katana"
 tags = ["crawler", "spider", "recon", "web"]
 requires_root = false
-notes = "go install github.com/projectdiscovery/katana/cmd/katana@v1.6.1; gobin method pending."
+notes = "Installed from the pinned github.com/projectdiscovery/katana/cmd/katana package."
 
   [[tool.version]]
   tag = "1.6.1"
   commit = "v1.6.1"
+  install_targets = { katana = "github.com/projectdiscovery/katana/cmd/katana" }
   tested = true
   pip_spec = ""
   date = "2026-05-05"
-  notes = "Current stable release; gobin method pending."
+  notes = "Current stable release."

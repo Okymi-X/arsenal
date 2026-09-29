@@ -3,6 +3,8 @@ package cli
 import (
 	"fmt"
 	"strings"
+
+	"github.com/Okymi-X/arsenal/internal/installer"
 )
 
 // cmdRun executes a binary from an installed tool's active version.
@@ -36,6 +38,9 @@ func (a *App) cmdRun(args []string) error {
 	}
 
 	bin, forwarded := selectBinary(active.Name, active.Binaries, args[1:])
+	if active.Backend == installer.MethodGoBin || active.Backend == installer.MethodCargo {
+		return a.runNative(active, bin, forwarded)
+	}
 	backend := a.newBackend()
 	if err := backend.Create(active.Name, active.Version); err != nil {
 		return err

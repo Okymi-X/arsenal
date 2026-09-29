@@ -117,6 +117,7 @@ used.
 | `repo`     | string | no       | Overrides the tool's repo for this version (fork/branch).|
 | `tested`   | bool   | no       | Marks a version the maintainers verified.                |
 | `pip_spec` | string | no       | pip requirement string, e.g. `impacket==0.12.0`.         |
+| `install_targets` | table | for Go/Cargo | Exposed binary to Go package or Cargo crate mapping. |
 | `date`     | string | no       | ISO-8601 release date.                                   |
 | `notes`    | string | no       | Version-specific guidance.                               |
 
@@ -139,8 +140,19 @@ so leave such versions `tested = false`.
 
 - `pip` - installs `pip_spec` (or `name==tag` if absent) into a venv.
 - `gitpip` - installs `git+<repo>@<commit>` into a venv.
-- `binary`, `gobin`, `cargo` - reserved; implementations are stubbed and will
-  fail loudly until completed (see `ARCHITECTURE.md`).
+- `gobin` - runs `go install <install_target>@<commit>` with isolated `GOBIN`,
+  module, and build caches, then verifies and promotes the declared binaries.
+- `cargo` - runs `cargo install --version <tag> --locked` with an isolated root
+  and cache, then verifies and promotes the declared binaries.
+- `binary` - reserved; the implementation remains a tracked stub.
+
+Every `gobin` and `cargo` version must map all exposed binaries. Keys are the
+public shim names and values are package-manager targets. This supports safe
+renaming without parsing notes, for example:
+
+```toml
+install_targets = { "ligolo-proxy" = "github.com/nicocha30/ligolo-ng/cmd/proxy", "ligolo-agent" = "github.com/nicocha30/ligolo-ng/cmd/agent" }
+```
 
 ## Asset entry
 
@@ -188,8 +200,8 @@ Manifest paths must be relative `.toml` paths with no traversal or duplicates.
 Every segment must have exactly one valid SHA-256 pin. Remote segments and
 redirects must remain on the manifest's origin, and each response plus the
 assembled catalog has a size bound. The loader also rejects a registry where a
-tool has no `name`, no `install_method`, or no versions, duplicate version tags,
-or duplicate tool names.
+tool has unsafe path components, no `install_method`, or no versions; duplicate
+version tags or tool names; and incomplete Go/Cargo target mappings.
 
 ## Upstream verification
 

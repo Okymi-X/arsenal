@@ -24,13 +24,13 @@ func NewOrchestrator(methods []InstallMethod) *Orchestrator {
 // DefaultMethods builds the standard set of methods bound to a backend.
 //
 // pip and git+pip use the backend; binary, go, and cargo are independent.
-func DefaultMethods(backend isolation.Backend) []InstallMethod {
+func DefaultMethods(backend isolation.Backend, toolsRoot string) []InstallMethod {
 	return []InstallMethod{
 		NewPipMethod(backend),
 		NewGitPipMethod(backend),
 		NewBinaryMethod(),
-		NewGoBinMethod(),
-		NewCargoMethod(),
+		NewGoBinMethod(toolsRoot, NewCommandRunner()),
+		NewCargoMethod(toolsRoot, NewCommandRunner()),
 	}
 }
 
@@ -45,10 +45,10 @@ func (o *Orchestrator) Select(tool registry.Tool) (InstallMethod, error) {
 }
 
 // Install selects a method for the tool and installs the version.
-func (o *Orchestrator) Install(ctx context.Context, tool registry.Tool, version registry.Version) error {
+func (o *Orchestrator) Install(ctx context.Context, tool registry.Tool, version registry.Version) (Result, error) {
 	m, err := o.Select(tool)
 	if err != nil {
-		return err
+		return Result{}, err
 	}
 	return m.Install(ctx, tool, version)
 }

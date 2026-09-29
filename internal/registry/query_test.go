@@ -97,3 +97,36 @@ install_method = "pip"
 		t.Fatal("expected duplicate version tags to be rejected")
 	}
 }
+
+func TestParseRequiresTargetsForNativeInstallers(t *testing.T) {
+	data := []byte(`
+version = "1"
+[[tool]]
+name = "native"
+install_method = "gobin"
+binary = "native"
+  [[tool.version]]
+  tag = "1.0.0"
+  commit = "v1.0.0"
+`)
+	if _, err := Parse(data); err == nil {
+		t.Fatal("expected missing install target to be rejected")
+	}
+}
+
+func TestParseAcceptsCompleteNativeTargets(t *testing.T) {
+	data := []byte(`
+version = "1"
+[[tool]]
+name = "native"
+install_method = "gobin"
+binary = "native"
+  [[tool.version]]
+  tag = "1.0.0"
+  commit = "v1.0.0"
+  install_targets = { native = "github.com/owner/native" }
+`)
+	if _, err := Parse(data); err != nil {
+		t.Fatalf("Parse: %v", err)
+	}
+}

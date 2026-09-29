@@ -69,11 +69,12 @@ how to install.
 
 ```
 Supports(tool registry.Tool) bool
-Install(ctx context.Context, tool registry.Tool, version registry.Version) error
+Install(ctx context.Context, tool registry.Tool, version registry.Version) (Result, error)
 ```
 
-Implementations: `pip` and `gitpip` (implemented, drive the backend), plus
-`binary`, `gobin`, and `cargo` (stubbed behind the interface).
+Implementations: `pip` and `gitpip` drive an isolation backend; `gobin` and
+`cargo` stage exact package versions in private roots and atomically promote
+verified executables. `binary` remains stubbed behind the interface.
 
 ### registry.Source
 
@@ -108,7 +109,7 @@ root/
   config.json          user configuration
   registry.toml        active registry (seeded from the embedded copy)
   manifest.json        installed-tools manifest
-  tools/<name>/<ver>/  isolated environments (venvs)
+  tools/<name>/<ver>/  isolated venv, Go, or Cargo installation root
   bin/                 generated PATH shims
   ops/<name>.toml      op definitions
   ops/<name>.lock.toml op lockfiles
@@ -126,10 +127,6 @@ not-implemented errors so misconfiguration fails loudly:
   `InstallSpec` to a build, and `Run` to a `run --rm` invocation.
 - **Binary install method** (`internal/installer/binary.go`, TODO arsenal#2):
   download a release asset and verify its checksum.
-- **Go install method** (`internal/installer/gobin.go`, TODO arsenal#3):
-  `go install` into a per-tool GOBIN.
-- **Cargo install method** (`internal/installer/cargo.go`, TODO arsenal#4):
-  `cargo install` into a per-tool root.
 - **Offline bundling** (`internal/bundle`, TODO arsenal#5): vendor wheels and
   source archives alongside a lockfile so an air-gapped host can reconstruct an
   environment with no network.

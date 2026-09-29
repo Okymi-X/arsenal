@@ -44,24 +44,6 @@ Status: stubbed in `internal/installer/binary.go`
 - Download with bounds, verify integrity, and install atomically.
 - Reject unsupported platforms, unsafe archive paths, and ambiguous assets.
 
-### Go install method
-
-Status: stubbed in `internal/installer/gobin.go`
-
-- Install an exact module version into the tool's isolated root.
-- Avoid shared `GOBIN`, module cache mutation where practical, and ambient shell
-  interpretation.
-- Test command construction and cleanup with an injected process runner.
-
-### Cargo install method
-
-Status: stubbed in `internal/installer/cargo.go`
-
-- Install an exact crate version into a per-tool root.
-- Keep cargo state scoped and reject registry entries without a reproducible
-  version source.
-- Test argument construction, failure cleanup, and exposed binaries.
-
 ### Container isolation backend
 
 Status: stubbed in `internal/isolation/container`

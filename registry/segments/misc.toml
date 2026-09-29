@@ -58,15 +58,16 @@ python_version = ""
 binary = "chisel"
 tags = ["pivot", "tunnel", "socks", "port-forward"]
 requires_root = false
-notes = "One binary acts as both server and client. go install github.com/jpillora/chisel@v1.11.5; gobin method pending."
+notes = "One binary acts as both server and client; installed from its pinned Go module."
 
   [[tool.version]]
   tag = "1.11.5"
   commit = "v1.11.5"
+  install_targets = { chisel = "github.com/jpillora/chisel" }
   tested = true
   pip_spec = ""
   date = "2026-03-09"
-  notes = "Current stable release; gobin method pending."
+  notes = "Current stable release."
 
 [[tool]]
 name = "ligolo-ng"
@@ -81,15 +82,16 @@ binary = "ligolo-proxy"
 binaries = ["ligolo-agent"]
 tags = ["pivot", "tunnel", "tun", "socks"]
 requires_root = true
-notes = "Upstream ships separate proxy and agent binaries (go install github.com/nicocha30/ligolo-ng/cmd/proxy@v0.8.3 and .../cmd/agent@v0.8.3); the proxy needs a TUN interface. gobin method pending."
+notes = "Upstream ships separate proxy and agent packages; the proxy needs a TUN interface."
 
   [[tool.version]]
   tag = "0.8.3"
   commit = "v0.8.3"
+  install_targets = { "ligolo-proxy" = "github.com/nicocha30/ligolo-ng/cmd/proxy", "ligolo-agent" = "github.com/nicocha30/ligolo-ng/cmd/agent" }
   tested = true
   pip_spec = ""
   date = "2026-02-15"
-  notes = "Current stable release; gobin method pending."
+  notes = "Current stable release."
 
 [[tool]]
 name = "pwncat-cs"

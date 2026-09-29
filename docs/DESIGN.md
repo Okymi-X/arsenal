@@ -70,6 +70,9 @@ domain layer.
 - Connect stdout and stderr according to the CLI contract.
 - Propagate cancellation and preserve the child exit failure with context.
 - Never infer elevated privileges or execute through a shell.
+- Stage native package-manager output under the final tool parent, scope build
+  caches to that staging root, verify declared executables, and atomically
+  promote only a complete installation.
 
 ## Network operations
 

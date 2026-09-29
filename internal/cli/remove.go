@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"github.com/Okymi-X/arsenal/internal/installer"
 	"github.com/Okymi-X/arsenal/internal/store"
 )
 
@@ -36,11 +37,8 @@ func (a *App) cmdRemove(args []string) error {
 // tearDown removes an installation's environment and shims, leaving the
 // manifest to the caller.
 func (a *App) tearDown(t store.InstalledTool) error {
-	backend := a.newBackend()
-	if err := backend.Create(t.Name, t.Version); err == nil && backend.Exists() {
-		if err := backend.Remove(); err != nil {
-			return err
-		}
+	if err := installer.RemoveInstallation(a.paths.Tools, t.Name, t.Version, t.Path); err != nil {
+		return err
 	}
 	for _, bin := range t.Binaries {
 		if err := a.shims.Remove(bin); err != nil {

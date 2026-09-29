@@ -266,15 +266,16 @@ python_version = ""
 binary = "kerbrute"
 tags = ["kerberos", "user-enumeration", "password-spray", "active-directory"]
 requires_root = false
-notes = "go install github.com/ropnop/kerbrute@v1.0.3; gobin method pending."
+notes = "Installed from the pinned github.com/ropnop/kerbrute module."
 
   [[tool.version]]
   tag = "1.0.3"
   commit = "v1.0.3"
+  install_targets = { kerbrute = "github.com/ropnop/kerbrute" }
   tested = true
   pip_spec = ""
   date = "2019-12-15"
-  notes = "Current stable release; gobin method pending."
+  notes = "Current stable release."
 
 [[tool]]
 name = "pretender"
@@ -288,15 +289,16 @@ python_version = ""
 binary = "pretender"
 tags = ["llmnr", "mdns", "dhcpv6", "relay", "active-directory"]
 requires_root = true
-notes = "Needs raw socket access. go install github.com/RedTeamPentesting/pretender@v1.3.2; gobin method pending."
+notes = "Needs raw socket access; installed from its pinned Go module."
 
   [[tool.version]]
   tag = "1.3.2"
   commit = "v1.3.2"
+  install_targets = { pretender = "github.com/RedTeamPentesting/pretender" }
   tested = true
   pip_spec = ""
   date = "2025-02-18"
-  notes = "Current stable release; gobin method pending."
+  notes = "Current stable release."
 
 [[tool]]
 name = "smbmap"

@@ -80,6 +80,8 @@ type Version struct {
 	Tested bool `toml:"tested"`
 	// PipSpec is the pip requirement string, e.g. "netexec==1.1.0".
 	PipSpec string `toml:"pip_spec"`
+	// InstallTargets maps exposed binary names to Go packages or Cargo crates.
+	InstallTargets map[string]string `toml:"install_targets"`
 	// Date is the ISO-8601 release date.
 	Date string `toml:"date"`
 	// Notes holds version-specific guidance.

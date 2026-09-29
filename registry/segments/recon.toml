@@ -14,15 +14,16 @@ python_version = ""
 binary = "rustscan"
 tags = ["port-scan", "recon", "nmap"]
 requires_root = false
-notes = "cargo install rustscan; cargo method pending."
+notes = "Installed from crates.io into an isolated per-version Cargo root."
 
   [[tool.version]]
   tag = "2.4.1"
   commit = "2.4.1"
+  install_targets = { rustscan = "rustscan" }
   tested = true
   pip_spec = ""
   date = "2025-02-23"
-  notes = "Current stable release; cargo method pending."
+  notes = "Current stable release."
 
 [[tool]]
 name = "autorecon"
@@ -102,15 +103,16 @@ python_version = ""
 binary = "subfinder"
 tags = ["subdomain", "recon", "osint", "web"]
 requires_root = false
-notes = "go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@v2.14.0; gobin method pending."
+notes = "Installed from the pinned github.com/projectdiscovery/subfinder/v2/cmd/subfinder package."
 
   [[tool.version]]
   tag = "2.14.0"
   commit = "v2.14.0"
+  install_targets = { subfinder = "github.com/projectdiscovery/subfinder/v2/cmd/subfinder" }
   tested = true
   pip_spec = ""
   date = "2026-04-27"
-  notes = "Current stable release; gobin method pending."
+  notes = "Current stable release."
 
 [[tool]]
 name = "naabu"
@@ -124,15 +126,16 @@ python_version = ""
 binary = "naabu"
 tags = ["port-scan", "recon", "scanning"]
 requires_root = false
-notes = "Needs libpcap for SYN scans. go install github.com/projectdiscovery/naabu/v2/cmd/naabu@v2.6.1; gobin method pending."
+notes = "Needs libpcap for SYN scans; installed from the pinned Go package."
 
   [[tool.version]]
   tag = "2.6.1"
   commit = "v2.6.1"
+  install_targets = { naabu = "github.com/projectdiscovery/naabu/v2/cmd/naabu" }
   tested = true
   pip_spec = ""
   date = "2026-05-05"
-  notes = "Current stable release; gobin method pending."
+  notes = "Current stable release."
 
 [[tool]]
 name = "waybackurls"
@@ -146,15 +149,16 @@ python_version = ""
 binary = "waybackurls"
 tags = ["osint", "urls", "recon", "web"]
 requires_root = false
-notes = "go install github.com/tomnomnom/waybackurls@v0.1.0; gobin method pending."
+notes = "Installed from the pinned github.com/tomnomnom/waybackurls module."
 
   [[tool.version]]
   tag = "0.1.0"
   commit = "v0.1.0"
+  install_targets = { waybackurls = "github.com/tomnomnom/waybackurls" }
   tested = true
   pip_spec = ""
   date = "2022-04-05"
-  notes = "Stable release; gobin method pending."
+  notes = "Stable release."
 
 [[tool]]
 name = "gau"
@@ -168,12 +172,13 @@ python_version = ""
 binary = "gau"
 tags = ["osint", "urls", "recon", "web"]
 requires_root = false
-notes = "go install github.com/lc/gau/v2/cmd/gau@v2.2.4; gobin method pending."
+notes = "Installed from the pinned github.com/lc/gau/v2/cmd/gau package."
 
   [[tool.version]]
   tag = "2.2.4"
   commit = "v2.2.4"
+  install_targets = { gau = "github.com/lc/gau/v2/cmd/gau" }
   tested = true
   pip_spec = ""
   date = "2024-10-28"
-  notes = "Current stable release; gobin method pending."
+  notes = "Current stable release."

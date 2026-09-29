@@ -47,8 +47,8 @@ The primary user is an authorized security practitioner who needs to:
 - Never report a partial or failed install as successful.
 - Report safe tested upgrades, retain prior environments for rollback, and
   never silently downgrade or replace an untracked version.
-- Permit an explicit untested GitHub-ref install for supported Python projects
-  only after resolving the ref to an immutable commit.
+- Permit an explicit untested GitHub-ref install for supported Python, Go, and
+  Cargo projects only after resolving the ref to an immutable commit.
 
 ### Execution and shims
 

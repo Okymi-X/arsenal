@@ -7,11 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Fully isolated `gobin` and `cargo` installers with exact-version package
+  targets, per-install build caches, executable verification, atomic promotion,
+  native `run` support, and manifest-aware removal.
+- Direct `--github-ref` installation for Go and Cargo tools. Human-readable
+  refs are resolved through GitHub and package managers receive only the
+  resulting full commit SHA.
+
 ### Changed
 
+- Native installer metadata now maps each exposed binary to its Go package or
+  Cargo crate, including multi-binary tools whose upstream command names differ
+  from Arsenal's public shims.
 - Updated GitHub workflow actions to their Node 24-based releases, pinned each
   action to an immutable commit, and pinned runners to Ubuntu 24.04 for
   reproducible CI behavior.
+
+### Security
+
+- Native installs use private staging roots, scoped caches, shell-free process
+  execution, strict path and target validation, failure cleanup, and atomic
+  replacement of incomplete installations.
+- Registry names, versions, binaries, and shim filenames are validated as safe
+  path components. Shim targets are POSIX-quoted so configured paths remain
+  data rather than executable shell syntax.
 
 ## [0.4.0] - 2026-09-29
 

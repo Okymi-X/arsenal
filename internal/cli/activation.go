@@ -25,12 +25,12 @@ func (a *App) activateInstalled(manifest *store.Manifest, target store.Installed
 }
 
 func installationHealthy(tool store.InstalledTool) bool {
-	if info, err := os.Stat(tool.Path); err != nil || !info.IsDir() {
+	if info, err := os.Lstat(tool.Path); err != nil || !info.IsDir() || info.Mode()&os.ModeSymlink != 0 {
 		return false
 	}
 	for _, binary := range tool.Binaries {
-		info, err := os.Stat(filepath.Join(tool.Path, "bin", binary))
-		if err != nil || info.IsDir() {
+		info, err := os.Lstat(filepath.Join(tool.Path, "bin", binary))
+		if err != nil || !info.Mode().IsRegular() || info.Mode().Perm()&0o111 == 0 {
 			return false
 		}
 	}

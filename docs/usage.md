@@ -24,11 +24,17 @@ installs the pinned version, writes shims, and marks it active. Without a
 version, the newest tested version is selected. A warning is printed if the
 selected version is not flagged tested.
 
-The explicit `--github-ref` form is available for Python tools hosted on
-GitHub. Arsenal resolves the supplied tag, branch, or SHA through GitHub to an
-immutable commit before installation and records it as `github-<commit>`. This
-bypasses the curated tested-version guarantee and always prints a warning. Set
-`GITHUB_TOKEN` to raise GitHub API rate limits; the token is never persisted.
+The explicit `--github-ref` form is available for Python, Go, and Cargo tools
+hosted on GitHub. Arsenal resolves the supplied tag, branch, or SHA through
+GitHub to a full immutable commit before installation and records it as
+`github-<commit>`. This bypasses the curated tested-version guarantee and always
+prints a warning. Set `GITHUB_TOKEN` to raise GitHub API rate limits; the token
+is never persisted.
+
+Go and Cargo installs use exact registry targets, private build caches, and a
+staging directory under the tool's version root. Arsenal verifies all declared
+executables before atomically activating the installation and removes transient
+compiler caches afterward.
 
 ### versions
 

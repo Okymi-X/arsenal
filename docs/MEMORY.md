@@ -13,8 +13,8 @@ for assumptions. Update it only when a fact is confirmed in the repository.
   assembled and validated directly from its ordered `registry/segments/*.toml`
   files at build time.
 - Python virtual environments are the implemented default isolation backend.
-- Pip and git-plus-pip are the implemented install methods. Binary, Go, and
-  Cargo methods remain explicit stubs.
+- Pip, git-plus-pip, Go, and Cargo are implemented install methods. The
+  prebuilt-binary method remains an explicit stub.
 - Standalone fetched assets intentionally bypass installation, isolation,
   shims, and the installed-tool manifest.
 - Engagement profiles are called ops and use TOML lockfiles.
@@ -22,7 +22,10 @@ for assumptions. Update it only when a fact is confirmed in the repository.
   the platform default documented in `ARCHITECTURE.md`.
 - The CLI has no telemetry and normal output is quiet by default.
 - Segmented registries are SHA-256 pinned. GitHub registry refs and explicit
-  Python-tool refs are resolved to immutable commits before pulling.
+  Python, Go, and Cargo tool refs are resolved to immutable commits before
+  pulling.
+- Native Go and Cargo installations use per-tool staging roots and caches,
+  verify declared executables, and promote completed installs atomically.
 - Safe upgrades target the newest tested registry entry, retain the previous
   installed environment, and never auto-change ahead or untracked versions.
 - Production Go source currently follows a soft 180-line file limit and the

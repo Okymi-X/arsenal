@@ -16,17 +16,17 @@ a hand-maintained, tested mapping from tool name to known-good versions
 (NetExec/nxc, Impacket, Certipy, and more), pinned and annotated so you never
 have to open a repo mid-engagement to find out which version actually works.
 
-arsenal ships as a single statically linked Go binary with no runtime
-dependencies on the host. It orchestrates the tools already on the system
-(`python -m venv`, `pip`, and optionally a container runtime); it does not
-reimplement them or bundle a Python interpreter.
+arsenal ships as a single statically linked binary. Installers orchestrate the
+relevant package manager already present on the host (`python`/`pip`, `go`, or
+`cargo`); Arsenal does not reimplement or bundle those language runtimes.
 
 ## Features
 
 - Curated TOML registry of tested versions, pinned by commit, with the required
   Python version and operational notes.
-- Per tool/version isolation using Python virtualenvs (default), with a
-  container backend planned behind the same interface.
+- Per tool/version installation roots using Python virtualenvs, isolated Go
+  builds, or isolated Cargo builds, with a container backend planned behind the
+  same interface.
 - Engagement profiles ("ops"): pin a set of tool versions, produce a lockfile,
   and make an environment reproducible and shareable across a team.
 - PATH shims so multiple versions coexist and the active one is switchable.
@@ -78,9 +78,9 @@ unless stdout is a TTY, and no emoji anywhere.
 
 Each tool entry records its repo, category, install method, required Python
 version, exposed binaries, and a list of versions. Each version carries a tag, a
-pinned commit, a `tested` flag, a pip spec, a date, and notes. The newest tested
-version is selected by default; you can always pin an explicit one with
-`tool@version`.
+pinned commit, a `tested` flag, package-manager targets, a date, and notes. The
+newest tested version is selected by default; you can always pin an explicit
+one with `tool@version`.
 
 Refresh the registry from upstream at any time:
 
@@ -130,10 +130,10 @@ arsenal op import redteam-q3.lock.toml
 
 ## Status
 
-The venv backend, the pip and git+pip install methods, the registry, the shim
-system, the op manager with lockfiles, and the core commands are implemented and
-tested end to end. The container backend, the offline bundle, and the binary/go/
-cargo install methods are stubbed behind their interfaces with tracking notes.
+The venv backend and the pip, git+pip, Go, and Cargo install methods are
+implemented alongside the registry, shim system, op lockfiles, and core
+commands. The container backend, offline bundle, and prebuilt-binary install
+method remain explicit tracked stubs.
 
 ## License
 
