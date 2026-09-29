@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-09-29
+
 ### Added
 
 - Official Arsenal toolbox icon under `assets/branding/` and README branding.
@@ -18,7 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   or updates of untracked versions.
 - GitHub-aware registry synchronization with `sync --list-refs`, `--ref`, and
   `--repo`, including persistence of the selected ref and resolved commit.
-
 - Ten independently install-verified Python tools selected from Exegol's
   official image build set: `ldeep`, `bloodhound-import`, `bbot`, `fierce`,
   `ssh-audit`, `holehe`, `sherlock-project`, `maigret`, `censys`, and
@@ -207,7 +208,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - binary, go install, and cargo install methods, wired behind the
   InstallMethod interface.
 
-[Unreleased]: https://github.com/Okymi-X/arsenal/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/Okymi-X/arsenal/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/Okymi-X/arsenal/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/Okymi-X/arsenal/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/Okymi-X/arsenal/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Okymi-X/arsenal/compare/v0.1.2...v0.2.0
