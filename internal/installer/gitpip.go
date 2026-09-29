@@ -33,14 +33,14 @@ func (m *GitPipMethod) Install(ctx context.Context, tool registry.Tool, version 
 	if repo == "" {
 		return Result{}, fmt.Errorf("tool %q has no repo for git+pip install", tool.Name)
 	}
-	if err := m.backend.Create(tool.Name, version.Tag); err != nil {
+	if err := m.backend.Create(ctx, tool.Name, version.Tag); err != nil {
 		return Result{}, fmt.Errorf("provision environment: %w", err)
 	}
 	install := isolation.InstallSpec{
 		GitURL: repo,
 		Commit: version.Commit,
 	}
-	if err := m.backend.Install(install); err != nil {
+	if err := m.backend.Install(ctx, install); err != nil {
 		return Result{}, fmt.Errorf("install %s via git+pip: %w", tool.Name, err)
 	}
 	return Result{Path: m.backend.Path()}, nil

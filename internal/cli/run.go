@@ -42,10 +42,10 @@ func (a *App) cmdRun(args []string) error {
 		return a.runNative(active, bin, forwarded)
 	}
 	backend := a.newBackend()
-	if err := backend.Create(active.Name, active.Version); err != nil {
+	if err := backend.Create(a.ctx, active.Name, active.Version); err != nil {
 		return err
 	}
-	return backend.Run(append([]string{bin}, forwarded...))
+	return backend.Run(a.ctx, append([]string{bin}, forwarded...))
 }
 
 // selectBinary resolves which binary to run and the arguments to forward.

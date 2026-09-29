@@ -49,9 +49,9 @@ These are defined first and implemented against. Concrete types are injected.
 Isolates a single tool/version environment.
 
 ```
-Create(tool, version string) error
-Install(spec InstallSpec) error
-Run(args []string) error
+Create(ctx context.Context, tool, version string) error
+Install(ctx context.Context, spec InstallSpec) error
+Run(ctx context.Context, args []string) error
 Remove() error
 Path() string
 Exists() bool
@@ -80,7 +80,7 @@ verified executables. `binary` remains stubbed behind the interface.
 
 ```
 Load() (*Registry, error)
-Sync() error
+Sync(ctx context.Context) error
 ```
 
 `FileSource` loads either an assembled local TOML catalog or a segmented
@@ -89,6 +89,10 @@ path, redirect, and concurrency bounds, validates the complete catalog, then
 atomically replaces the local assembled copy. `GitHubClient` lists tags and
 resolves user-selected refs to immutable commits before a pull or explicit
 GitHub tool install. Legacy single-file registry URLs remain supported.
+
+The process root context is canceled on interrupt or termination and is passed
+through CLI commands to installers, registry synchronization, GitHub queries,
+and asset transfers so partial work can clean up before exit.
 
 ### store.Store
 

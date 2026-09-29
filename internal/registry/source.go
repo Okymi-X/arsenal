@@ -1,5 +1,7 @@
 package registry
 
+import "context"
+
 // Source abstracts where a registry comes from and how it is refreshed.
 //
 // Load returns the currently available registry. Sync refreshes the local
@@ -9,5 +11,5 @@ type Source interface {
 	// Load returns the currently available registry.
 	Load() (*Registry, error)
 	// Sync refreshes the local copy from its upstream origin.
-	Sync() error
+	Sync(ctx context.Context) error
 }

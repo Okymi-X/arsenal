@@ -14,15 +14,19 @@ type fakeBackend struct {
 	installed []isolation.InstallSpec
 }
 
-func (f *fakeBackend) Create(tool, version string) error { f.created = true; return nil }
-func (f *fakeBackend) Install(spec isolation.InstallSpec) error {
+func (f *fakeBackend) Create(ctx context.Context, tool, version string) error {
+	f.created = true
+	return nil
+}
+
+func (f *fakeBackend) Install(ctx context.Context, spec isolation.InstallSpec) error {
 	f.installed = append(f.installed, spec)
 	return nil
 }
-func (f *fakeBackend) Run(args []string) error { return nil }
-func (f *fakeBackend) Remove() error           { return nil }
-func (f *fakeBackend) Path() string            { return "/fake" }
-func (f *fakeBackend) Exists() bool            { return true }
+func (f *fakeBackend) Run(ctx context.Context, args []string) error { return nil }
+func (f *fakeBackend) Remove() error                                { return nil }
+func (f *fakeBackend) Path() string                                 { return "/fake" }
+func (f *fakeBackend) Exists() bool                                 { return true }
 
 func TestSelect(t *testing.T) {
 	backend := &fakeBackend{}

@@ -1,6 +1,7 @@
 package venv
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -12,7 +13,7 @@ import (
 // The first element of args is the binary name; the remainder are passed
 // through. Standard streams are connected to the calling process so the tool
 // behaves as if run directly.
-func (b *Backend) Run(args []string) error {
+func (b *Backend) Run(ctx context.Context, args []string) error {
 	if len(args) == 0 {
 		return fmt.Errorf("no command to run")
 	}
@@ -23,7 +24,7 @@ func (b *Backend) Run(args []string) error {
 	if _, err := os.Stat(bin); err != nil {
 		return fmt.Errorf("binary %q not found in environment: %w", args[0], err)
 	}
-	cmd := exec.Command(bin, args[1:]...)
+	cmd := exec.CommandContext(ctx, bin, args[1:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -35,8 +36,8 @@ func (b *Backend) Run(args []string) error {
 }
 
 // runCommand executes a command with stdio wired to the parent process.
-func runCommand(name string, args ...string) error {
-	cmd := exec.Command(name, args...)
+func runCommand(ctx context.Context, name string, args ...string) error {
+	cmd := exec.CommandContext(ctx, name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

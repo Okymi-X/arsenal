@@ -26,6 +26,10 @@ for assumptions. Update it only when a fact is confirmed in the repository.
   pulling.
 - Native Go and Cargo installations use per-tool staging roots and caches,
   verify declared executables, and promote completed installs atomically.
+- Asset downloads accept at most 512 MiB from HTTPS GitHub-controlled hosts,
+  verify declared and actual sizes, and atomically promote temporary files.
+- The CLI propagates interrupt and termination cancellation through installers,
+  GitHub operations, registry synchronization, and asset downloads.
 - Safe upgrades target the newest tested registry entry, retain the previous
   installed environment, and never auto-change ahead or untracked versions.
 - Production Go source currently follows a soft 180-line file limit and the

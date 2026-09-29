@@ -141,6 +141,12 @@ isolated environment and no shim: it just downloads the file.
 `(asset)` marker. Without `--dest`, the file lands in the current directory.
 Downloaded files are made executable.
 
+Downloads are limited to 512 MiB and must remain on HTTPS GitHub-controlled
+hosts. Arsenal compares GitHub's declared size with the bytes received, writes
+through an unpredictable temporary file, and only replaces the destination
+after a complete synchronized transfer. Interrupting the command removes the
+partial file and preserves an existing destination.
+
 For a single-binary asset the default file is used unless you name another as
 `[binary]`:
 

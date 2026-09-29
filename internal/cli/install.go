@@ -29,7 +29,7 @@ func (a *App) cmdInstall(args []string) error {
 		return err
 	}
 	if githubRef != "" {
-		res, err = resolveGitHubInstall(res.Tool, githubRef)
+		res, err = resolveGitHubInstall(a.ctx, res.Tool, githubRef)
 		if err != nil {
 			return err
 		}
@@ -64,7 +64,7 @@ func parseInstallArgs(args []string) (string, string, error) {
 	return "", "", usageError("install <tool>[@version] [--github-ref tag|branch|sha]")
 }
 
-func resolveGitHubInstall(tool registry.Tool, ref string) (resolver.Resolved, error) {
+func resolveGitHubInstall(ctx context.Context, tool registry.Tool, ref string) (resolver.Resolved, error) {
 	switch tool.InstallMethod {
 	case installer.MethodPip, installer.MethodGitPip, installer.MethodGoBin, installer.MethodCargo:
 	default:
@@ -78,7 +78,7 @@ func resolveGitHubInstall(tool registry.Tool, ref string) (resolver.Resolved, er
 	if err != nil {
 		return resolver.Resolved{}, err
 	}
-	commit, err := client.ResolveCommit(context.Background(), ref)
+	commit, err := client.ResolveCommit(ctx, ref)
 	if err != nil {
 		return resolver.Resolved{}, err
 	}
@@ -118,7 +118,7 @@ func (a *App) installResolved(res resolver.Resolved) error {
 	orch := installer.NewOrchestrator(installer.DefaultMethods(backend, a.paths.Tools))
 
 	a.log.Printf("-> installing %s@%s", res.Tool.Name, res.Version.Tag)
-	result, err := orch.Install(context.Background(), res.Tool, res.Version)
+	result, err := orch.Install(a.ctx, res.Tool, res.Version)
 	if err != nil {
 		return err
 	}

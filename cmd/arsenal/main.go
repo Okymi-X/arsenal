@@ -4,8 +4,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/Okymi-X/arsenal/internal/cli"
 	"github.com/Okymi-X/arsenal/internal/config"
@@ -20,6 +23,8 @@ func main() {
 
 // run wires dependencies and dispatches, returning a process exit code.
 func run() int {
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 	root, err := config.DefaultRoot()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "[fail] %v\n", err)
@@ -32,6 +37,7 @@ func run() int {
 		return 1
 	}
 	app := cli.New(cli.Options{
+		Context: ctx,
 		Paths:   paths,
 		Cfg:     cfg,
 		Version: version,

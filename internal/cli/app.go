@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -19,6 +20,8 @@ import (
 
 // Options carries the wiring inputs constructed by main.
 type Options struct {
+	// Context is canceled when the process should stop blocking work.
+	Context context.Context
 	// Paths are the resolved filesystem locations.
 	Paths config.Paths
 	// Cfg is the loaded user configuration.
@@ -36,6 +39,7 @@ type Options struct {
 // It is constructed once per process and passed explicitly to each command;
 // there is no package-level mutable state.
 type App struct {
+	ctx     context.Context
 	paths   config.Paths
 	cfg     config.Config
 	version string
@@ -50,7 +54,12 @@ type App struct {
 
 // New constructs an App from wiring options.
 func New(opts Options) *App {
+	ctx := opts.Context
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	return &App{
+		ctx:     ctx,
 		paths:   opts.Paths,
 		cfg:     opts.Cfg,
 		version: opts.Version,

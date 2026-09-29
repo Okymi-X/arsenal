@@ -7,6 +7,8 @@
 // package boundaries by name.
 package isolation
 
+import "context"
+
 // InstallSpec describes what to install into an isolated environment.
 //
 // It is intentionally backend-agnostic: a venv backend interprets it as pip
@@ -31,11 +33,11 @@ type InstallSpec struct {
 // tears it down, Path reports its location, and Exists reports provisioning.
 type Backend interface {
 	// Create provisions the isolated environment for tool at version.
-	Create(tool, version string) error
+	Create(ctx context.Context, tool, version string) error
 	// Install populates the environment according to spec.
-	Install(spec InstallSpec) error
+	Install(ctx context.Context, spec InstallSpec) error
 	// Run executes args inside the environment, wiring through stdio.
-	Run(args []string) error
+	Run(ctx context.Context, args []string) error
 	// Remove tears down the environment.
 	Remove() error
 	// Path returns the environment's root directory.

@@ -8,6 +8,7 @@
 package container
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/Okymi-X/arsenal/internal/isolation"
@@ -28,13 +29,15 @@ func New(runtime string) *Backend { return &Backend{Runtime: runtime} }
 var errNotImplemented = fmt.Errorf("container backend not implemented yet (see docs/ARCHITECTURE.md)")
 
 // Create is not implemented.
-func (b *Backend) Create(tool, version string) error { return errNotImplemented }
+func (b *Backend) Create(ctx context.Context, tool, version string) error { return errNotImplemented }
 
 // Install is not implemented.
-func (b *Backend) Install(spec isolation.InstallSpec) error { return errNotImplemented }
+func (b *Backend) Install(ctx context.Context, spec isolation.InstallSpec) error {
+	return errNotImplemented
+}
 
 // Run is not implemented.
-func (b *Backend) Run(args []string) error { return errNotImplemented }
+func (b *Backend) Run(ctx context.Context, args []string) error { return errNotImplemented }
 
 // Remove is not implemented.
 func (b *Backend) Remove() error { return errNotImplemented }

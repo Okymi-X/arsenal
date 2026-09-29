@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -33,11 +34,11 @@ func (s *FileSource) Load() (*Registry, error) {
 
 // Sync downloads the remote registry, validates it, and replaces the local
 // copy atomically. The previous file is left untouched on any failure.
-func (s *FileSource) Sync() error {
+func (s *FileSource) Sync(ctx context.Context) error {
 	if s.url == "" {
 		return fmt.Errorf("no registry URL configured")
 	}
-	data, err := s.fetchRegistry()
+	data, err := s.fetchRegistry(ctx)
 	if err != nil {
 		return err
 	}

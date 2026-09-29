@@ -19,16 +19,22 @@ import (
 
 // Fetcher downloads assets from GitHub.
 type Fetcher struct {
-	client *http.Client
-	token  string
+	client              *http.Client
+	token               string
+	maxDownloadBytes    int64
+	validateDownloadURL func(string) error
 }
+
+const maxAssetDownloadBytes int64 = 512 << 20
 
 // New returns a Fetcher. An optional GitHub token raises API rate limits and is
 // used only for api.github.com listing calls, never for downloads.
 func New(token string) *Fetcher {
 	return &Fetcher{
-		client: &http.Client{Timeout: 60 * time.Second},
-		token:  token,
+		client:              newGitHubHTTPClient(5 * time.Minute),
+		token:               token,
+		maxDownloadBytes:    maxAssetDownloadBytes,
+		validateDownloadURL: validateGitHubURL,
 	}
 }
 
@@ -59,7 +65,7 @@ type Result struct {
 // Fetch resolves the asset to a single upstream file and downloads it into
 // sel.DestDir, returning what was written.
 func (f *Fetcher) Fetch(ctx context.Context, asset registry.Asset, sel Selection) (Result, error) {
-	name, url, version, err := f.resolve(ctx, asset, sel)
+	resolved, err := f.resolve(ctx, asset, sel)
 	if err != nil {
 		return Result{}, err
 	}
@@ -68,13 +74,13 @@ func (f *Fetcher) Fetch(ctx context.Context, asset registry.Asset, sel Selection
 	}
 	// Take the base name only: the file name comes from upstream, so this keeps
 	// a crafted name from escaping the destination directory.
-	name = filepath.Base(name)
+	name := filepath.Base(resolved.Name)
 	dest := filepath.Join(sel.DestDir, name)
-	size, err := f.download(ctx, url, dest)
+	size, err := f.download(ctx, resolved.URL, dest, resolved.Size)
 	if err != nil {
 		return Result{}, err
 	}
-	return Result{File: name, Path: dest, Size: size, Version: version}, nil
+	return Result{File: name, Path: dest, Size: size, Version: resolved.Version}, nil
 }
 
 // List returns the candidate file names available for an asset: the names in

@@ -1,6 +1,12 @@
 package fetcher
 
-import "testing"
+import (
+	"context"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+)
 
 func TestContentsURL(t *testing.T) {
 	tests := []struct {
@@ -33,27 +39,34 @@ func TestContentsURL(t *testing.T) {
 	}
 }
 
-func TestOwnerRepo(t *testing.T) {
+func TestValidateGitHubURL(t *testing.T) {
 	tests := []struct {
-		in, want string
-		wantErr  bool
+		url     string
+		wantErr bool
 	}{
-		{"https://github.com/lc/gau", "lc/gau", false},
-		{"https://github.com/lc/gau.git", "lc/gau", false},
-		{"https://github.com/lc/gau/", "lc/gau", false},
-		{"https://gitlab.com/x/y", "", true},
-		{"not a url", "", true},
+		{"https://github.com/owner/repo/releases/file", false},
+		{"https://raw.githubusercontent.com/owner/repo/ref/file", false},
+		{"https://release-assets.githubusercontent.com/file", false},
+		{"http://github.com/owner/repo", true},
+		{"https://github.com:8443/owner/repo", true},
+		{"https://github.com.evil.test/file", true},
+		{"https://user@github.com/file", true},
 	}
 	for _, tt := range tests {
-		got, err := ownerRepo(tt.in)
-		if tt.wantErr {
-			if err == nil {
-				t.Errorf("ownerRepo(%q) = %q, want error", tt.in, got)
-			}
-			continue
+		if err := validateGitHubURL(tt.url); (err != nil) != tt.wantErr {
+			t.Errorf("validateGitHubURL(%q) error = %v", tt.url, err)
 		}
-		if err != nil || got != tt.want {
-			t.Errorf("ownerRepo(%q) = (%q, %v), want %q", tt.in, got, err, tt.want)
-		}
+	}
+}
+
+func TestGetJSONRejectsOversizedResponse(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		_, _ = w.Write([]byte(strings.Repeat("x", maxGitHubAPIBytes+1)))
+	}))
+	defer server.Close()
+	fetcher := &Fetcher{client: server.Client()}
+	var result any
+	if err := fetcher.getJSON(context.Background(), server.URL, &result); err == nil {
+		t.Fatal("expected oversized GitHub response to be rejected")
 	}
 }

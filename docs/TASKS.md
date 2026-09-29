@@ -14,17 +14,6 @@ user-visible completion in `CHANGELOG.md`.
 
 ## Active backlog
 
-### Bound runtime network transfers
-
-Status: registry sync completed with bounded concurrency; asset download
-hardening remains
-
-- Apply a configurable or metadata-derived maximum to downloaded assets and
-  remove partial files when the limit is exceeded.
-- Propagate caller cancellation through registry and asset synchronization.
-- Cover oversized, interrupted, timed-out, and valid asset transfers with local
-  HTTP test servers.
-
 ### Integrity verification for fetched and installed content
 
 Status: registry segment integrity completed; package and asset integrity

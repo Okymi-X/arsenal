@@ -27,7 +27,7 @@ func (a *App) runNative(tool store.InstalledTool, binary string, args []string) 
 	if !info.Mode().IsRegular() || info.Mode().Perm()&0o111 == 0 {
 		return fmt.Errorf("refusing to run non-executable binary %q", target)
 	}
-	cmd := exec.Command(target, args...)
+	cmd := exec.CommandContext(a.ctx, target, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

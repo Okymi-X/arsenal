@@ -28,13 +28,12 @@ func (a *App) cmdFetch(args []string) error {
 	}
 
 	f := fetcher.New(githubToken())
-	ctx := context.Background()
 	if opts.list {
-		return a.listAsset(ctx, f, asset, opts.build)
+		return a.listAsset(a.ctx, f, asset, opts.build)
 	}
 
 	a.log.Infof("-> fetching %s", asset.Name)
-	res, err := f.Fetch(ctx, asset, fetcher.Selection{
+	res, err := f.Fetch(a.ctx, asset, fetcher.Selection{
 		Binary:  opts.binary,
 		Build:   opts.build,
 		DestDir: opts.dest,

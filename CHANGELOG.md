@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Long-running installs, GitHub queries, registry synchronization, and asset
+  downloads now share the process cancellation context and stop cleanly on
+  interrupt or termination signals.
 - Native installer metadata now maps each exposed binary to its Go package or
   Cargo crate, including multi-binary tools whose upstream command names differ
   from Arsenal's public shims.
@@ -27,6 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- Asset downloads are capped at 512 MiB, checked against upstream metadata and
+  actual bytes, restricted to HTTPS GitHub-controlled hosts, staged under
+  unpredictable filenames, synced, and atomically promoted. Oversized,
+  truncated, interrupted, or redirected-to-untrusted transfers preserve the
+  previous destination and remove partial files.
+- GitHub asset API responses are bounded to 4 MiB before JSON decoding.
 - Native installs use private staging roots, scoped caches, shell-free process
   execution, strict path and target validation, failure cleanup, and atomic
   replacement of incomplete installations.

@@ -2,7 +2,9 @@ package registry
 
 import (
 	"bytes"
+	"context"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -13,6 +15,32 @@ import (
 	"testing"
 	"time"
 )
+
+func TestFileSourceSyncHonorsCancellation(t *testing.T) {
+	started := make(chan struct{})
+	server := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, request *http.Request) {
+		close(started)
+		<-request.Context().Done()
+	}))
+	defer server.Close()
+	path := filepath.Join(t.TempDir(), "registry.toml")
+	previous := []byte("previous registry")
+	if err := os.WriteFile(path, previous, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	done := make(chan error, 1)
+	go func() { done <- NewFileSource(path, server.URL).Sync(ctx) }()
+	<-started
+	cancel()
+	if err := <-done; !errors.Is(err, context.Canceled) {
+		t.Fatalf("Sync error = %v, want context cancellation", err)
+	}
+	got, err := os.ReadFile(path)
+	if err != nil || !bytes.Equal(got, previous) {
+		t.Fatalf("previous registry changed: %q, %v", got, err)
+	}
+}
 
 func TestFileSourceSyncsSegmentedRegistry(t *testing.T) {
 	segment := `[[tool]]
@@ -41,7 +69,7 @@ binary = "example"
 
 	path := filepath.Join(t.TempDir(), "registry.toml")
 	source := NewFileSource(path, server.URL+"/registry.toml")
-	if err := source.Sync(); err != nil {
+	if err := source.Sync(context.Background()); err != nil {
 		t.Fatalf("sync: %v", err)
 	}
 	reg, err := source.Load()
@@ -71,7 +99,7 @@ install_method = "pip"
 	defer server.Close()
 
 	source := NewFileSource(path, server.URL+"/registry.toml")
-	if err := source.Sync(); err == nil {
+	if err := source.Sync(context.Background()); err == nil {
 		t.Fatal("expected oversized response to be rejected")
 	}
 	got, err := os.ReadFile(path)
@@ -106,7 +134,7 @@ install_method = "pip"
 	defer server.Close()
 
 	source := NewFileSource(path, server.URL+"/registry.toml")
-	if err := source.Sync(); err == nil {
+	if err := source.Sync(context.Background()); err == nil {
 		t.Fatal("expected checksum mismatch to be rejected")
 	}
 	got, err := os.ReadFile(path)
@@ -125,7 +153,7 @@ func TestFileSourceRejectsEmptyManifest(t *testing.T) {
 	defer server.Close()
 
 	source := NewFileSource(filepath.Join(t.TempDir(), "registry.toml"), server.URL)
-	if err := source.Sync(); err == nil {
+	if err := source.Sync(context.Background()); err == nil {
 		t.Fatal("expected empty manifest to be rejected")
 	}
 }
@@ -166,7 +194,7 @@ func TestFileSourceBoundsConcurrentSegmentPulls(t *testing.T) {
 	defer server.Close()
 
 	source := NewFileSource(filepath.Join(t.TempDir(), "registry.toml"), server.URL+"/registry.toml")
-	if err := source.Sync(); err != nil {
+	if err := source.Sync(context.Background()); err != nil {
 		t.Fatalf("sync: %v", err)
 	}
 	if got := maximum.Load(); got < 2 || got > pullWorkers {
@@ -185,7 +213,7 @@ func TestFileSourceRejectsCrossOriginRedirect(t *testing.T) {
 	defer sourceServer.Close()
 
 	source := NewFileSource(filepath.Join(t.TempDir(), "registry.toml"), sourceServer.URL+"/registry.toml")
-	if err := source.Sync(); err == nil || !strings.Contains(err.Error(), "redirect changed remote origin") {
+	if err := source.Sync(context.Background()); err == nil || !strings.Contains(err.Error(), "redirect changed remote origin") {
 		t.Fatalf("Sync() error = %v", err)
 	}
 }

@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -36,7 +35,7 @@ func (a *App) cmdSync(args []string) error {
 		return err
 	}
 	a.log.Printf("-> syncing registry from %s", sourceURL)
-	if err := source.Sync(); err != nil {
+	if err := source.Sync(a.ctx); err != nil {
 		return err
 	}
 	reg, err := source.Load()
@@ -67,7 +66,7 @@ func (a *App) syncSource(options syncOptions, repo string) (registry.Source, str
 		return nil, "", false, err
 	}
 	a.log.Printf("-> resolving GitHub ref %s from %s", selected, repo)
-	commit, err := client.ResolveCommit(context.Background(), selected)
+	commit, err := client.ResolveCommit(a.ctx, selected)
 	if err != nil {
 		return nil, "", false, err
 	}
@@ -86,7 +85,7 @@ func (a *App) listGitHubRefs(repo string) error {
 	if err != nil {
 		return err
 	}
-	refs, err := client.ListTags(context.Background(), 50)
+	refs, err := client.ListTags(a.ctx, 50)
 	if err != nil {
 		return err
 	}

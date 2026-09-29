@@ -8,9 +8,15 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
+
+	"github.com/Okymi-X/arsenal/internal/registry"
 )
 
-const apiBase = "https://api.github.com"
+const (
+	apiBase           = "https://api.github.com"
+	maxGitHubAPIBytes = 4 << 20
+)
 
 type releaseAsset struct {
 	Name string `json:"name"`
@@ -32,7 +38,7 @@ type contentEntry struct {
 
 // latestRelease returns the repository's latest GitHub release.
 func (f *Fetcher) latestRelease(ctx context.Context, repo string) (release, error) {
-	or, err := ownerRepo(repo)
+	or, err := registry.ParseGitHubRepo(repo)
 	if err != nil {
 		return release{}, err
 	}
@@ -43,7 +49,7 @@ func (f *Fetcher) latestRelease(ctx context.Context, repo string) (release, erro
 
 // repoDir returns the entries of a directory in a repository at a branch.
 func (f *Fetcher) repoDir(ctx context.Context, repo, branch, dir string) ([]contentEntry, error) {
-	or, err := ownerRepo(repo)
+	or, err := registry.ParseGitHubRepo(repo)
 	if err != nil {
 		return nil, err
 	}
@@ -86,19 +92,42 @@ func (f *Fetcher) getJSON(ctx context.Context, url string, v any) error {
 		body, _ := io.ReadAll(io.LimitReader(resp.Body, 512))
 		return fmt.Errorf("github %s: %s: %s", url, resp.Status, strings.TrimSpace(string(body)))
 	}
-	return json.NewDecoder(resp.Body).Decode(v)
+	body, err := io.ReadAll(io.LimitReader(resp.Body, maxGitHubAPIBytes+1))
+	if err != nil {
+		return fmt.Errorf("read github response: %w", err)
+	}
+	if len(body) > maxGitHubAPIBytes {
+		return fmt.Errorf("github response exceeds %d-byte limit", maxGitHubAPIBytes)
+	}
+	if err := json.Unmarshal(body, v); err != nil {
+		return fmt.Errorf("decode github response: %w", err)
+	}
+	return nil
 }
 
-// ownerRepo extracts the "owner/name" slug from a GitHub repository URL.
-func ownerRepo(repoURL string) (string, error) {
-	s := strings.TrimSuffix(strings.TrimSpace(repoURL), "/")
-	s = strings.TrimSuffix(s, ".git")
-	s = strings.TrimPrefix(s, "https://github.com/")
-	s = strings.TrimPrefix(s, "http://github.com/")
-	if s == "" || strings.Count(s, "/") != 1 {
-		return "", fmt.Errorf("not a github repository url: %q", repoURL)
+func newGitHubHTTPClient(timeout time.Duration) *http.Client {
+	return &http.Client{
+		Timeout: timeout,
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			if len(via) >= 10 {
+				return fmt.Errorf("too many download redirects")
+			}
+			return validateGitHubURL(req.URL.String())
+		},
 	}
-	return s, nil
+}
+
+func validateGitHubURL(raw string) error {
+	parsed, err := url.Parse(raw)
+	if err != nil || parsed.Scheme != "https" || parsed.User != nil || parsed.Port() != "" {
+		return fmt.Errorf("download URL is not a valid HTTPS URL")
+	}
+	host := strings.ToLower(parsed.Hostname())
+	if host == "github.com" || host == "api.github.com" || host == "raw.githubusercontent.com" ||
+		strings.HasSuffix(host, ".githubusercontent.com") {
+		return nil
+	}
+	return fmt.Errorf("download URL host %q is not trusted", host)
 }
 
 // checksumSuffixes are release-asset extensions that are never the binary

@@ -1,10 +1,6 @@
 package cli
 
-import (
-	"context"
-
-	"github.com/Okymi-X/arsenal/internal/registry"
-)
+import "github.com/Okymi-X/arsenal/internal/registry"
 
 func (a *App) cmdVersions(args []string) error {
 	github := false
@@ -39,7 +35,7 @@ func (a *App) cmdVersions(args []string) error {
 	if err != nil {
 		return err
 	}
-	refs, err := client.ListTags(context.Background(), 50)
+	refs, err := client.ListTags(a.ctx, 50)
 	if err != nil {
 		return err
 	}

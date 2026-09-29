@@ -1,13 +1,14 @@
 package venv
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/Okymi-X/arsenal/internal/isolation"
 )
 
 // Install runs pip inside the virtualenv according to spec.
-func (b *Backend) Install(spec isolation.InstallSpec) error {
+func (b *Backend) Install(ctx context.Context, spec isolation.InstallSpec) error {
 	if !b.Exists() {
 		return fmt.Errorf("virtualenv not provisioned at %s", b.dir)
 	}
@@ -15,7 +16,7 @@ func (b *Backend) Install(spec isolation.InstallSpec) error {
 	if len(args) == 0 {
 		return fmt.Errorf("install spec produced no pip arguments")
 	}
-	if err := runCommand(b.pipExe(), args...); err != nil {
+	if err := runCommand(ctx, b.pipExe(), args...); err != nil {
 		return fmt.Errorf("pip install: %w", err)
 	}
 	return nil

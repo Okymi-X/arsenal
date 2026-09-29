@@ -32,11 +32,11 @@ func (m *PipMethod) Install(ctx context.Context, tool registry.Tool, version reg
 	if spec == "" {
 		spec = fmt.Sprintf("%s==%s", tool.Name, version.Tag)
 	}
-	if err := m.backend.Create(tool.Name, version.Tag); err != nil {
+	if err := m.backend.Create(ctx, tool.Name, version.Tag); err != nil {
 		return Result{}, fmt.Errorf("provision environment: %w", err)
 	}
 	install := isolation.InstallSpec{PipSpecs: []string{spec}}
-	if err := m.backend.Install(install); err != nil {
+	if err := m.backend.Install(ctx, install); err != nil {
 		return Result{}, fmt.Errorf("install %s via pip: %w", tool.Name, err)
 	}
 	return Result{Path: m.backend.Path()}, nil

@@ -14,8 +14,8 @@ const (
 	pullWorkers           = 4
 )
 
-func (s *FileSource) fetchRegistry() ([]byte, error) {
-	ctx, cancel := context.WithCancel(context.Background())
+func (s *FileSource) fetchRegistry(parent context.Context) ([]byte, error) {
+	ctx, cancel := context.WithCancel(parent)
 	defer cancel()
 	data, err := s.fetchURL(ctx, s.url)
 	if err != nil {
