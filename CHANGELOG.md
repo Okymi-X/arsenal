@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated GitHub workflow actions to their Node 24-based releases and pinned
-  each action to an immutable commit for supply-chain integrity.
+- Updated GitHub workflow actions to their Node 24-based releases, pinned each
+  action to an immutable commit, and pinned runners to Ubuntu 24.04 for
+  reproducible CI behavior.
 
 ## [0.4.0] - 2026-09-29
 
