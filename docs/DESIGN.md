@@ -23,6 +23,10 @@ arsenal <command> [subject] [flags]
   command.
 - Require explicit names for state-changing operations.
 - Use `tool@version` consistently wherever a version can be selected.
+- Keep prompts opt-in. `--select` forms may read numbered choices from stdin;
+  commands without those flags remain suitable for unattended automation.
+- Select untrusted upstream names by a generated number, sanitize them for
+  terminal display, and bind the choice to the commit shown before mutation.
 - Pass arguments following `--` to the selected tool unchanged.
 - Keep Arsenal's private shim directory off the host `PATH` by default and use
   `arsenal run` as the conflict-free execution path.
@@ -94,6 +98,8 @@ domain layer.
   replacing durable state.
 - Resolve user-selected GitHub refs to immutable commits and persist the
   human-readable ref separately from the resolved commit.
+- Re-resolve an interactively listed tag immediately before use and fail if it
+  no longer identifies the commit displayed to the operator.
 - Install a Python tool and its version-specific dependency pins in one resolver
   transaction so pip cannot silently select a known-incompatible newer API.
 - Run `pip check` after every Python installation and reject environments with

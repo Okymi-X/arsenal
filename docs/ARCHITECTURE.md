@@ -96,7 +96,10 @@ manifest. Remote sync fetches checksum-pinned same-origin segments with size,
 path, redirect, and concurrency bounds, validates the complete catalog, then
 atomically replaces the local assembled copy. `GitHubClient` lists tags and
 resolves user-selected refs to immutable commits before a pull or explicit
-GitHub tool install. Legacy single-file registry URLs remain supported.
+GitHub tool install. Interactive CLI selectors operate on numbered entries,
+sanitize remote metadata before terminal display, and compare the selected
+tag's displayed commit with its final resolution before state changes. Legacy
+single-file registry URLs remain supported.
 
 The process root context is canceled on interrupt or termination and is passed
 through CLI commands to installers, registry synchronization, GitHub queries,

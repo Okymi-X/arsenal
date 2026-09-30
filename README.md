@@ -64,15 +64,18 @@ normal command name.
 
 ```
 arsenal search ad              # browse the registry by keyword
+arsenal install --select ad    # select a matching tool and curated version
 arsenal info nxc               # see tested versions of NetExec
 arsenal versions nxc --github # inspect upstream GitHub tags
 arsenal install nxc            # install the newest tested version
+arsenal install nxc --github-select # select and pin an upstream tag
 arsenal install impacket@0.12.0
 arsenal outdated               # show safe tested upgrades
 arsenal upgrade nxc            # keep the old version for rollback
 arsenal list                   # show installed tools; [*] marks active
 arsenal run nxc -- smb 10.0.0.1
 arsenal switch nxc 1.3.0       # repoint shims to another installed version
+arsenal switch nxc --select    # select an installed version interactively
 arsenal remove nxc
 
 arsenal fetch linpeas --dest ./www          # stage an upload-binary, latest version
@@ -95,6 +98,7 @@ Refresh the registry from upstream at any time:
 ```
 arsenal sync
 arsenal sync --list-refs
+arsenal sync --select-ref
 arsenal sync --ref v1.0.0
 ```
 

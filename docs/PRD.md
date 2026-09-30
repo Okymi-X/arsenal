@@ -36,6 +36,9 @@ The primary user is an authorized security practitioner who needs to:
   validates successfully.
 - Let operators discover GitHub tags and pin registry synchronization to a
   selected tag, branch, or commit resolved to an immutable revision.
+- Offer explicit interactive selection for registry tools, curated versions,
+  upstream GitHub tags, installed versions, and registry release tags without
+  changing non-interactive command behavior.
 
 ### Isolation and installation
 
@@ -49,6 +52,8 @@ The primary user is an authorized security practitioner who needs to:
   never silently downgrade or replace an untracked version.
 - Permit an explicit untested GitHub-ref install for supported Python, Go, and
   Cargo projects only after resolving the ref to an immutable commit.
+- Reject an interactively selected GitHub tag if it moves between listing and
+  resolution rather than silently installing a different revision.
 
 ### Execution and shims
 

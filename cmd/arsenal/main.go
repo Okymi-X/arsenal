@@ -41,6 +41,7 @@ func run() int {
 		Paths:   paths,
 		Cfg:     cfg,
 		Version: buildVersion(),
+		Stdin:   os.Stdin,
 		Stdout:  os.Stdout,
 		Stderr:  os.Stderr,
 	})

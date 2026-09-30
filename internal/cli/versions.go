@@ -35,12 +35,19 @@ func (a *App) cmdVersions(args []string) error {
 	if err != nil {
 		return err
 	}
-	refs, err := client.ListTags(a.ctx, 50)
+	refs, err := client.ListTags(a.ctx, 100)
 	if err != nil {
 		return err
 	}
 	for _, ref := range refs {
-		a.log.Printf("%-24s %s", ref.Name, ref.Commit[:12])
+		status := "upstream"
+		if version, ok := curatedGitHubVersion(tool, ref.Name); ok {
+			status = "curated"
+			if version.Tested {
+				status = "curated, tested"
+			}
+		}
+		a.log.Printf("%-24s %s  %s", ref.Name, ref.Commit[:12], status)
 	}
 	return nil
 }

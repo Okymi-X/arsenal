@@ -25,6 +25,9 @@ arsenal [-v|--verbose] <command> [args]
 
 ```
 arsenal install <tool>[@version]
+arsenal install --select [query]
+arsenal install <tool> --select
+arsenal install <tool> --github-select
 arsenal install <tool> --github-ref <tag|branch|sha>
 ```
 
@@ -40,6 +43,15 @@ GitHub to a full immutable commit before installation and records it as
 prints a warning. Set `GITHUB_TOKEN` to raise GitHub API rate limits; the token
 is never persisted.
 
+The opt-in selection forms use numbered plain-text menus. `install --select`
+searches all registry tools, or only matches for `[query]`, and then selects a
+curated version. `<tool> --select` skips directly to that tool's curated
+versions. `<tool> --github-select` queries up to 100 tags from the tool's main
+GitHub repository, marks tags already curated and tested, and installs the
+selected tag as an untested upstream revision. Arsenal re-resolves that tag and
+aborts if it moved after the menu was displayed. Commands without a selection
+flag never prompt.
+
 Go and Cargo installs use exact registry targets, private build caches, and a
 staging directory under the tool's version root. Arsenal verifies all declared
 executables before atomically activating the installation and removes transient
@@ -52,8 +64,9 @@ arsenal versions <tool>
 arsenal versions <tool> --github
 ```
 
-Lists curated versions or queries the tool's GitHub repository for upstream
-tags and their commit prefixes.
+Lists curated versions or queries up to 100 tags from the tool's GitHub
+repository. Upstream results identify tags that match a curated or tested
+version.
 
 ### remove
 
@@ -68,9 +81,11 @@ then prunes the manifest.
 
 ```
 arsenal switch <tool> <version>
+arsenal switch <tool> --select
 ```
 
 Repoints the tool's shims to an already-installed version and marks it active.
+`--select` presents the installed versions and identifies the current one.
 
 ### outdated and upgrade
 
@@ -224,6 +239,7 @@ lockfile.
 ```
 arsenal sync
 arsenal sync --list-refs [--repo owner/repo]
+arsenal sync --select-ref [--repo owner/repo]
 arsenal sync --ref <tag|branch|sha> [--repo owner/repo]
 ```
 
@@ -237,6 +253,10 @@ SHA to an immutable commit, downloads the registry from that snapshot, and
 stores both the selection and resolved commit in configuration. `--repo`
 selects another `owner/repo`. A `GITHUB_TOKEN` may be supplied through the
 environment and is never written to configuration.
+
+`--select-ref` presents up to 100 repository tags, pins the selected tag to the
+displayed commit, and aborts if the tag moves before download. It is mutually
+exclusive with `--list-refs` and `--ref`.
 
 ### doctor
 

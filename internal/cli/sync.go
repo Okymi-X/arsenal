@@ -8,9 +8,11 @@ import (
 )
 
 type syncOptions struct {
-	listRefs  bool
-	reference string
-	repo      string
+	listRefs       bool
+	selectRef      bool
+	reference      string
+	repo           string
+	expectedCommit string
 }
 
 // cmdSync refreshes the local registry from its configured URL or a selected
@@ -26,6 +28,14 @@ func (a *App) cmdSync(args []string) error {
 	}
 	if options.listRefs {
 		return a.listGitHubRefs(repo)
+	}
+	if options.selectRef {
+		selected, selectErr := a.selectRegistryGitHubRef(repo)
+		if selectErr != nil {
+			return selectErr
+		}
+		options.reference = selected.Name
+		options.expectedCommit = selected.Commit
 	}
 	source, sourceURL, pinned, err := a.syncSource(options, repo)
 	if err != nil {
@@ -70,6 +80,9 @@ func (a *App) syncSource(options syncOptions, repo string) (registry.Source, str
 	if err != nil {
 		return nil, "", false, err
 	}
+	if err := verifySelectedGitHubCommit(selected, options.expectedCommit, commit); err != nil {
+		return nil, "", false, err
+	}
 	sourceURL, err := client.RegistryURL(commit)
 	if err != nil {
 		return nil, "", false, err
@@ -85,7 +98,7 @@ func (a *App) listGitHubRefs(repo string) error {
 	if err != nil {
 		return err
 	}
-	refs, err := client.ListTags(a.ctx, 50)
+	refs, err := client.ListTags(a.ctx, 100)
 	if err != nil {
 		return err
 	}
@@ -99,6 +112,31 @@ func (a *App) listGitHubRefs(repo string) error {
 	return nil
 }
 
+func (a *App) selectRegistryGitHubRef(repo string) (registry.GitHubRef, error) {
+	client, err := registry.NewGitHubClient(repo, a.cfg.RegistryPath, githubToken())
+	if err != nil {
+		return registry.GitHubRef{}, err
+	}
+	refs, err := client.ListTags(a.ctx, 100)
+	if err != nil {
+		return registry.GitHubRef{}, err
+	}
+	options := make([]selectOption, 0, len(refs))
+	byName := make(map[string]registry.GitHubRef, len(refs))
+	for _, ref := range refs {
+		byName[ref.Name] = ref
+		options = append(options, selectOption{
+			label: fmt.Sprintf("%-24s %s", ref.Name, ref.Commit[:12]),
+			value: ref.Name,
+		})
+	}
+	selected, err := selectOne(a.in, a.out, "Select a registry GitHub tag from "+repo+":", options)
+	if err != nil {
+		return registry.GitHubRef{}, err
+	}
+	return byName[selected], nil
+}
+
 func parseSyncArgs(args []string) (syncOptions, error) {
 	var options syncOptions
 	for i := 0; i < len(args); i++ {
@@ -106,6 +144,8 @@ func parseSyncArgs(args []string) (syncOptions, error) {
 		switch {
 		case argument == "--list-refs":
 			options.listRefs = true
+		case argument == "--select-ref":
+			options.selectRef = true
 		case argument == "--ref" || argument == "--repo":
 			if i+1 >= len(args) {
 				return syncOptions{}, fmt.Errorf("%s requires a value", argument)
@@ -121,11 +161,14 @@ func parseSyncArgs(args []string) (syncOptions, error) {
 		case strings.HasPrefix(argument, "--repo="):
 			options.repo = strings.TrimSpace(strings.TrimPrefix(argument, "--repo="))
 		default:
-			return syncOptions{}, usageError("sync [--list-refs] [--repo owner/repo] [--ref tag|branch|sha]")
+			return syncOptions{}, usageError("sync [--list-refs|--select-ref] [--repo owner/repo] [--ref tag|branch|sha]")
 		}
 	}
-	if options.listRefs && options.reference != "" {
-		return syncOptions{}, fmt.Errorf("--list-refs and --ref cannot be used together")
+	if options.listRefs && (options.reference != "" || options.selectRef) {
+		return syncOptions{}, fmt.Errorf("--list-refs cannot be combined with --ref or --select-ref")
+	}
+	if options.selectRef && options.reference != "" {
+		return syncOptions{}, fmt.Errorf("--select-ref and --ref cannot be used together")
 	}
 	return options, nil
 }

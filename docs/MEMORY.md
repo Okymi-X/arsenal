@@ -33,6 +33,11 @@ for assumptions. Update it only when a fact is confirmed in the repository.
 - Segmented registries are SHA-256 pinned. GitHub registry refs and explicit
   Python, Go, and Cargo tool refs are resolved to immutable commits before
   pulling.
+- Interactive selection is explicit: tool and curated-version discovery use
+  `install --select`, upstream tool tags use `--github-select`, installed
+  versions use `switch --select`, and registry tags use `sync --select-ref`.
+  Remote choices are numeric, terminal-sanitized, and rejected if their tag
+  moves between display and final resolution.
 - Native Go and Cargo installations use per-tool staging roots and caches,
   verify declared executables, and promote completed installs atomically.
 - Asset downloads accept at most 512 MiB from HTTPS GitHub-controlled hosts,

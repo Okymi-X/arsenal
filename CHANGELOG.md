@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added opt-in numbered selection for registry tool discovery, curated install
+  versions, upstream GitHub tool tags, installed-version switching, and
+  registry release tags. Existing commands remain non-interactive unless a
+  selection flag is passed.
+
+### Security
+
+- Interactive GitHub choices are terminal-sanitized, resolved to immutable
+  commits, and rejected if a selected tag moves after it is displayed.
+
 ## [0.5.4] - 2026-09-30
 
 ### Changed

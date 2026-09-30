@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"io"
@@ -29,6 +30,8 @@ type Options struct {
 	Cfg config.Config
 	// Version is the build version string.
 	Version string
+	// Stdin supplies interactive command selections.
+	Stdin io.Reader
 	// Stdout receives primary command output.
 	Stdout io.Writer
 	// Stderr receives diagnostics.
@@ -44,6 +47,7 @@ type App struct {
 	paths   config.Paths
 	cfg     config.Config
 	version string
+	in      *bufio.Reader
 	out     io.Writer
 	errw    io.Writer
 	log     *logx.Logger
@@ -59,11 +63,16 @@ func New(opts Options) *App {
 	if ctx == nil {
 		ctx = context.Background()
 	}
+	input := opts.Stdin
+	if input == nil {
+		input = os.Stdin
+	}
 	return &App{
 		ctx:     ctx,
 		paths:   opts.Paths,
 		cfg:     opts.Cfg,
 		version: opts.Version,
+		in:      bufio.NewReaderSize(input, maxSelectionInput+1),
 		out:     opts.Stdout,
 		errw:    opts.Stderr,
 		log:     logx.New(logx.LevelQuiet, opts.Stdout, opts.Stderr),

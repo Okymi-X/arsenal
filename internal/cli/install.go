@@ -1,10 +1,8 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/Okymi-X/arsenal/internal/installer"
@@ -16,7 +14,7 @@ import (
 // cmdInstall installs a tool at a resolved version into an isolated backend,
 // generates shims, and records the installation in the manifest.
 func (a *App) cmdInstall(args []string) error {
-	spec, githubRef, err := parseInstallArgs(args)
+	options, err := parseInstallArgs(args)
 	if err != nil {
 		return err
 	}
@@ -24,15 +22,9 @@ func (a *App) cmdInstall(args []string) error {
 	if err != nil {
 		return err
 	}
-	res, err := resolveSpec(reg, spec)
+	res, err := a.resolveInstallOptions(reg, options)
 	if err != nil {
 		return err
-	}
-	if githubRef != "" {
-		res, err = resolveGitHubInstall(a.ctx, res.Tool, githubRef)
-		if err != nil {
-			return err
-		}
 	}
 	if !res.Version.Tested {
 		a.log.Warnf("%s@%s is not marked tested", res.Tool.Name, res.Version.Tag)
@@ -49,68 +41,6 @@ func (a *App) cmdInstall(args []string) error {
 		return nil
 	}
 	return a.installResolved(res)
-}
-
-func parseInstallArgs(args []string) (string, string, error) {
-	if len(args) == 1 {
-		return args[0], "", nil
-	}
-	if len(args) == 3 && args[1] == "--github-ref" && args[2] != "" {
-		if _, _, hasVersion := strings.Cut(args[0], "@"); hasVersion {
-			return "", "", fmt.Errorf("catalogue version and --github-ref cannot be combined")
-		}
-		return args[0], args[2], nil
-	}
-	return "", "", usageError("install <tool>[@version] [--github-ref tag|branch|sha]")
-}
-
-func resolveGitHubInstall(ctx context.Context, tool registry.Tool, ref string) (resolver.Resolved, error) {
-	switch tool.InstallMethod {
-	case installer.MethodPip, installer.MethodGitPip, installer.MethodGoBin, installer.MethodCargo:
-	default:
-		return resolver.Resolved{}, fmt.Errorf("direct GitHub install is not supported for %s tools", tool.InstallMethod)
-	}
-	repo, err := registry.ParseGitHubRepo(tool.Repo)
-	if err != nil {
-		return resolver.Resolved{}, err
-	}
-	client, err := registry.NewGitHubClient(repo, "registry.toml", githubToken())
-	if err != nil {
-		return resolver.Resolved{}, err
-	}
-	commit, err := client.ResolveCommit(ctx, ref)
-	if err != nil {
-		return resolver.Resolved{}, err
-	}
-	if tool.InstallMethod == installer.MethodPip || tool.InstallMethod == installer.MethodGitPip {
-		tool.InstallMethod = installer.MethodGitPip
-	}
-	targets := latestInstallTargets(tool)
-	return resolver.Resolved{
-		Tool: tool,
-		Version: registry.Version{
-			Tag:            "github-" + commit[:12],
-			Commit:         commit,
-			Repo:           tool.Repo,
-			Tested:         false,
-			Notes:          "Explicit GitHub ref " + ref,
-			InstallTargets: targets,
-		},
-	}, nil
-}
-
-func latestInstallTargets(tool registry.Tool) map[string]string {
-	for _, version := range tool.Versions {
-		if len(version.InstallTargets) == 0 {
-			continue
-		}
-		result := make(map[string]string, len(version.InstallTargets))
-		for binary, target := range version.InstallTargets {
-			result[binary] = target
-		}
-		return result
-	}
-	return nil
 }
 
 func (a *App) installResolved(res resolver.Resolved) error {
