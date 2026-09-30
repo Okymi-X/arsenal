@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-09-30
+
+### Fixed
+
+- Added version-specific exact Python dependency pins and propagated them
+  through installation, lockfiles, schema validation, and upstream checks.
+  NetExec 1.5.1 now installs dploot 3.1.3, matching NetExec's upstream lockfile,
+  instead of accepting incompatible dploot 4.x releases that break SMB and
+  several modules at import time. NetExec 1.4.0 similarly pins dploot 3.1.2.
+  Every Python-backed tool now runs `pip check` before installation succeeds.
+
 ## [0.5.2] - 2026-09-30
 
 ### Changed
@@ -282,7 +293,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - binary, go install, and cargo install methods, wired behind the
   InstallMethod interface.
 
-[Unreleased]: https://github.com/Okymi-X/arsenal/compare/v0.5.2...HEAD
+[Unreleased]: https://github.com/Okymi-X/arsenal/compare/v0.5.3...HEAD
+[0.5.3]: https://github.com/Okymi-X/arsenal/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/Okymi-X/arsenal/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/Okymi-X/arsenal/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/Okymi-X/arsenal/compare/v0.4.0...v0.5.0

@@ -28,6 +28,7 @@ func TestVerifyLockfileRejectsDriftBeforeInstall(t *testing.T) {
 		{name: "install method", mutate: func(lf *op.Lockfile) { lf.Entries[0].InstallMethod = "gitpip" }},
 		{name: "commit", mutate: func(lf *op.Lockfile) { lf.Entries[0].Commit = "other" }},
 		{name: "package spec", mutate: func(lf *op.Lockfile) { lf.Entries[0].PipSpec = "example==2.0.0" }},
+		{name: "pip dependency", mutate: func(lf *op.Lockfile) { lf.Entries[0].PipDependencies = []string{"dependency==3.0.0"} }},
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
@@ -47,9 +48,10 @@ func lockTestRegistry() *registry.Registry {
 			Name:          "example",
 			InstallMethod: "pip",
 			Versions: []registry.Version{{
-				Tag:     "1.0.0",
-				Commit:  "v1.0.0",
-				PipSpec: "example==1.0.0",
+				Tag:             "1.0.0",
+				Commit:          "v1.0.0",
+				PipSpec:         "example==1.0.0",
+				PipDependencies: []string{"dependency==2.0.0"},
 			}},
 		}},
 	}
@@ -60,11 +62,12 @@ func lockTestFile() *op.Lockfile {
 		Op:              "eng",
 		RegistryVersion: "1",
 		Entries: []op.LockEntry{{
-			Tool:          "example",
-			Version:       "1.0.0",
-			Commit:        "v1.0.0",
-			PipSpec:       "example==1.0.0",
-			InstallMethod: "pip",
+			Tool:            "example",
+			Version:         "1.0.0",
+			Commit:          "v1.0.0",
+			PipSpec:         "example==1.0.0",
+			PipDependencies: []string{"dependency==2.0.0"},
+			InstallMethod:   "pip",
 		}},
 	}
 }

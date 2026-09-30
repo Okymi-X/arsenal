@@ -19,6 +19,9 @@ func (b *Backend) Install(ctx context.Context, spec isolation.InstallSpec) error
 	if err := runCommand(ctx, b.pipExe(), args...); err != nil {
 		return fmt.Errorf("pip install: %w", err)
 	}
+	if err := runCommand(ctx, b.pythonExe(), "-m", "pip", "check"); err != nil {
+		return fmt.Errorf("verify Python dependencies: %w", err)
+	}
 	return nil
 }
 

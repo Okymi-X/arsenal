@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Okymi-X/arsenal/internal/pipspec"
 	"github.com/Okymi-X/arsenal/internal/registry"
 )
 
@@ -13,6 +14,7 @@ import (
 type checker struct {
 	http        *http.Client
 	githubToken string
+	pypiBase    string
 }
 
 // newChecker builds a checker with the given HTTP timeout and optional GitHub
@@ -21,14 +23,21 @@ func newChecker(timeout time.Duration, githubToken string) *checker {
 	return &checker{
 		http:        &http.Client{Timeout: timeout},
 		githubToken: githubToken,
+		pypiBase:    "https://pypi.org",
 	}
 }
 
 // verify checks that a single version exists upstream for its install method.
 func (c *checker) verify(tool registry.Tool, v registry.Version) error {
+	if err := c.verifyPipDependencies(v.PipDependencies); err != nil {
+		return err
+	}
 	switch tool.InstallMethod {
 	case "pip":
-		pkg, ver := pipTarget(tool, v)
+		pkg, ver, err := pipTarget(tool, v)
+		if err != nil {
+			return err
+		}
 		return c.checkPyPI(pkg, ver)
 	case "gitpip", "gobin", "cargo", "binary":
 		return c.checkGitRef(tool, v)
@@ -37,17 +46,30 @@ func (c *checker) verify(tool registry.Tool, v registry.Version) error {
 	}
 }
 
+func (c *checker) verifyPipDependencies(requirements []string) error {
+	for _, requirement := range requirements {
+		pin, err := pipspec.ParseExact(requirement)
+		if err != nil {
+			return err
+		}
+		if err := c.checkPyPI(pin.Name, pin.Version); err != nil {
+			return fmt.Errorf("verify dependency %s: %w", requirement, err)
+		}
+	}
+	return nil
+}
+
 // pipTarget derives the PyPI package name and version from a version entry,
 // preferring the explicit pip_spec.
-func pipTarget(tool registry.Tool, v registry.Version) (pkg, ver string) {
+func pipTarget(tool registry.Tool, v registry.Version) (pkg, ver string, err error) {
 	if spec := strings.TrimSpace(v.PipSpec); spec != "" {
-		name, version, found := strings.Cut(spec, "==")
-		if found {
-			return strings.TrimSpace(name), strings.TrimSpace(version)
+		pin, parseErr := pipspec.ParseExact(spec)
+		if parseErr != nil {
+			return "", "", parseErr
 		}
-		return strings.TrimSpace(spec), v.Tag
+		return pin.Name, pin.Version, nil
 	}
-	return tool.Name, v.Tag
+	return tool.Name, v.Tag, nil
 }
 
 // refCandidates returns the Git refs to try for a non-pip tool: the pinned

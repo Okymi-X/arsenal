@@ -48,6 +48,8 @@ type LockEntry struct {
 	Commit string `toml:"commit"`
 	// PipSpec is the resolved pip requirement, when applicable.
 	PipSpec string `toml:"pip_spec"`
+	// PipDependencies are exact additional Python requirements.
+	PipDependencies []string `toml:"pip_dependencies"`
 	// InstallMethod records how the tool is installed.
 	InstallMethod string `toml:"install_method"`
 }

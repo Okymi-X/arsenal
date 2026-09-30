@@ -11,7 +11,7 @@ func TestLockfileRoundTrip(t *testing.T) {
 		Generated:       "2026-06-14T00:00:00Z",
 		RegistryVersion: "1",
 		Entries: []LockEntry{
-			{Tool: "netexec", Version: "1.4.0", PipSpec: "netexec==1.4.0", InstallMethod: "pip"},
+			{Tool: "netexec", Version: "1.4.0", PipSpec: "netexec==1.4.0", PipDependencies: []string{"dploot==3.1.2"}, InstallMethod: "pip"},
 			{Tool: "impacket", Version: "0.12.0", PipSpec: "impacket==0.12.0", InstallMethod: "pip"},
 		},
 	}
@@ -28,6 +28,9 @@ func TestLockfileRoundTrip(t *testing.T) {
 	}
 	if got.Entries[0].Tool != "netexec" || got.Entries[0].Version != "1.4.0" {
 		t.Fatalf("unexpected first entry: %+v", got.Entries[0])
+	}
+	if len(got.Entries[0].PipDependencies) != 1 || got.Entries[0].PipDependencies[0] != "dploot==3.1.2" {
+		t.Fatalf("unexpected pip dependencies: %+v", got.Entries[0].PipDependencies)
 	}
 }
 
@@ -46,6 +49,7 @@ func TestValidateLockfile(t *testing.T) {
 		{"entry no version", &Lockfile{Op: "x", RegistryVersion: "1", Entries: []LockEntry{{Tool: "a", InstallMethod: "pip"}}}, true},
 		{"unsafe version", &Lockfile{Op: "x", RegistryVersion: "1", Entries: []LockEntry{{Tool: "a", Version: "../1", InstallMethod: "pip"}}}, true},
 		{"entry no install method", &Lockfile{Op: "x", RegistryVersion: "1", Entries: []LockEntry{{Tool: "a", Version: "1"}}}, true},
+		{"unsafe pip dependency", &Lockfile{Op: "x", RegistryVersion: "1", Entries: []LockEntry{{Tool: "a", Version: "1", PipDependencies: []string{"dependency>=2"}, InstallMethod: "pip"}}}, true},
 		{"duplicate tool", &Lockfile{Op: "x", RegistryVersion: "1", Entries: []LockEntry{{Tool: "a", Version: "1", InstallMethod: "pip"}, {Tool: "a", Version: "2", InstallMethod: "pip"}}}, true},
 	}
 	for _, tt := range tests {

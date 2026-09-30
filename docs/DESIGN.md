@@ -90,6 +90,10 @@ domain layer.
   replacing durable state.
 - Resolve user-selected GitHub refs to immutable commits and persist the
   human-readable ref separately from the resolved commit.
+- Install a Python tool and its version-specific dependency pins in one resolver
+  transaction so pip cannot silently select a known-incompatible newer API.
+- Run `pip check` after every Python installation and reject environments with
+  inconsistent installed dependency metadata.
 - Bound concurrency as well as individual response size for segmented pulls.
 - Keep network behavior injectable so tests can use local servers.
 

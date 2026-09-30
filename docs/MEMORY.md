@@ -38,6 +38,10 @@ for assumptions. Update it only when a fact is confirmed in the repository.
   GitHub operations, registry synchronization, and asset downloads.
 - Safe upgrades target the newest tested registry entry, retain the previous
   installed environment, and never auto-change ahead or untracked versions.
+- Registry versions may declare exact `pip_dependencies`. Python installers
+  resolve those pins with the primary package in one transaction, lockfiles
+  preserve them, upstream verification confirms every pin exists on PyPI, and
+  every completed Python installation must pass `pip check`.
 - Production Go source currently follows a soft 180-line file limit and the
   linter rejects cyclomatic complexity of 15 or greater.
 - Persisted configuration, registry records, installed manifests, ops, and

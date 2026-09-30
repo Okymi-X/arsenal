@@ -35,7 +35,7 @@ func (m *PipMethod) Install(ctx context.Context, tool registry.Tool, version reg
 	if err := m.backend.Create(ctx, tool.Name, version.Tag); err != nil {
 		return Result{}, fmt.Errorf("provision environment: %w", err)
 	}
-	install := isolation.InstallSpec{PipSpecs: []string{spec}}
+	install := isolation.InstallSpec{PipSpecs: append([]string{spec}, version.PipDependencies...)}
 	if err := m.backend.Install(ctx, install); err != nil {
 		return Result{}, fmt.Errorf("install %s via pip: %w", tool.Name, err)
 	}

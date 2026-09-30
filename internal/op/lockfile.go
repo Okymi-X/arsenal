@@ -8,6 +8,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/Okymi-X/arsenal/internal/fsutil"
+	"github.com/Okymi-X/arsenal/internal/pipspec"
 	"github.com/Okymi-X/arsenal/internal/safepath"
 	"github.com/Okymi-X/arsenal/internal/strictdecode"
 )
@@ -71,6 +72,16 @@ func validateLockfile(lf *Lockfile) error {
 		}
 		if e.InstallMethod == "" {
 			return fmt.Errorf("lockfile entry for %q has no install method", e.Tool)
+		}
+		if e.PipSpec != "" {
+			if _, err := pipspec.ParseExact(e.PipSpec); err != nil {
+				return fmt.Errorf("lockfile entry for %q: %w", e.Tool, err)
+			}
+		}
+		for _, requirement := range e.PipDependencies {
+			if _, err := pipspec.ParseExact(requirement); err != nil {
+				return fmt.Errorf("lockfile entry for %q: %w", e.Tool, err)
+			}
 		}
 		if _, dup := seen[e.Tool]; dup {
 			return fmt.Errorf("duplicate lockfile entry for %q", e.Tool)

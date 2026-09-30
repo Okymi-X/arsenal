@@ -89,6 +89,9 @@ func validateVersions(tool Tool) error {
 			return fmt.Errorf("tool %q has duplicate version %q", tool.Name, version.Tag)
 		}
 		seen[version.Tag] = struct{}{}
+		if err := validatePipMetadata(tool, version); err != nil {
+			return err
+		}
 		if err := validateInstallTargets(tool, version); err != nil {
 			return err
 		}

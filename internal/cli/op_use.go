@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"slices"
 	"time"
 
 	"github.com/Okymi-X/arsenal/internal/op"
@@ -118,7 +119,8 @@ func verifyLockfile(reg *registry.Registry, lf *op.Lockfile) ([]resolver.Resolve
 func verifyLockEntry(entry op.LockEntry, resolved resolver.Resolved) error {
 	if entry.InstallMethod != resolved.Tool.InstallMethod ||
 		entry.Commit != resolved.Version.Commit ||
-		entry.PipSpec != resolved.Version.PipSpec {
+		entry.PipSpec != resolved.Version.PipSpec ||
+		!slices.Equal(entry.PipDependencies, resolved.Version.PipDependencies) {
 		return fmt.Errorf("lockfile entry %s@%s does not match active registry metadata", entry.Tool, entry.Version)
 	}
 	return nil
@@ -136,11 +138,12 @@ func resolveEntry(reg *registry.Registry) op.ResolveFunc {
 			return op.LockEntry{}, err
 		}
 		return op.LockEntry{
-			Tool:          res.Tool.Name,
-			Version:       res.Version.Tag,
-			Commit:        res.Version.Commit,
-			PipSpec:       res.Version.PipSpec,
-			InstallMethod: res.Tool.InstallMethod,
+			Tool:            res.Tool.Name,
+			Version:         res.Version.Tag,
+			Commit:          res.Version.Commit,
+			PipSpec:         res.Version.PipSpec,
+			PipDependencies: append([]string(nil), res.Version.PipDependencies...),
+			InstallMethod:   res.Tool.InstallMethod,
 		}, nil
 	}
 }

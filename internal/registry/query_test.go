@@ -1,6 +1,9 @@
 package registry
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func fixture() *Registry {
 	return &Registry{
@@ -173,6 +176,35 @@ func TestParseRejectsUnsafeAssetMetadata(t *testing.T) {
 		data := []byte("version = \"1\"\n[[asset]]\n" + fields + "\nsource = \"github-raw\"\n")
 		if _, err := Parse(data); err == nil {
 			t.Fatalf("expected asset metadata to be rejected:\n%s", data)
+		}
+	}
+}
+
+func TestParseValidatesExactPipDependencies(t *testing.T) {
+	valid := []byte(`
+version = "1"
+[[tool]]
+name = "example"
+install_method = "gitpip"
+repo = "https://github.com/owner/example"
+binary = "example"
+  [[tool.version]]
+  tag = "1.0.0"
+  commit = "v1.0.0"
+  pip_dependencies = ["dependency==2.0.0"]
+`)
+	if _, err := Parse(valid); err != nil {
+		t.Fatalf("Parse valid dependency: %v", err)
+	}
+	duplicate := []byte(strings.ReplaceAll(string(valid), `pip_dependencies = ["dependency==2.0.0"]`, `pip_dependencies = ["dependency-name==2.0.0", "Dependency_name==2.0.0"]`))
+	if _, err := Parse(duplicate); err == nil {
+		t.Fatal("expected normalized duplicate dependency to be rejected")
+	}
+
+	for _, requirement := range []string{"dependency>=2", "--index-url==example", "dependency=="} {
+		data := []byte(strings.ReplaceAll(string(valid), "dependency==2.0.0", requirement))
+		if _, err := Parse(data); err == nil {
+			t.Fatalf("expected dependency %q to be rejected", requirement)
 		}
 	}
 }

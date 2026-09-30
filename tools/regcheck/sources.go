@@ -11,7 +11,7 @@ import (
 
 // checkPyPI verifies that a package version is published on PyPI.
 func (c *checker) checkPyPI(pkg, version string) error {
-	url := fmt.Sprintf("https://pypi.org/pypi/%s/json", pkg)
+	url := fmt.Sprintf("%s/pypi/%s/json", strings.TrimSuffix(c.pypiBase, "/"), pkg)
 	resp, err := c.http.Get(url)
 	if err != nil {
 		return fmt.Errorf("query PyPI for %s: %w", pkg, err)

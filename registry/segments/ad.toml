@@ -31,16 +31,18 @@ notes = "Not published on PyPI; installed from the pinned Git tag."
   commit = "v1.5.1"
   tested = true
   pip_spec = ""
+  pip_dependencies = ["dploot==3.1.3"]
   date = "2025-12-01"
-  notes = "Recommended stable release."
+  notes = "Recommended stable release. dploot matches the upstream v1.5.1 lockfile."
 
   [[tool.version]]
   tag = "1.4.0"
   commit = "v1.4.0"
   tested = true
   pip_spec = ""
+  pip_dependencies = ["dploot==3.1.2"]
   date = "2025-06-15"
-  notes = "Previous stable release."
+  notes = "Previous stable release. dploot matches the upstream v1.4.0 lockfile."
 
 [[tool]]
 name = "impacket"

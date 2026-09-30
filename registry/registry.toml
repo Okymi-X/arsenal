@@ -2,7 +2,7 @@
 # Edit entries in registry/segments/*.toml, then run make registry.
 
 version = "1"
-updated = "2026-09-29"
+updated = "2026-09-30"
 segments = [
   "segments/ad.toml",
   "segments/ad-recon.toml",
@@ -16,7 +16,7 @@ segments = [
 ]
 
 [segment_sha256]
-"segments/ad.toml" = "e2e0eff54a268ae18130e37815b6233cc9e4ab788efb269143d2f44ae55b9850"
+"segments/ad.toml" = "53c72c8348fd844280b5fe8cf6ecaee90a3c005ec74d449020e66d1d781aa66d"
 "segments/ad-recon.toml" = "019216869db0ba046de789526bb809a10a13f93fb27705c6ae33722bdba3349a"
 "segments/web.toml" = "35e64fac71c05deeb5ecc9dd1dbd5cae809d6b70d5db04c764dca716c9327f00"
 "segments/recon.toml" = "415cf370d227521359dc5b517d11595a9e58f1bcf746d4e4e88f8ea0e39a68cc"

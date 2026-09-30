@@ -106,6 +106,7 @@ used.
   commit = ""
   tested = true
   pip_spec = "netexec==1.4.0"
+  pip_dependencies = ["dploot==3.1.2"]
   date = "2025-12-01"
   notes = "Recommended stable release."
 ```
@@ -117,6 +118,7 @@ used.
 | `repo`     | string | no       | Overrides the tool's repo for this version (fork/branch).|
 | `tested`   | bool   | no       | Marks a version the maintainers verified.                |
 | `pip_spec` | string | no       | pip requirement string, e.g. `impacket==0.12.0`.         |
+| `pip_dependencies` | [string] | no | Additional exact `name==version` requirements installed with this version. |
 | `install_targets` | table | for Go/Cargo | Exposed binary to Go package or Cargo crate mapping. |
 | `date`     | string | no       | ISO-8601 release date.                                   |
 | `notes`    | string | no       | Version-specific guidance.                               |
@@ -138,8 +140,10 @@ so leave such versions `tested = false`.
 
 ## Install method semantics
 
-- `pip` - installs `pip_spec` (or `name==tag` if absent) into a venv.
-- `gitpip` - installs `git+<repo>@<commit>` into a venv.
+- `pip` - installs `pip_spec` (or `name==tag` if absent) and any exact
+  `pip_dependencies` into a venv in one resolver transaction.
+- `gitpip` - installs `git+<repo>@<commit>` and any exact
+  `pip_dependencies` into a venv in one resolver transaction.
 - `gobin` - runs `go install <install_target>@<commit>` with isolated `GOBIN`,
   module, and build caches, then verifies and promotes the declared binaries.
 - `cargo` - runs `cargo install --version <tag> --locked` with an isolated root
@@ -201,7 +205,8 @@ Every segment must have exactly one valid SHA-256 pin. Remote segments and
 redirects must remain on the manifest's origin, and each response plus the
 assembled catalog has a size bound. The loader also rejects a registry where a
 tool has unsafe path components, no `install_method`, or no versions; duplicate
-version tags or tool names; and incomplete Go/Cargo target mappings.
+version tags or tool names; non-exact or option-like Python dependency pins;
+and incomplete Go/Cargo target mappings.
 
 ## Upstream verification
 
@@ -210,6 +215,8 @@ Every version and asset is verified against its official source by the
 
 - `pip` tools: the version from `pip_spec` (or `name==tag`) must be published on
   PyPI.
+- Every `pip_dependencies` entry must use exact `name==version` syntax and that
+  release must be published on PyPI.
 - `gitpip`, `gobin`, `cargo`, `binary` tools: the `commit` or `tag` must resolve
   as a ref in the GitHub repository (the checker also tries a leading `v`).
 - `github-release` assets: the latest release must contain a file matching

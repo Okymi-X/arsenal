@@ -37,8 +37,9 @@ func (m *GitPipMethod) Install(ctx context.Context, tool registry.Tool, version 
 		return Result{}, fmt.Errorf("provision environment: %w", err)
 	}
 	install := isolation.InstallSpec{
-		GitURL: repo,
-		Commit: version.Commit,
+		GitURL:   repo,
+		Commit:   version.Commit,
+		PipSpecs: append([]string(nil), version.PipDependencies...),
 	}
 	if err := m.backend.Install(ctx, install); err != nil {
 		return Result{}, fmt.Errorf("install %s via git+pip: %w", tool.Name, err)

@@ -67,7 +67,11 @@ func TestPipInstallUsesBackend(t *testing.T) {
 	backend := &fakeBackend{}
 	orch := NewOrchestrator(DefaultMethods(backend, t.TempDir()))
 	tool := registry.Tool{Name: "netexec", InstallMethod: MethodPip}
-	ver := registry.Version{Tag: "1.4.0", PipSpec: "netexec==1.4.0"}
+	ver := registry.Version{
+		Tag:             "1.4.0",
+		PipSpec:         "netexec==1.4.0",
+		PipDependencies: []string{"dependency==2.0.0"},
+	}
 	result, err := orch.Install(context.Background(), tool, ver)
 	if err != nil {
 		t.Fatalf("Install: %v", err)
@@ -78,7 +82,9 @@ func TestPipInstallUsesBackend(t *testing.T) {
 	if !backend.created {
 		t.Fatal("expected backend.Create to be called")
 	}
-	if len(backend.installed) != 1 || backend.installed[0].PipSpecs[0] != "netexec==1.4.0" {
+	if len(backend.installed) != 1 || len(backend.installed[0].PipSpecs) != 2 ||
+		backend.installed[0].PipSpecs[0] != "netexec==1.4.0" ||
+		backend.installed[0].PipSpecs[1] != "dependency==2.0.0" {
 		t.Fatalf("unexpected install specs: %+v", backend.installed)
 	}
 }
