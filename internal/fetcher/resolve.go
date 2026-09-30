@@ -58,10 +58,10 @@ func (f *Fetcher) resolveRaw(ctx context.Context, asset registry.Asset, sel Sele
 	if want == "" {
 		return resolvedAsset{}, fmt.Errorf("%s: a binary name is required (try --list)", asset.Name)
 	}
-	if !buildAllowed(asset, sel.Build) {
-		return resolvedAsset{}, fmt.Errorf("%s: unknown build %q (try --list of builds in notes)", asset.Name, sel.Build)
+	dir, err := selectedDir(asset, sel.Build)
+	if err != nil {
+		return resolvedAsset{}, err
 	}
-	dir := dirOf(asset, sel.Build)
 	entries, err := f.repoDir(ctx, asset.Repo, branchOf(asset), dir)
 	if err != nil {
 		return resolvedAsset{}, err
@@ -85,15 +85,18 @@ func branchOf(a registry.Asset) string {
 	return "master"
 }
 
-func dirOf(a registry.Asset, override string) string {
+func selectedDir(a registry.Asset, override string) (string, error) {
 	if override != "" {
-		return override
+		if !buildAllowed(a, override) {
+			return "", fmt.Errorf("%s: unknown build %q (try --list of builds in notes)", a.Name, override)
+		}
+		return override, nil
 	}
-	return a.Dir
+	return a.Dir, nil
 }
 
 func buildAllowed(a registry.Asset, override string) bool {
-	if override == "" || len(a.Builds) == 0 {
+	if override == "" {
 		return true
 	}
 	for _, b := range a.Builds {

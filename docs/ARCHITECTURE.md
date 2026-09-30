@@ -26,6 +26,9 @@ internal/shim              write PATH shims to the active version
 internal/store             persist the installed-tools manifest
 internal/op                ops and lockfiles for reproducibility
 internal/doctor            health checks and repair
+internal/safepath          validate filesystem path components
+internal/strictdecode      reject unsupported persisted-schema fields
+internal/fsutil            atomically replace complete files
 ```
 
 `main` does nothing but construct `config.Paths`, load `config.Config`, and hand
@@ -151,7 +154,9 @@ arsenal crosses four important boundaries:
 Validation belongs at the package that first crosses each boundary. Safe values
 then move inward as typed data. Path containment, subprocess argument handling,
 network limits, integrity checks, and atomic writes follow `RULES.md` and
-`DESIGN.md`.
+`DESIGN.md`. Persisted JSON and TOML schemas reject unknown fields. Filesystem
+components share one validator, and complete-file replacement uses unpredictable
+sibling temporary files through the shared atomic writer.
 
 arsenal manages tools used for authorized testing, but it does not authorize or
 scope their execution. The operator selects targets and remains responsible for

@@ -130,3 +130,49 @@ binary = "native"
 		t.Fatalf("Parse: %v", err)
 	}
 }
+
+func TestParseRejectsUnknownFields(t *testing.T) {
+	data := []byte(`
+version = "1"
+unknown = true
+[[tool]]
+name = "example"
+install_method = "pip"
+binary = "example"
+  [[tool.version]]
+  tag = "1.0.0"
+`)
+	if _, err := Parse(data); err == nil {
+		t.Fatal("expected unknown registry field to be rejected")
+	}
+}
+
+func TestParseRejectsInvalidInstallMethod(t *testing.T) {
+	data := []byte(`
+version = "1"
+[[tool]]
+name = "example"
+install_method = "typo"
+binary = "example"
+  [[tool.version]]
+  tag = "1.0.0"
+`)
+	if _, err := Parse(data); err == nil {
+		t.Fatal("expected invalid install method to be rejected")
+	}
+}
+
+func TestParseRejectsUnsafeAssetMetadata(t *testing.T) {
+	tests := []string{
+		`name = "../escape"`,
+		"name = \"asset\"\nrepo = \"https://example.com/owner/repo\"",
+		"name = \"asset\"\nrepo = \"https://github.com/owner/repo\"\ndir = \"../escape\"",
+		"name = \"asset\"\nrepo = \"https://github.com/owner/repo\"\nbuilds = [\"../escape\"]",
+	}
+	for _, fields := range tests {
+		data := []byte("version = \"1\"\n[[asset]]\n" + fields + "\nsource = \"github-raw\"\n")
+		if _, err := Parse(data); err == nil {
+			t.Fatalf("expected asset metadata to be rejected:\n%s", data)
+		}
+	}
+}

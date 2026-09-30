@@ -7,6 +7,9 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+
+	"github.com/Okymi-X/arsenal/internal/fsutil"
+	"github.com/Okymi-X/arsenal/internal/strictdecode"
 )
 
 // Config holds user-tunable settings persisted as JSON under the root.
@@ -50,7 +53,7 @@ func (p Paths) LoadConfig() (Config, error) {
 		return Config{}, fmt.Errorf("read config: %w", err)
 	}
 	cfg := DefaultConfig()
-	if err := json.Unmarshal(data, &cfg); err != nil {
+	if err := strictdecode.JSON(data, &cfg); err != nil {
 		return Config{}, fmt.Errorf("parse config: %w", err)
 	}
 	return cfg, nil
@@ -65,29 +68,8 @@ func (p Paths) SaveConfig(cfg Config) error {
 	if err != nil {
 		return fmt.Errorf("encode config: %w", err)
 	}
-	tmp, err := os.CreateTemp(p.Root, ".config-*.tmp")
-	if err != nil {
-		return fmt.Errorf("create temporary config: %w", err)
-	}
-	tmpPath := tmp.Name()
-	defer func() { _ = os.Remove(tmpPath) }()
-	if _, err := tmp.Write(data); err != nil {
-		_ = tmp.Close()
-		return fmt.Errorf("write temporary config: %w", err)
-	}
-	if err := tmp.Sync(); err != nil {
-		_ = tmp.Close()
-		return fmt.Errorf("sync temporary config: %w", err)
-	}
-	if err := tmp.Chmod(0o600); err != nil {
-		_ = tmp.Close()
-		return fmt.Errorf("set config permissions: %w", err)
-	}
-	if err := tmp.Close(); err != nil {
-		return fmt.Errorf("close temporary config: %w", err)
-	}
-	if err := os.Rename(tmpPath, p.configFile()); err != nil {
-		return fmt.Errorf("replace config: %w", err)
+	if err := fsutil.WriteFileAtomic(p.configFile(), data, 0o600); err != nil {
+		return fmt.Errorf("write config: %w", err)
 	}
 	return nil
 }

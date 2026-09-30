@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/Okymi-X/arsenal/internal/config"
+	"github.com/Okymi-X/arsenal/internal/fsutil"
 	"github.com/Okymi-X/arsenal/internal/isolation"
 	"github.com/Okymi-X/arsenal/internal/isolation/container"
 	"github.com/Okymi-X/arsenal/internal/isolation/venv"
@@ -97,7 +98,7 @@ func (a *App) seedRegistry() error {
 	if err := a.paths.EnsureDirs(); err != nil {
 		return err
 	}
-	if err := os.WriteFile(a.paths.RegistryFile, builtin.Bytes(), 0o644); err != nil {
+	if err := fsutil.WriteFileAtomic(a.paths.RegistryFile, builtin.Bytes(), 0o644); err != nil {
 		return fmt.Errorf("seed registry: %w", err)
 	}
 	return nil

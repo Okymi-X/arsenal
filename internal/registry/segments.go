@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
+	"github.com/Okymi-X/arsenal/internal/strictdecode"
 )
 
 const (
@@ -33,6 +34,9 @@ func ParseManifest(data []byte) (Manifest, error) {
 	}
 	if len(manifest.Segments) == 0 {
 		return manifest, nil
+	}
+	if err := strictdecode.TOML(data, &manifest); err != nil {
+		return Manifest{}, fmt.Errorf("parse registry manifest: %w", err)
 	}
 	if manifest.Version == "" {
 		return Manifest{}, fmt.Errorf("registry manifest has no version")

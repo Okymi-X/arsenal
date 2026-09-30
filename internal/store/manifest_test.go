@@ -1,6 +1,7 @@
 package store
 
 import (
+	"os"
 	"path/filepath"
 	"testing"
 )
@@ -54,5 +55,15 @@ func TestFileStoreRoundTrip(t *testing.T) {
 	again, err := s.Load()
 	if err != nil || len(again.Tools) != 1 {
 		t.Fatalf("reload: %v %+v", err, again)
+	}
+}
+
+func TestFileStoreRejectsUnknownFields(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "manifest.json")
+	if err := os.WriteFile(path, []byte(`{"tools":[],"typo":true}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := NewFileStore(path).Load(); err == nil {
+		t.Fatal("expected unknown manifest field to be rejected")
 	}
 }

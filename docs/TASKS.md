@@ -53,6 +53,16 @@ Status: stubbed in `internal/bundle`
   size limits.
 - Reproduce an environment without network access or silent version changes.
 
+### Release provenance attestations
+
+Status: planned; release binaries currently publish SHA-256 checksums only
+
+- Generate GitHub artifact attestations for release binaries and checksums.
+- Keep workflow permissions least-privileged and pin the attestation action to
+  a full immutable commit SHA.
+- Document verification with GitHub CLI and cover the release flow without
+  weakening the existing tag, changelog, and main-ancestry checks.
+
 ## Definition of ready
 
 A task is ready for implementation when its user outcome, owning package,

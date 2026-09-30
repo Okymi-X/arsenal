@@ -21,6 +21,26 @@ jobs:
           go-version-file: go.mod
           cache: true
 
+      - name: Validate release tag
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid release tag: ${GITHUB_REF_NAME}"
+            exit 1
+          fi
+          if ! grep -Fq "## [$version] - " CHANGELOG.md; then
+            echo "CHANGELOG.md has no dated entry for ${GITHUB_REF_NAME}"
+            exit 1
+          fi
+          git fetch origin main --no-tags
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "Release commit is not on main"
+            exit 1
+          fi
+
+      - name: Verify dependencies
+        run: go mod verify
+
       - name: Cross-compile static binaries
         run: make release
 

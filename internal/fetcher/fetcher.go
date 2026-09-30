@@ -94,7 +94,11 @@ func (f *Fetcher) List(ctx context.Context, asset registry.Asset, build string) 
 		}
 		return assetNames(rel.Assets), nil
 	case registry.AssetGitHubRaw:
-		entries, err := f.repoDir(ctx, asset.Repo, branchOf(asset), dirOf(asset, build))
+		dir, err := selectedDir(asset, build)
+		if err != nil {
+			return nil, err
+		}
+		entries, err := f.repoDir(ctx, asset.Repo, branchOf(asset), dir)
 		if err != nil {
 			return nil, err
 		}

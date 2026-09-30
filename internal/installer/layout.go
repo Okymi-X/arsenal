@@ -5,16 +5,16 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"strings"
-	"unicode"
+
+	"github.com/Okymi-X/arsenal/internal/safepath"
 )
 
 // InstallationPath returns the only valid root for a tool/version pair.
 func InstallationPath(toolsRoot, tool, version string) (string, error) {
-	if err := validatePathComponent("tool", tool); err != nil {
+	if err := safepath.ValidateComponent("tool", tool); err != nil {
 		return "", err
 	}
-	if err := validatePathComponent("version", version); err != nil {
+	if err := safepath.ValidateComponent("version", version); err != nil {
 		return "", err
 	}
 	if toolsRoot == "" {
@@ -34,19 +34,6 @@ func RemoveInstallation(toolsRoot, tool, version, recordedPath string) error {
 	}
 	if err := removeInstallTree(expected); err != nil {
 		return fmt.Errorf("remove installation %s: %w", expected, err)
-	}
-	return nil
-}
-
-func validatePathComponent(kind, value string) error {
-	if value == "" || value == "." || value == ".." || filepath.Base(value) != value {
-		return fmt.Errorf("invalid %s %q", kind, value)
-	}
-	for _, char := range value {
-		if unicode.IsLetter(char) || unicode.IsDigit(char) || strings.ContainsRune("._+-", char) {
-			continue
-		}
-		return fmt.Errorf("invalid %s %q", kind, value)
 	}
 	return nil
 }
@@ -133,7 +120,7 @@ func verifyBinaries(root string, binaries []string) error {
 		return fmt.Errorf("installation exposes no binaries")
 	}
 	for _, binary := range binaries {
-		if err := validatePathComponent("binary", binary); err != nil {
+		if err := safepath.ValidateComponent("binary", binary); err != nil {
 			return err
 		}
 		info, err := os.Lstat(filepath.Join(root, "bin", binary))

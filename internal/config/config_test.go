@@ -29,3 +29,13 @@ func TestSaveConfigRoundTripAndPermissions(t *testing.T) {
 		t.Fatalf("config permissions = %o, want 600", gotMode)
 	}
 }
+
+func TestLoadConfigRejectsUnknownFields(t *testing.T) {
+	paths := Paths{Root: t.TempDir()}
+	if err := os.WriteFile(filepath.Join(paths.Root, "config.json"), []byte(`{"log_level":"info","typo":true}`), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := paths.LoadConfig(); err == nil {
+		t.Fatal("expected unknown config field to be rejected")
+	}
+}

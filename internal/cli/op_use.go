@@ -1,10 +1,12 @@
 package cli
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Okymi-X/arsenal/internal/op"
 	"github.com/Okymi-X/arsenal/internal/registry"
+	"github.com/Okymi-X/arsenal/internal/resolver"
 )
 
 // opUse resolves an op into a lockfile and installs every pinned tool.
@@ -20,7 +22,11 @@ func (a *App) opUse(args []string) error {
 	if err != nil {
 		return err
 	}
-	if err := op.WriteLockfile(a.ops.LockPath(args[0]), lf); err != nil {
+	path, err := a.ops.LockPath(args[0])
+	if err != nil {
+		return err
+	}
+	if err := op.WriteLockfile(path, lf); err != nil {
 		return err
 	}
 	return a.installLockfile(reg, lf)
@@ -39,7 +45,10 @@ func (a *App) opExport(args []string) error {
 	if err != nil {
 		return err
 	}
-	path := a.ops.LockPath(args[0])
+	path, err := a.ops.LockPath(args[0])
+	if err != nil {
+		return err
+	}
 	if err := op.WriteLockfile(path, lf); err != nil {
 		return err
 	}
@@ -75,16 +84,43 @@ func (a *App) lockOp(name string, reg *registry.Registry) (*op.Lockfile, error) 
 
 // installLockfile installs every entry in a lockfile by tool and version.
 func (a *App) installLockfile(reg *registry.Registry, lf *op.Lockfile) error {
-	for _, e := range lf.Entries {
-		res, err := resolveSpec(reg, e.Tool+"@"+e.Version)
-		if err != nil {
-			return err
-		}
+	resolved, err := verifyLockfile(reg, lf)
+	if err != nil {
+		return err
+	}
+	for _, res := range resolved {
 		if err := a.installResolved(res); err != nil {
 			return err
 		}
 	}
 	a.log.Printf("[ok] applied lockfile for op %q (%d tools)", lf.Op, len(lf.Entries))
+	return nil
+}
+
+func verifyLockfile(reg *registry.Registry, lf *op.Lockfile) ([]resolver.Resolved, error) {
+	if lf.RegistryVersion != reg.Version {
+		return nil, fmt.Errorf("lockfile registry version %q does not match active registry %q", lf.RegistryVersion, reg.Version)
+	}
+	resolved := make([]resolver.Resolved, 0, len(lf.Entries))
+	for _, entry := range lf.Entries {
+		result, err := resolveSpec(reg, entry.Tool+"@"+entry.Version)
+		if err != nil {
+			return nil, err
+		}
+		if err := verifyLockEntry(entry, result); err != nil {
+			return nil, err
+		}
+		resolved = append(resolved, result)
+	}
+	return resolved, nil
+}
+
+func verifyLockEntry(entry op.LockEntry, resolved resolver.Resolved) error {
+	if entry.InstallMethod != resolved.Tool.InstallMethod ||
+		entry.Commit != resolved.Version.Commit ||
+		entry.PipSpec != resolved.Version.PipSpec {
+		return fmt.Errorf("lockfile entry %s@%s does not match active registry metadata", entry.Tool, entry.Version)
+	}
 	return nil
 }
 

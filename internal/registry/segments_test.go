@@ -74,6 +74,13 @@ func TestParseManifestRejectsUnsafeSegments(t *testing.T) {
 	}
 }
 
+func TestParseManifestRejectsUnknownFields(t *testing.T) {
+	data := []byte("version = \"1\"\nsegments = [\"segments/tools.toml\"]\nunknown = true\n")
+	if _, err := ParseManifest(data); err == nil {
+		t.Fatal("expected unknown manifest field to be rejected")
+	}
+}
+
 func TestExpandRejectsOversizedRegistry(t *testing.T) {
 	manifest := []byte("version = \"1\"\nsegments = [\"segments/large.toml\"]\n")
 	_, err := Expand(manifest, func(string) ([]byte, error) {

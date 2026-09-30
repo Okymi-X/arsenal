@@ -3,11 +3,12 @@ package registry
 import (
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
-	"unicode"
 
-	"github.com/BurntSushi/toml"
+	"github.com/Okymi-X/arsenal/internal/safepath"
+	"github.com/Okymi-X/arsenal/internal/strictdecode"
 )
 
 // Load parses a registry from TOML at the given path.
@@ -28,7 +29,7 @@ func Load(path string) (*Registry, error) {
 // Parse decodes a registry from raw TOML bytes.
 func Parse(data []byte) (*Registry, error) {
 	var reg Registry
-	if err := toml.Unmarshal(data, &reg); err != nil {
+	if err := strictdecode.TOML(data, &reg); err != nil {
 		return nil, fmt.Errorf("parse registry: %w", err)
 	}
 	if err := validate(&reg); err != nil {
@@ -54,7 +55,7 @@ func validateTool(tool *Tool, index int, seen map[string]struct{}) error {
 	if tool.Name == "" {
 		return fmt.Errorf("tool at index %d has no name", index)
 	}
-	if err := validateRegistryComponent("tool name", tool.Name); err != nil {
+	if err := safepath.ValidateComponent("tool name", tool.Name); err != nil {
 		return err
 	}
 	if _, duplicate := seen[tool.Name]; duplicate {
@@ -64,11 +65,14 @@ func validateTool(tool *Tool, index int, seen map[string]struct{}) error {
 	if tool.InstallMethod == "" {
 		return fmt.Errorf("tool %q has no install_method", tool.Name)
 	}
+	if !validInstallMethod(tool.InstallMethod) {
+		return fmt.Errorf("tool %q has invalid install_method %q", tool.Name, tool.InstallMethod)
+	}
 	if len(tool.Versions) == 0 {
 		return fmt.Errorf("tool %q has no versions", tool.Name)
 	}
 	for _, binary := range tool.AllBinaries() {
-		if err := validateRegistryComponent("binary", binary); err != nil {
+		if err := safepath.ValidateComponent("binary", binary); err != nil {
 			return fmt.Errorf("tool %q: %w", tool.Name, err)
 		}
 	}
@@ -78,7 +82,7 @@ func validateTool(tool *Tool, index int, seen map[string]struct{}) error {
 func validateVersions(tool Tool) error {
 	seen := make(map[string]struct{}, len(tool.Versions))
 	for _, version := range tool.Versions {
-		if err := validateRegistryComponent("version tag", version.Tag); err != nil {
+		if err := safepath.ValidateComponent("version tag", version.Tag); err != nil {
 			return fmt.Errorf("tool %q: %w", tool.Name, err)
 		}
 		if _, duplicate := seen[version.Tag]; duplicate {
@@ -88,19 +92,6 @@ func validateVersions(tool Tool) error {
 		if err := validateInstallTargets(tool, version); err != nil {
 			return err
 		}
-	}
-	return nil
-}
-
-func validateRegistryComponent(kind, value string) error {
-	if value == "" || value == "." || value == ".." || filepath.Base(value) != value {
-		return fmt.Errorf("invalid %s %q", kind, value)
-	}
-	for _, char := range value {
-		if unicode.IsLetter(char) || unicode.IsDigit(char) || strings.ContainsRune("._+-", char) {
-			continue
-		}
-		return fmt.Errorf("invalid %s %q", kind, value)
 	}
 	return nil
 }
@@ -133,8 +124,8 @@ func validateAssets(reg *Registry) error {
 	seen := make(map[string]struct{}, len(reg.Assets))
 	for i := range reg.Assets {
 		a := &reg.Assets[i]
-		if a.Name == "" {
-			return fmt.Errorf("asset at index %d has no name", i)
+		if err := safepath.ValidateComponent("asset name", a.Name); err != nil {
+			return fmt.Errorf("asset at index %d: %w", i, err)
 		}
 		if _, dup := seen[a.Name]; dup {
 			return fmt.Errorf("duplicate asset name %q", a.Name)
@@ -143,6 +134,40 @@ func validateAssets(reg *Registry) error {
 		if a.Source != AssetGitHubRelease && a.Source != AssetGitHubRaw {
 			return fmt.Errorf("asset %q has invalid source %q", a.Name, a.Source)
 		}
+		if _, err := ParseGitHubRepo(a.Repo); err != nil {
+			return fmt.Errorf("asset %q: %w", a.Name, err)
+		}
+		if a.Source == AssetGitHubRelease && len(a.Builds) != 0 {
+			return fmt.Errorf("asset %q: builds require github-raw source", a.Name)
+		}
+		if err := validateAssetRepoPath("directory", a.Dir, true); err != nil {
+			return fmt.Errorf("asset %q: %w", a.Name, err)
+		}
+		for _, build := range a.Builds {
+			if err := validateAssetRepoPath("build", build, false); err != nil {
+				return fmt.Errorf("asset %q: %w", a.Name, err)
+			}
+		}
+	}
+	return nil
+}
+
+func validInstallMethod(method string) bool {
+	switch method {
+	case "pip", "gitpip", "binary", "gobin", "cargo":
+		return true
+	default:
+		return false
+	}
+}
+
+func validateAssetRepoPath(kind, value string, allowEmpty bool) error {
+	if value == "" && allowEmpty {
+		return nil
+	}
+	if value == "" || strings.Contains(value, "\\") || path.IsAbs(value) ||
+		path.Clean(value) != value || strings.HasPrefix(value, "../") {
+		return fmt.Errorf("invalid asset %s %q", kind, value)
 	}
 	return nil
 }

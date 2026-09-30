@@ -7,6 +7,9 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+
+	"github.com/Okymi-X/arsenal/internal/fsutil"
+	"github.com/Okymi-X/arsenal/internal/strictdecode"
 )
 
 // FileStore persists the manifest as a JSON file. It satisfies Store.
@@ -27,7 +30,7 @@ func (s *FileStore) Load() (*Manifest, error) {
 		return nil, fmt.Errorf("read manifest: %w", err)
 	}
 	var m Manifest
-	if err := json.Unmarshal(data, &m); err != nil {
+	if err := strictdecode.JSON(data, &m); err != nil {
 		return nil, fmt.Errorf("parse manifest: %w", err)
 	}
 	return &m, nil
@@ -42,12 +45,8 @@ func (s *FileStore) Save(m *Manifest) error {
 	if err != nil {
 		return fmt.Errorf("encode manifest: %w", err)
 	}
-	tmp := s.path + ".tmp"
-	if err := os.WriteFile(tmp, data, 0o644); err != nil {
+	if err := fsutil.WriteFileAtomic(s.path, data, 0o644); err != nil {
 		return fmt.Errorf("write manifest: %w", err)
-	}
-	if err := os.Rename(tmp, s.path); err != nil {
-		return fmt.Errorf("replace manifest: %w", err)
 	}
 	return nil
 }

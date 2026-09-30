@@ -1,7 +1,7 @@
 package main
 
 import (
-	"bufio"
+	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/Okymi-X/arsenal/internal/fsutil"
 	"github.com/Okymi-X/arsenal/internal/registry"
 )
 
@@ -31,47 +32,25 @@ func writeManifest(path string, manifest registry.Manifest) error {
 		manifest.SegmentSHA256[name] = hex.EncodeToString(digest[:])
 	}
 
-	tmp, err := os.CreateTemp(filepath.Dir(path), ".registry-manifest-*.tmp")
-	if err != nil {
-		return err
-	}
-	tmpPath := tmp.Name()
-	defer func() { _ = os.Remove(tmpPath) }()
-	w := bufio.NewWriter(tmp)
-	_, err = fmt.Fprintf(w, "# Registry metadata and generated segment integrity pins.\n# Edit entries in registry/segments/*.toml, then run make registry.\n\nversion = %q\nupdated = %q\nsegments = [\n", manifest.Version, manifest.Updated)
+	var output bytes.Buffer
+	_, err := fmt.Fprintf(&output, "# Registry metadata and generated segment integrity pins.\n# Edit entries in registry/segments/*.toml, then run make registry.\n\nversion = %q\nupdated = %q\nsegments = [\n", manifest.Version, manifest.Updated)
 	for _, name := range manifest.Segments {
 		if err == nil {
-			_, err = fmt.Fprintf(w, "  %q,\n", name)
+			_, err = fmt.Fprintf(&output, "  %q,\n", name)
 		}
 	}
 	if err == nil {
-		_, err = fmt.Fprintln(w, "]\n\n[segment_sha256]")
+		_, err = fmt.Fprintln(&output, "]\n\n[segment_sha256]")
 	}
 	for _, name := range manifest.Segments {
 		if err == nil {
-			_, err = fmt.Fprintf(w, "%q = %q\n", name, manifest.SegmentSHA256[name])
+			_, err = fmt.Fprintf(&output, "%q = %q\n", name, manifest.SegmentSHA256[name])
 		}
 	}
 	if err != nil {
-		_ = tmp.Close()
 		return err
 	}
-	if err := w.Flush(); err != nil {
-		_ = tmp.Close()
-		return err
-	}
-	if err := tmp.Sync(); err != nil {
-		_ = tmp.Close()
-		return err
-	}
-	if err := tmp.Chmod(0o644); err != nil {
-		_ = tmp.Close()
-		return err
-	}
-	if err := tmp.Close(); err != nil {
-		return err
-	}
-	return os.Rename(tmpPath, path)
+	return fsutil.WriteFileAtomic(path, output.Bytes(), 0o644)
 }
 
 func checkCoverage(manifestPath, dir string, segments []string) error {

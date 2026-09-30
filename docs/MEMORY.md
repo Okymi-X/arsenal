@@ -21,6 +21,9 @@ for assumptions. Update it only when a fact is confirmed in the repository.
 - Standalone fetched assets intentionally bypass installation, isolation,
   shims, and the installed-tool manifest.
 - Engagement profiles are called ops and use TOML lockfiles.
+- Lockfile application validates all entries against the active registry before
+  installation and rejects registry-version, method, commit, or package-spec
+  drift.
 - Local state is rooted at `ARSENAL_HOME`, then `XDG_DATA_HOME/arsenal`, then
   the platform default documented in `ARCHITECTURE.md`.
 - The CLI has no telemetry and normal output is quiet by default.
@@ -37,6 +40,12 @@ for assumptions. Update it only when a fact is confirmed in the repository.
   installed environment, and never auto-change ahead or untracked versions.
 - Production Go source currently follows a soft 180-line file limit and the
   linter rejects cyclomatic complexity of 15 or greater.
+- Persisted configuration, registry records, installed manifests, ops, and
+  lockfiles reject unknown schema fields. Shared path-component validation and
+  atomic file replacement live in `internal/safepath` and `internal/fsutil`.
+- CI verifies module checksums and scans reachable Go code using a pinned
+  `govulncheck` version. Release tags must be documented and point to a commit
+  on `main` before artifacts are published.
 
 ## Authoritative sources
 

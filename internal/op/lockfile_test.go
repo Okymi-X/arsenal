@@ -37,11 +37,16 @@ func TestValidateLockfile(t *testing.T) {
 		lf      *Lockfile
 		wantErr bool
 	}{
-		{"valid", &Lockfile{Op: "x", Entries: []LockEntry{{Tool: "a", Version: "1"}}}, false},
-		{"no op", &Lockfile{Entries: []LockEntry{{Tool: "a", Version: "1"}}}, true},
-		{"entry no tool", &Lockfile{Op: "x", Entries: []LockEntry{{Version: "1"}}}, true},
-		{"entry no version", &Lockfile{Op: "x", Entries: []LockEntry{{Tool: "a"}}}, true},
-		{"duplicate tool", &Lockfile{Op: "x", Entries: []LockEntry{{Tool: "a", Version: "1"}, {Tool: "a", Version: "2"}}}, true},
+		{"valid", &Lockfile{Op: "x", RegistryVersion: "1", Entries: []LockEntry{{Tool: "a", Version: "1", InstallMethod: "pip"}}}, false},
+		{"no registry version", &Lockfile{Op: "x", Entries: []LockEntry{{Tool: "a", Version: "1", InstallMethod: "pip"}}}, true},
+		{"no op", &Lockfile{RegistryVersion: "1", Entries: []LockEntry{{Tool: "a", Version: "1", InstallMethod: "pip"}}}, true},
+		{"unsafe op", &Lockfile{Op: "../x", RegistryVersion: "1", Entries: []LockEntry{{Tool: "a", Version: "1", InstallMethod: "pip"}}}, true},
+		{"entry no tool", &Lockfile{Op: "x", RegistryVersion: "1", Entries: []LockEntry{{Version: "1", InstallMethod: "pip"}}}, true},
+		{"unsafe tool", &Lockfile{Op: "x", RegistryVersion: "1", Entries: []LockEntry{{Tool: "../a", Version: "1", InstallMethod: "pip"}}}, true},
+		{"entry no version", &Lockfile{Op: "x", RegistryVersion: "1", Entries: []LockEntry{{Tool: "a", InstallMethod: "pip"}}}, true},
+		{"unsafe version", &Lockfile{Op: "x", RegistryVersion: "1", Entries: []LockEntry{{Tool: "a", Version: "../1", InstallMethod: "pip"}}}, true},
+		{"entry no install method", &Lockfile{Op: "x", RegistryVersion: "1", Entries: []LockEntry{{Tool: "a", Version: "1"}}}, true},
+		{"duplicate tool", &Lockfile{Op: "x", RegistryVersion: "1", Entries: []LockEntry{{Tool: "a", Version: "1", InstallMethod: "pip"}, {Tool: "a", Version: "2", InstallMethod: "pip"}}}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -64,5 +69,22 @@ func TestGenerateLockfile(t *testing.T) {
 	}
 	if len(lf.Entries) != 1 || lf.Entries[0].Tool != "netexec" {
 		t.Fatalf("unexpected lockfile: %+v", lf)
+	}
+}
+
+func TestParseLockfileRejectsUnknownFields(t *testing.T) {
+	data := []byte("op = \"eng\"\nunknown = true\n")
+	if _, err := ParseLockfile(data); err == nil {
+		t.Fatal("expected unknown lockfile field to be rejected")
+	}
+}
+
+func TestWriteLockfileRejectsInvalidContent(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "invalid.lock.toml")
+	if err := WriteLockfile(path, &Lockfile{Op: "../escape"}); err == nil {
+		t.Fatal("expected invalid lockfile to be rejected")
+	}
+	if err := WriteLockfile(path, nil); err == nil {
+		t.Fatal("expected nil lockfile to be rejected")
 	}
 }

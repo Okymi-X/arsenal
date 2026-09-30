@@ -7,6 +7,7 @@ import (
 	"sort"
 
 	"github.com/Okymi-X/arsenal/internal/registry"
+	"github.com/Okymi-X/arsenal/internal/safepath"
 )
 
 type installTarget struct {
@@ -21,7 +22,7 @@ func orderedTargets(tool registry.Tool, version registry.Version) ([]installTarg
 	}
 	wanted := make(map[string]struct{}, len(binaries))
 	for _, binary := range binaries {
-		if err := validatePathComponent("binary", binary); err != nil {
+		if err := safepath.ValidateComponent("binary", binary); err != nil {
 			return nil, err
 		}
 		wanted[binary] = struct{}{}
@@ -42,10 +43,10 @@ func orderedTargets(tool registry.Tool, version registry.Version) ([]installTarg
 }
 
 func renameInstalledBinary(root, installed, exposed string) error {
-	if err := validatePathComponent("installed binary", installed); err != nil {
+	if err := safepath.ValidateComponent("installed binary", installed); err != nil {
 		return err
 	}
-	if err := validatePathComponent("exposed binary", exposed); err != nil {
+	if err := safepath.ValidateComponent("exposed binary", exposed); err != nil {
 		return err
 	}
 	if installed == exposed {

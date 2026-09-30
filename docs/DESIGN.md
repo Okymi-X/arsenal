@@ -57,9 +57,15 @@ domain layer.
   build, local-load, and remote-sync boundaries.
 - Manifests describe local installed state; lockfiles describe reproducible
   requested state. Do not merge their responsibilities.
+- Validate every lockfile entry against the active registry before performing
+  any installation. A registry version or locked metadata mismatch fails the
+  complete operation before partial state is created.
 - Persisted formats should be reviewable text with stable ordering.
+- Reject unknown fields when decoding persisted formats so configuration and
+  registry typos cannot silently change behavior.
 - Write complete state to a sibling temporary file, sync when durability
-  matters, set intended permissions, and rename into place.
+  matters, set intended permissions, and rename into place. Use the shared
+  atomic writer so temporary names are unpredictable and cleanup is consistent.
 - Schema changes require backward-compatible reading or an explicit migration.
 
 ## External processes

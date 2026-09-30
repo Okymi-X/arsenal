@@ -7,6 +7,9 @@ import (
 	"path/filepath"
 
 	"github.com/BurntSushi/toml"
+	"github.com/Okymi-X/arsenal/internal/fsutil"
+	"github.com/Okymi-X/arsenal/internal/safepath"
+	"github.com/Okymi-X/arsenal/internal/strictdecode"
 )
 
 // WriteLockfile encodes a lockfile to TOML at path, atomically.
@@ -21,12 +24,8 @@ func WriteLockfile(path string, lf *Lockfile) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return fmt.Errorf("create lockfile dir: %w", err)
 	}
-	tmp := path + ".tmp"
-	if err := os.WriteFile(tmp, buf.Bytes(), 0o644); err != nil {
+	if err := fsutil.WriteFileAtomic(path, buf.Bytes(), 0o644); err != nil {
 		return fmt.Errorf("write lockfile: %w", err)
-	}
-	if err := os.Rename(tmp, path); err != nil {
-		return fmt.Errorf("replace lockfile: %w", err)
 	}
 	return nil
 }
@@ -43,7 +42,7 @@ func ReadLockfile(path string) (*Lockfile, error) {
 // ParseLockfile decodes and validates a lockfile from raw TOML.
 func ParseLockfile(data []byte) (*Lockfile, error) {
 	var lf Lockfile
-	if err := toml.Unmarshal(data, &lf); err != nil {
+	if err := strictdecode.TOML(data, &lf); err != nil {
 		return nil, fmt.Errorf("parse lockfile: %w", err)
 	}
 	if err := validateLockfile(&lf); err != nil {
@@ -53,16 +52,25 @@ func ParseLockfile(data []byte) (*Lockfile, error) {
 }
 
 func validateLockfile(lf *Lockfile) error {
-	if lf.Op == "" {
-		return fmt.Errorf("lockfile has no op name")
+	if lf == nil {
+		return fmt.Errorf("lockfile is required")
+	}
+	if err := safepath.ValidateComponent("op name", lf.Op); err != nil {
+		return fmt.Errorf("lockfile: %w", err)
+	}
+	if lf.RegistryVersion == "" {
+		return fmt.Errorf("lockfile has no registry version")
 	}
 	seen := make(map[string]struct{}, len(lf.Entries))
 	for _, e := range lf.Entries {
-		if e.Tool == "" {
-			return fmt.Errorf("lockfile entry has no tool name")
+		if err := safepath.ValidateComponent("tool name", e.Tool); err != nil {
+			return fmt.Errorf("lockfile: %w", err)
 		}
-		if e.Version == "" {
-			return fmt.Errorf("lockfile entry for %q has no version", e.Tool)
+		if err := safepath.ValidateComponent("version", e.Version); err != nil {
+			return fmt.Errorf("lockfile entry for %q: %w", e.Tool, err)
+		}
+		if e.InstallMethod == "" {
+			return fmt.Errorf("lockfile entry for %q has no install method", e.Tool)
 		}
 		if _, dup := seen[e.Tool]; dup {
 			return fmt.Errorf("duplicate lockfile entry for %q", e.Tool)

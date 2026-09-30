@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/Okymi-X/arsenal/internal/fsutil"
 )
 
 // FileSource loads a registry from a local TOML file and refreshes it from a
@@ -53,36 +55,8 @@ func (s *FileSource) writeAtomic(data []byte) error {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return fmt.Errorf("create registry dir: %w", err)
 	}
-	tmp, err := os.CreateTemp(dir, ".registry-*.tmp")
-	if err != nil {
-		return fmt.Errorf("create temporary registry: %w", err)
-	}
-	tmpPath := tmp.Name()
-	defer func() { _ = os.Remove(tmpPath) }()
-	if err := writeRegistryTemp(tmp, data); err != nil {
-		return err
-	}
-	if err := os.Rename(tmpPath, s.path); err != nil {
-		return fmt.Errorf("replace registry: %w", err)
-	}
-	return nil
-}
-
-func writeRegistryTemp(file *os.File, data []byte) error {
-	if _, err := file.Write(data); err != nil {
-		_ = file.Close()
-		return fmt.Errorf("write temporary registry: %w", err)
-	}
-	if err := file.Sync(); err != nil {
-		_ = file.Close()
-		return fmt.Errorf("sync temporary registry: %w", err)
-	}
-	if err := file.Chmod(0o644); err != nil {
-		_ = file.Close()
-		return fmt.Errorf("set registry permissions: %w", err)
-	}
-	if err := file.Close(); err != nil {
-		return fmt.Errorf("close temporary registry: %w", err)
+	if err := fsutil.WriteFileAtomic(s.path, data, 0o644); err != nil {
+		return fmt.Errorf("write registry: %w", err)
 	}
 	return nil
 }

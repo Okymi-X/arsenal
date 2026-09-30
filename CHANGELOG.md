@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-09-30
+
+### Changed
+
+- Upgraded the TOML parser to 1.6.0 and made registry, configuration, manifest,
+  op, and lockfile decoding reject unsupported fields instead of silently
+  ignoring misspelled metadata.
+- Added a pinned `govulncheck` target and CI job, dependency verification in CI
+  and releases, and release-tag checks for semantic versioning, changelog
+  coverage, and ancestry on `main`.
+
+### Fixed
+
+- Op names, lockfile entries, install methods, asset names, GitHub repositories,
+  and raw asset build paths now fail validation before they can reach filesystem
+  or network boundaries. Raw asset `--build` overrides are restricted to the
+  catalogued build list for both listing and fetching.
+- Applying a lockfile now verifies its registry version, install method, commit,
+  and package spec against the active registry before installing any entry,
+  preventing silent metadata drift.
+
+### Security
+
+- Op file paths can no longer escape Arsenal's state directory through crafted
+  names or mismatched names embedded in an op file.
+- Persistent state, lockfiles, registries, and shims now share one atomic writer
+  that uses unpredictable sibling temporary files, preventing predictable-temp
+  symlink overwrites while preserving the previous destination on failure.
+
 ## [0.5.1] - 2026-09-30
 
 ### Added
@@ -253,7 +282,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - binary, go install, and cargo install methods, wired behind the
   InstallMethod interface.
 
-[Unreleased]: https://github.com/Okymi-X/arsenal/compare/v0.5.1...HEAD
+[Unreleased]: https://github.com/Okymi-X/arsenal/compare/v0.5.2...HEAD
+[0.5.2]: https://github.com/Okymi-X/arsenal/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/Okymi-X/arsenal/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/Okymi-X/arsenal/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Okymi-X/arsenal/compare/v0.3.1...v0.4.0

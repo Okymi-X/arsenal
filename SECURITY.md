@@ -27,6 +27,12 @@ explicit authorization.
 
 ## Hardening notes
 
-- arsenal makes network calls only for registry sync and tool installs.
+- arsenal makes network calls for GitHub metadata and registry synchronization,
+  tool installation, upstream registry verification, and explicit asset fetches.
 - It does not collect telemetry.
 - Installs are isolated per tool/version; removing a tool does not affect others.
+- Persisted schemas reject unknown fields, filesystem path components are
+  validated at their owning boundary, and complete files are atomically promoted
+  from unpredictable sibling temporary files.
+- CI verifies module checksums and scans reachable Go code with the official Go
+  vulnerability database.

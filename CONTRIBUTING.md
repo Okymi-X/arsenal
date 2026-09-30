@@ -19,6 +19,7 @@ make build     # compile into bin/
 make test      # go test ./...
 make lint      # golangci-lint (config in .golangci.yml)
 make fmt       # gofumpt -w .
+make security  # scan reachable Go code for known vulnerabilities
 ```
 
 Before opening a pull request, run the completion checks in

@@ -11,8 +11,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
-	"unicode"
+
+	"github.com/Okymi-X/arsenal/internal/fsutil"
+	"github.com/Okymi-X/arsenal/internal/safepath"
 )
 
 // Manager creates and removes shims in a single bin directory.
@@ -36,34 +37,10 @@ func (m *Manager) Write(binary, targetBin string) error {
 	}
 	path := filepath.Join(m.binDir, binary)
 	content := script(binary, targetBin)
-	if err := writeAtomic(path, []byte(content)); err != nil {
+	if err := fsutil.WriteFileAtomic(path, []byte(content), 0o755); err != nil {
 		return fmt.Errorf("write shim %s: %w", binary, err)
 	}
 	return nil
-}
-
-func writeAtomic(path string, content []byte) error {
-	temporary, err := os.CreateTemp(filepath.Dir(path), ".shim-*")
-	if err != nil {
-		return err
-	}
-	defer func() { _ = os.Remove(temporary.Name()) }()
-	if err := temporary.Chmod(0o755); err != nil {
-		_ = temporary.Close()
-		return err
-	}
-	if _, err := temporary.Write(content); err != nil {
-		_ = temporary.Close()
-		return err
-	}
-	if err := temporary.Sync(); err != nil {
-		_ = temporary.Close()
-		return err
-	}
-	if err := temporary.Close(); err != nil {
-		return err
-	}
-	return os.Rename(temporary.Name(), path)
 }
 
 // Remove deletes a shim if present.
@@ -96,14 +73,5 @@ func (m *Manager) Exists(binary string) bool {
 }
 
 func validateBinaryName(binary string) error {
-	if binary == "" || binary == "." || binary == ".." || filepath.Base(binary) != binary {
-		return fmt.Errorf("invalid shim name %q", binary)
-	}
-	for _, char := range binary {
-		if unicode.IsLetter(char) || unicode.IsDigit(char) || strings.ContainsRune("._+-", char) {
-			continue
-		}
-		return fmt.Errorf("invalid shim name %q", binary)
-	}
-	return nil
+	return safepath.ValidateComponent("shim name", binary)
 }

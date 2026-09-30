@@ -8,8 +8,9 @@ BIN_DIR     := bin
 PREFIX      ?= /usr/local
 VERSION     := $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
 LDFLAGS     := -s -w -X main.version=$(VERSION)
+GOVULNCHECK_VERSION := v1.8.0
 
-.PHONY: all build test lint fmt install clean release tidy registry registry-check verify-registry
+.PHONY: all build test lint fmt install clean release tidy security registry registry-check verify-registry
 
 all: build
 
@@ -42,6 +43,10 @@ fmt:
 tidy:
 	go mod tidy
 	go mod verify
+
+## security: scan reachable Go code against the official vulnerability database
+security:
+	go run golang.org/x/vuln/cmd/govulncheck@$(GOVULNCHECK_VERSION) ./...
 
 ## verify-registry: check every registry version exists at its official source
 verify-registry:
