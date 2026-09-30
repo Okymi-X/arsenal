@@ -39,7 +39,16 @@ relevant package manager already present on the host (`python`/`pip`, `go`, or
 
 ## Install
 
-Build from source (Go latest stable required):
+Install the latest release with Go 1.26 or newer:
+
+```
+go install github.com/Okymi-X/arsenal/cmd/arsenal@latest
+```
+
+The binary is written to `GOBIN`, or to `GOPATH/bin` when `GOBIN` is unset.
+Ensure that directory is on your `PATH`.
+
+Alternatively, build and install from a source checkout:
 
 ```
 make build

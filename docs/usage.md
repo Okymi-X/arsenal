@@ -1,5 +1,14 @@
 # Usage
 
+Install the latest release with Go 1.26 or newer:
+
+```
+go install github.com/Okymi-X/arsenal/cmd/arsenal@latest
+```
+
+Go writes the executable to `GOBIN`, or to `GOPATH/bin` when `GOBIN` is unset.
+Release binaries remain available from the GitHub Releases page.
+
 Output is quiet by default. Add `-v` or `--verbose` before the command for
 detail. There is no color unless stdout is a TTY, and no emoji anywhere. Status
 markers are plain ASCII: `[ok]`, `[fail]`, `[warn]`, `->`.
@@ -252,7 +261,8 @@ Exports a self-contained offline bundle. Stubbed; see `ARCHITECTURE.md`.
 arsenal version
 ```
 
-Prints the build version, injected at link time.
+Prints the build version. Release builds receive it at link time; binaries
+installed with `go install` read the module version recorded by the Go tool.
 
 ## Environment variables
 

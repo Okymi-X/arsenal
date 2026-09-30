@@ -8,6 +8,9 @@ for assumptions. Update it only when a fact is confirmed in the repository.
 
 - The module path is `github.com/Okymi-X/arsenal` and the implementation is Go.
 - The shipped artifact is a statically linked CLI binary named `arsenal`.
+- Users can install a tagged release with
+  `go install github.com/Okymi-X/arsenal/cmd/arsenal@latest`; the CLI reads the
+  module build metadata when no link-time version was injected.
 - The canonical project icon is `assets/branding/arsenal-icon.png`.
 - `registry/registry.toml` is a small manifest. The embedded catalog is
   assembled and validated directly from its ordered `registry/segments/*.toml`

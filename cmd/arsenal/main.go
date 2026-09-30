@@ -14,7 +14,7 @@ import (
 	"github.com/Okymi-X/arsenal/internal/config"
 )
 
-// version is injected at build time via -ldflags. It is not hardcoded.
+// version may be injected at build time via -ldflags.
 var version = "dev"
 
 func main() {
@@ -40,7 +40,7 @@ func run() int {
 		Context: ctx,
 		Paths:   paths,
 		Cfg:     cfg,
-		Version: version,
+		Version: buildVersion(),
 		Stdout:  os.Stdout,
 		Stderr:  os.Stderr,
 	})
