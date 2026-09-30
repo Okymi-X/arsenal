@@ -16,6 +16,9 @@ for assumptions. Update it only when a fact is confirmed in the repository.
   assembled and validated directly from its ordered `registry/segments/*.toml`
   files at build time.
 - Python virtual environments are the implemented default isolation backend.
+- `arsenal run` resolves managed binaries inside their installation root. The
+  private shim directory stays off the host `PATH` by default so existing
+  system, pipx, and user-installed commands are not shadowed.
 - Pip, git-plus-pip, Go, and Cargo are implemented install methods. The
   prebuilt-binary method remains an explicit stub.
 - Standalone fetched assets intentionally bypass installation, isolation,
@@ -42,6 +45,8 @@ for assumptions. Update it only when a fact is confirmed in the repository.
   resolve those pins with the primary package in one transaction, lockfiles
   preserve them, upstream verification confirms every pin exists on PyPI, and
   every completed Python installation must pass `pip check`.
+- Python virtualenv operations reject unsafe or symlinked installation paths,
+  remove inherited `PYTHONHOME` and `PYTHONPATH`, and disable the user site.
 - Production Go source currently follows a soft 180-line file limit and the
   linter rejects cyclomatic complexity of 15 or greater.
 - Persisted configuration, registry records, installed manifests, ops, and

@@ -43,14 +43,16 @@ func (b *Backend) Exists() bool {
 
 // Create provisions a virtualenv for tool at version.
 func (b *Backend) Create(ctx context.Context, tool, version string) error {
-	b.dir = filepath.Join(b.toolsRoot, tool, version)
+	if err := b.bind(tool, version); err != nil {
+		return err
+	}
 	if b.Exists() {
 		return nil
 	}
 	if err := os.MkdirAll(filepath.Dir(b.dir), 0o755); err != nil {
 		return fmt.Errorf("create tool parent dir: %w", err)
 	}
-	if err := runCommand(ctx, b.pythonBin, "-m", "venv", b.dir); err != nil {
+	if err := runCommandEnv(ctx, cleanPythonEnvironment(os.Environ()), b.pythonBin, "-m", "venv", b.dir); err != nil {
 		return fmt.Errorf("create virtualenv for %s@%s: %w", tool, version, err)
 	}
 	return nil

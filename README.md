@@ -29,7 +29,8 @@ relevant package manager already present on the host (`python`/`pip`, `go`, or
   same interface.
 - Engagement profiles ("ops"): pin a set of tool versions, produce a lockfile,
   and make an environment reproducible and shareable across a team.
-- PATH shims so multiple versions coexist and the active one is switchable.
+- Private shims so multiple versions coexist and the active one is switchable
+  without replacing same-named host tools.
 - A `fetch` command for precompiled upload-binaries (SharpCollection, winPEAS,
   linPEAS, pspy): pulls the latest version straight into a directory you pick,
   with no env and no shim.
@@ -55,11 +56,9 @@ make build
 sudo make install
 ```
 
-Then add the shim directory to your PATH (printed by `arsenal doctor`):
-
-```
-export PATH="$HOME/.local/share/arsenal/bin:$PATH"
-```
+Arsenal keeps tool shims off the host `PATH` by default. Run managed tools with
+`arsenal run` so an existing pipx, system, or user installation keeps its
+normal command name.
 
 ## Quick start
 

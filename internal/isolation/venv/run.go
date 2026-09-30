@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/Okymi-X/arsenal/internal/safepath"
 )
 
 // Run executes a binary from the virtualenv's bin directory.
@@ -16,6 +18,9 @@ import (
 func (b *Backend) Run(ctx context.Context, args []string) error {
 	if len(args) == 0 {
 		return fmt.Errorf("no command to run")
+	}
+	if err := safepath.ValidateComponent("binary", args[0]); err != nil {
+		return err
 	}
 	if !b.Exists() {
 		return fmt.Errorf("virtualenv not provisioned at %s", b.dir)
@@ -28,18 +33,18 @@ func (b *Backend) Run(ctx context.Context, args []string) error {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	cmd.Env = append(os.Environ(), "VIRTUAL_ENV="+b.dir, "PATH="+b.binDir()+string(os.PathListSeparator)+os.Getenv("PATH"))
+	cmd.Env = b.environment()
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("run %s: %w", args[0], err)
 	}
 	return nil
 }
 
-// runCommand executes a command with stdio wired to the parent process.
-func runCommand(ctx context.Context, name string, args ...string) error {
+func runCommandEnv(ctx context.Context, env []string, name string, args ...string) error {
 	cmd := exec.CommandContext(ctx, name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+	cmd.Env = env
 	return cmd.Run()
 }

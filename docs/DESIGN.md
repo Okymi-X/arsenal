@@ -24,6 +24,8 @@ arsenal <command> [subject] [flags]
 - Require explicit names for state-changing operations.
 - Use `tool@version` consistently wherever a version can be selected.
 - Pass arguments following `--` to the selected tool unchanged.
+- Keep Arsenal's private shim directory off the host `PATH` by default and use
+  `arsenal run` as the conflict-free execution path.
 - Print primary results to stdout and actionable diagnostics to stderr.
 - Keep quiet mode suitable for interactive use and automation. Verbose mode may
   expose operational detail but never secrets.
@@ -73,6 +75,8 @@ domain layer.
 - Build commands from a fixed executable and validated argument list.
 - Inherit only the environment needed by the child process; override variables
   deliberately.
+- Strip host Python path overrides when creating, installing, or running a
+  virtualenv, and disable the user site so host packages cannot leak in.
 - Connect stdout and stderr according to the CLI contract.
 - Propagate cancellation and preserve the child exit failure with context.
 - Never infer elevated privileges or execute through a shell.

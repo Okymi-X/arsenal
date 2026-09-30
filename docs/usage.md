@@ -132,8 +132,9 @@ arsenal run impacket getTGT.py -- -dc-ip 10.0.0.1 domain/user
 arsenal run impacket impacket-getTGT -- -dc-ip 10.0.0.1 domain/user
 ```
 
-Alternatively, add the shim directory to your PATH (see `doctor`) and call the
-binaries directly: `getTGT.py`, `secretsdump.py`, `nxc`, and so on.
+Arsenal keeps its private shim directory off the host `PATH` by default. This
+ensures a same-named system, pipx, or user-installed command remains unchanged;
+use `arsenal run` to select the managed version explicitly.
 
 ### fetch
 
@@ -243,9 +244,11 @@ environment and is never written to configuration.
 arsenal doctor [--fix]
 ```
 
-Runs health checks: directory tree, Python interpreter, shim directory on PATH,
-and manifest integrity. With `--fix`, repairs what it safely can (recreating
-directories, pruning manifest entries whose environments are gone).
+Runs health checks: directory tree, Python interpreter, private-shim isolation,
+and manifest integrity. It reports a failure if Arsenal's shim directory is on
+the host `PATH` because that can shadow independently installed tools. With
+`--fix`, repairs what it safely can (recreating directories, pruning manifest
+entries whose environments are gone); shell configuration is never edited.
 
 ### bundle
 

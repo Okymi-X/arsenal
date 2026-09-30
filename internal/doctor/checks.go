@@ -55,7 +55,7 @@ func (c *PythonCheck) Fix() error {
 	return fmt.Errorf("install %s and ensure it is on PATH", c.pythonBin)
 }
 
-// PathCheck verifies the shim bin directory is present on the user's PATH.
+// PathCheck verifies the private shim directory does not shadow host tools.
 type PathCheck struct {
 	binDir string
 }
@@ -66,19 +66,23 @@ func NewPathCheck(binDir string) *PathCheck { return &PathCheck{binDir: binDir} 
 // Name identifies the check.
 func (c *PathCheck) Name() string { return "shim-path" }
 
-// Run reports whether binDir appears in the PATH environment variable.
+// Run reports whether private shims remain isolated from the host PATH.
 func (c *PathCheck) Run() Result {
 	for _, p := range filepathList(os.Getenv("PATH")) {
 		if p == c.binDir {
-			return Result{Name: c.Name(), OK: true, Detail: c.binDir}
+			return Result{
+				Name:   c.Name(),
+				OK:     false,
+				Detail: fmt.Sprintf("%s is on PATH and may shadow host tools", c.binDir),
+			}
 		}
 	}
-	return Result{Name: c.Name(), OK: false, Detail: fmt.Sprintf("add %s to PATH", c.binDir)}
+	return Result{Name: c.Name(), OK: true, Detail: "isolated; use 'arsenal run'"}
 }
 
-// Fix cannot edit the user's shell profile; it reports the manual action.
+// Fix cannot safely infer which shell configuration introduced the path.
 func (c *PathCheck) Fix() error {
-	return fmt.Errorf("add %s to your PATH in your shell profile", c.binDir)
+	return fmt.Errorf("remove %s from PATH to prevent host tool conflicts", c.binDir)
 }
 
 func filepathList(path string) []string {

@@ -16,10 +16,10 @@ func (b *Backend) Install(ctx context.Context, spec isolation.InstallSpec) error
 	if len(args) == 0 {
 		return fmt.Errorf("install spec produced no pip arguments")
 	}
-	if err := runCommand(ctx, b.pipExe(), args...); err != nil {
+	if err := runCommandEnv(ctx, b.environment(), b.pipExe(), args...); err != nil {
 		return fmt.Errorf("pip install: %w", err)
 	}
-	if err := runCommand(ctx, b.pythonExe(), "-m", "pip", "check"); err != nil {
+	if err := runCommandEnv(ctx, b.environment(), b.pythonExe(), "-m", "pip", "check"); err != nil {
 		return fmt.Errorf("verify Python dependencies: %w", err)
 	}
 	return nil

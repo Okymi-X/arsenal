@@ -43,6 +43,11 @@ repository file) and downloads it to an operator-chosen directory for staging
 onto a target. Assets are never isolated, versioned in the manifest, or shimmed
 onto the operator's PATH.
 
+Managed tool commands are resolved from the manifest and executed from their
+absolute installation path by `arsenal run`. The private shim directory is not
+required on the host `PATH`; this prevents Arsenal tools from shadowing system,
+pipx, or user-managed commands with the same name.
+
 ## Key interfaces
 
 These are defined first and implemented against. Concrete types are injected.
@@ -157,6 +162,11 @@ network limits, integrity checks, and atomic writes follow `RULES.md` and
 `DESIGN.md`. Persisted JSON and TOML schemas reject unknown fields. Filesystem
 components share one validator, and complete-file replacement uses unpredictable
 sibling temporary files through the shared atomic writer.
+
+Python virtualenv execution removes inherited `PYTHONHOME` and `PYTHONPATH`,
+disables the user site, and prepends only the selected environment's bin
+directory. Other environment values remain available to tools that need
+operator-supplied configuration.
 
 arsenal manages tools used for authorized testing, but it does not authorize or
 scope their execution. The operator selects targets and remains responsible for

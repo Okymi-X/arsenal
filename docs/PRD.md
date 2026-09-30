@@ -54,8 +54,10 @@ The primary user is an authorized security practitioner who needs to:
 
 - Pass tool arguments without reinterpretation by a shell.
 - Resolve aliases to canonical registry names before consulting local state.
+- Execute managed binaries through `arsenal run` without changing the host
+  `PATH` or shadowing independently installed tools.
 - Generate predictable shims for exposed binaries and update them atomically
-  where practical.
+  where practical, but keep their directory private by default.
 - Keep normal output concise, send diagnostics to stderr, and avoid color when
   stdout is not a terminal.
 
@@ -77,8 +79,8 @@ The primary user is an authorized security practitioner who needs to:
 
 ### Diagnostics and operations
 
-- Detect missing directories, runtimes, shims, and inconsistent manifest
-  entries.
+- Detect missing directories, runtimes, shims, inconsistent manifest entries,
+  and accidental global exposure of private shims.
 - Make repair explicit and limit it to arsenal-owned state.
 - Collect no telemetry and do not make unrelated network requests.
 

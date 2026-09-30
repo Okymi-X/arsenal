@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.4] - 2026-09-30
+
+### Changed
+
+- `arsenal run` is now the documented conflict-free execution path. Private
+  shims remain outside the host `PATH`, and `doctor` reports global shim
+  exposure as a conflict instead of requiring it.
+
+### Security
+
+- Python environment creation and execution now reject unsafe or symlinked
+  tool paths, remove inherited `PYTHONHOME` and `PYTHONPATH`, and disable the
+  user site so host Python packages cannot leak into managed environments.
+
 ## [0.5.3] - 2026-09-30
 
 ### Fixed
@@ -293,7 +307,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - binary, go install, and cargo install methods, wired behind the
   InstallMethod interface.
 
-[Unreleased]: https://github.com/Okymi-X/arsenal/compare/v0.5.3...HEAD
+[Unreleased]: https://github.com/Okymi-X/arsenal/compare/v0.5.4...HEAD
+[0.5.4]: https://github.com/Okymi-X/arsenal/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/Okymi-X/arsenal/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/Okymi-X/arsenal/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/Okymi-X/arsenal/compare/v0.5.0...v0.5.1
